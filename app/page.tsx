@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { SiteHeader } from "./components/SiteHeader";
 
 /* ─────────────────────────────────────────────────────────────────
    DESIGN TOKENS (inline for zero extra CSS specificity battles)
@@ -87,195 +88,6 @@ function Section({
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   NAVIGATION
-───────────────────────────────────────────────────────────────── */
-function NavBar() {
-  const [scrolled, setScrolled] = useState(false);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll);
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const links = [
-    { label: "Services", href: "/services" },
-    { label: "Process", href: "/services#process" },
-    { label: "Clients", href: "#clients" },
-    { label: "Contact", href: "#contact" },
-  ];
-
-  return (
-    <nav
-      id="main-nav"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 1000,
-        background: scrolled ? "rgba(19,19,19,0.85)" : "transparent",
-        backdropFilter: scrolled ? "blur(20px)" : "none",
-        WebkitBackdropFilter: scrolled ? "blur(20px)" : "none",
-        borderBottom: scrolled ? `1px solid rgba(92,64,55,0.2)` : "none",
-        transition: "all 0.3s ease",
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "0 48px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          height: "72px",
-        }}
-      >
-        {/* Logo */}
-        <Link
-          href="/"
-          id="nav-logo"
-          style={{
-            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "18px",
-            fontWeight: 700,
-            color: T.onSurface,
-            textDecoration: "none",
-            letterSpacing: "-0.01em",
-            display: "flex",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <span
-            style={{
-              width: "10px",
-              height: "10px",
-              background: T.primaryCtn,
-              display: "inline-block",
-              animation: "pulse-dot 2s ease-in-out infinite",
-            }}
-          />
-          QUANTUM<span style={{ color: T.primaryCtn }}>LIMITED</span>
-        </Link>
-
-        {/* Desktop links */}
-        <ul
-          style={{
-            display: "flex",
-            gap: "40px",
-            listStyle: "none",
-            alignItems: "center",
-          }}
-        >
-          {links.map((l) => (
-            <li key={l.label}>
-              <Link
-                href={l.href}
-                id={`nav-${l.label.toLowerCase()}`}
-                style={{
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  fontSize: "13px",
-                  fontWeight: 500,
-                  color: T.onSurfaceVar,
-                  textDecoration: "none",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  transition: "color 0.2s",
-                }}
-                onMouseEnter={(e) => ((e.target as HTMLAnchorElement).style.color = T.primary)}
-                onMouseLeave={(e) => ((e.target as HTMLAnchorElement).style.color = T.onSurfaceVar)}
-              >
-                {l.label}
-              </Link>
-            </li>
-          ))}
-
-          <li>
-            <Link
-              href="#contact"
-              id="nav-cta"
-              style={{
-                fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "13px",
-                fontWeight: 600,
-                color: T.onPrimary,
-                background: T.primaryCtn,
-                padding: "10px 24px",
-                textDecoration: "none",
-                letterSpacing: "0.04em",
-                transition: "opacity 0.2s",
-                display: "inline-block",
-              }}
-              onMouseEnter={(e) => ((e.target as HTMLElement).style.opacity = "0.85")}
-              onMouseLeave={(e) => ((e.target as HTMLElement).style.opacity = "1")}
-            >
-              INITIALIZE
-            </Link>
-          </li>
-        </ul>
-
-        {/* Mobile hamburger */}
-        <button
-          id="nav-hamburger"
-          onClick={() => setMenuOpen(!menuOpen)}
-          style={{
-            display: "none",
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            color: T.onSurface,
-            padding: "8px",
-          }}
-          aria-label="Toggle menu"
-        >
-          <svg width="22" height="16" viewBox="0 0 22 16" fill="none">
-            <rect y="0"  width="22" height="2" fill="currentColor"/>
-            <rect y="7"  width="16" height="2" fill="currentColor"/>
-            <rect y="14" width="22" height="2" fill="currentColor"/>
-          </svg>
-        </button>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div
-          style={{
-            background: T.surfaceLow,
-            padding: "24px 48px 32px",
-            borderTop: `1px solid rgba(92,64,55,0.2)`,
-          }}
-        >
-          {links.map((l) => (
-            <Link
-              key={l.label}
-              href={l.href}
-              onClick={() => setMenuOpen(false)}
-              style={{
-                display: "block",
-                padding: "14px 0",
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-                fontSize: "14px",
-                fontWeight: 500,
-                color: T.onSurface,
-                textDecoration: "none",
-                borderBottom: `1px solid rgba(92,64,55,0.12)`,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-              }}
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-      )}
-    </nav>
-  );
-}
-
-/* ─────────────────────────────────────────────────────────────────
    HERO SECTION
 ───────────────────────────────────────────────────────────────── */
 function HeroSection() {
@@ -297,7 +109,7 @@ function HeroSection() {
         justifyContent: "flex-end",
         position: "relative",
         overflow: "hidden",
-        paddingTop: "72px",
+        paddingTop: "78px",
       }}
     >
       {/* Scan-line effect */}
@@ -1370,7 +1182,7 @@ function Footer() {
 export default function QuantumLimitedHome() {
   return (
     <>
-      <NavBar />
+      <SiteHeader active={null} />
       <HeroSection />
       <CompetenciesSection />
       <MethodologySection />
@@ -1386,10 +1198,6 @@ export default function QuantumLimitedHome() {
         @keyframes scan-line {
           from { transform: translateY(-200px); }
           to   { transform: translateY(100vh); }
-        }
-        @media (max-width: 768px) {
-          #main-nav ul { display: none !important; }
-          #nav-hamburger { display: block !important; }
         }
         @media (max-width: 900px) {
           .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
