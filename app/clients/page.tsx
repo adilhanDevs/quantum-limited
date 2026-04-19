@@ -26,6 +26,7 @@ const T = {
 function HeroSection() {
   return (
     <section
+      data-reveal
       className="clients-hero-grid"
       style={{
         position: "relative",
@@ -33,7 +34,7 @@ function HeroSection() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        padding: "120px 80px 0",
+        padding: "clamp(88px, 18vw, 120px) clamp(24px, 3.5vw, 40px) 0",
         overflow: "hidden",
         background: T.surface,
       }}
@@ -52,7 +53,7 @@ function HeroSection() {
         }}
       />
 
-      <div style={{ position: "relative", zIndex: 1, maxWidth: "1200px", width: "100%", margin: "0 auto" }}>
+      <div style={{ position: "relative", zIndex: 1, maxWidth: "min(1320px, 100%)", width: "100%", margin: "0 auto" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
           <span style={{ width: "48px", height: "1px", background: T.primary }} />
           <span
@@ -72,14 +73,14 @@ function HeroSection() {
         <h1
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "clamp(40px, 7vw, 96px)",
+            fontSize: "clamp(36px, 6.2vw, 88px)",
             fontWeight: 900,
             lineHeight: 0.92,
             letterSpacing: "-0.04em",
             marginBottom: "40px",
             color: T.onSurface,
             textTransform: "uppercase",
-            maxWidth: "1100px",
+            maxWidth: "min(1100px, 100%)",
           }}
         >
           Trusted By The{" "}
@@ -116,13 +117,13 @@ function HeroSection() {
         style={{
           marginTop: "auto",
           borderTop: `1px solid rgba(92,64,55,0.35)`,
-          padding: "48px 80px 56px",
+          padding: "48px clamp(24px, 3.5vw, 40px) 56px",
           width: "100%",
         }}
       >
         <div
           style={{
-            maxWidth: "1200px",
+            maxWidth: "min(1320px, 100%)",
             margin: "0 auto",
             display: "grid",
             gridTemplateColumns: "1fr auto 1fr",
@@ -135,7 +136,7 @@ function HeroSection() {
             <div
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "clamp(48px, 6vw, 72px)",
+                fontSize: "clamp(40px, 5.2vw, 64px)",
                 fontWeight: 900,
                 color: T.primaryCtn,
                 lineHeight: 1,
@@ -171,7 +172,7 @@ function HeroSection() {
             <div
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "clamp(48px, 6vw, 72px)",
+                fontSize: "clamp(40px, 5.2vw, 64px)",
                 fontWeight: 900,
                 color: T.primaryCtn,
                 lineHeight: 1,
@@ -213,6 +214,7 @@ const marqueeItems = [
 function MarqueeSection() {
   return (
     <section
+      data-reveal
       style={{
         padding: "28px 0",
         background: T.surfaceLow,
@@ -228,7 +230,7 @@ function MarqueeSection() {
               key={`${label}-${i}`}
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "clamp(22px, 3.5vw, 32px)",
+                fontSize: "clamp(20px, 3vw, 28px)",
                 fontWeight: 900,
                 fontStyle: "italic",
                 textTransform: "uppercase",
@@ -279,7 +281,7 @@ function MetricCardUptime() {
       <h3
         style={{
           fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "clamp(40px, 5vw, 56px)",
+          fontSize: "clamp(34px, 4.25vw, 48px)",
           fontWeight: 900,
           color: T.primary,
           lineHeight: 1,
@@ -346,7 +348,7 @@ function MetricCardDeployments() {
       <h3
         style={{
           fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "clamp(40px, 5vw, 56px)",
+          fontSize: "clamp(34px, 4.25vw, 48px)",
           fontWeight: 900,
           color: T.primary,
           lineHeight: 1,
@@ -427,7 +429,7 @@ function MetricCardLatency() {
         <span
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "clamp(40px, 5vw, 56px)",
+            fontSize: "clamp(34px, 4.25vw, 48px)",
             fontWeight: 900,
             color: T.primary,
             lineHeight: 0.9,
@@ -502,10 +504,10 @@ function MetricCardLatency() {
 
 function MetricsSection() {
   return (
-    <section style={{ padding: "96px 32px", background: T.surface }}>
+    <section data-reveal style={{ padding: "96px clamp(24px, 3.5vw, 40px)", background: T.surface }}>
       <div
         style={{
-          maxWidth: "1200px",
+          maxWidth: "min(1320px, 100%)",
           margin: "0 auto",
           display: "grid",
           gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
@@ -530,11 +532,11 @@ const COPPER = "#b37b5d";
 
 function CaseStudySection() {
   return (
-    <section style={{ padding: "0 32px 96px", background: T.surface }}>
+    <section data-reveal style={{ padding: "0 clamp(24px, 3.5vw, 40px) 96px", background: T.surface }}>
       <div
         className="clients-case-study"
         style={{
-          maxWidth: "1200px",
+          maxWidth: "min(1320px, 100%)",
           margin: "0 auto",
           display: "grid",
           gridTemplateColumns: "1fr 1fr",
@@ -596,7 +598,7 @@ function CaseStudySection() {
           <h2
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "clamp(24px, 3vw, 34px)",
+              fontSize: "clamp(22px, 2.65vw, 30px)",
               fontWeight: 700,
               color: "#ffffff",
               textTransform: "uppercase",
@@ -671,9 +673,10 @@ const testimonials = [
 
 function TransmissionSection() {
   return (
-    <section style={{ padding: "96px 32px", background: T.surface, borderTop: `1px solid rgba(92,64,55,0.12)` }}>
-      <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+    <section data-reveal style={{ padding: "96px clamp(24px, 3.5vw, 40px)", background: T.surface, borderTop: `1px solid rgba(92,64,55,0.12)` }}>
+      <div style={{ maxWidth: "min(1320px, 100%)", margin: "0 auto" }}>
         <div
+          className="clients-transmission-head"
           style={{
             display: "flex",
             flexWrap: "wrap",
@@ -687,7 +690,7 @@ function TransmissionSection() {
             <h2
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "clamp(28px, 4vw, 40px)",
+                fontSize: "clamp(26px, 3.5vw, 36px)",
                 fontWeight: 800,
                 color: "#ffffff",
                 textTransform: "uppercase",
@@ -838,15 +841,16 @@ const FOOTER_LABEL_PEACH = "#e9c4b1";
 function Footer() {
   return (
     <footer
+      data-reveal
       style={{
         background: FOOTER_BG,
         borderTop: "1px solid rgba(255,255,255,0.06)",
-        padding: "72px 32px 56px",
+        padding: "72px clamp(24px, 3.5vw, 40px) 56px",
       }}
     >
       <div
         style={{
-          maxWidth: "1200px",
+          maxWidth: "min(1320px, 100%)",
           margin: "0 auto",
           display: "flex",
           justifyContent: "space-between",
@@ -1050,8 +1054,25 @@ export default function ClientsPage() {
           width: max-content;
           animation: clients-marquee 32s linear infinite;
         }
+        .clients-metric-card {
+          transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .clients-metric-card:hover {
+          transform: translateY(-2px);
+        }
+        .clients-metric-deco {
+          transition: filter 0.55s ease;
+        }
         .clients-metric-card:hover .clients-metric-deco {
           filter: grayscale(0%) !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .clients-metric-card {
+            transition: none !important;
+          }
+          .clients-metric-card:hover {
+            transform: none !important;
+          }
         }
         .clients-case-study:hover .clients-case-study-image img {
           filter: grayscale(0%) !important;
@@ -1066,6 +1087,13 @@ export default function ClientsPage() {
           color: #a3a3a3 !important;
         }
         @media (max-width: 900px) {
+          .clients-transmission-head {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+          .clients-transmission-head > div:last-child {
+            align-self: flex-start !important;
+          }
           .clients-hero-stats {
             grid-template-columns: 1fr !important;
             text-align: center;
@@ -1094,6 +1122,11 @@ export default function ClientsPage() {
           .clients-footer-status {
             width: 100% !important;
             min-width: 0 !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .clients-tm-cell {
+            padding: 32px 22px !important;
           }
         }
       `}</style>

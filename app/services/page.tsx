@@ -62,8 +62,9 @@ function AccentLine() {
 function HeroSection() {
   return (
     <section
+      data-reveal
       style={{
-        minHeight: "820px",
+        minHeight: "clamp(560px, 78dvh, 820px)",
         background: T.surface,
         borderBottom: `1px solid rgba(92,64,55,0.15)`,
         position: "relative",
@@ -75,14 +76,15 @@ function HeroSection() {
       <div className="scan-line" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
 
       <div
+        className="services-hero-grid"
         style={{
-          maxWidth: "1440px",
+          maxWidth: "min(1920px, 100%)",
           margin: "0 auto",
-          padding: "0 64px",
-          minHeight: "788px",
+          padding: "0 clamp(24px, 4vw, 48px)",
+          minHeight: "min(788px, 70dvh)",
           display: "grid",
           gridTemplateColumns: "1.18fr 0.82fr",
-          gap: "96px",
+          gap: "clamp(48px, 6vw, 96px)",
           alignItems: "center",
         }}
       >
@@ -116,7 +118,7 @@ function HeroSection() {
               fontSize: "16px",
               fontWeight: 400,
               color: T.onSurfaceVar,
-              maxWidth: "580px",
+              maxWidth: "min(640px, 100%)",
               lineHeight: 1.7,
               marginBottom: "40px",
             }}
@@ -251,16 +253,17 @@ const serviceCards = [
 function ModulesSection() {
   return (
     <section
+      data-reveal
       id="services"
       style={{
         background: "#15110f",
-        padding: "96px 0 112px",
+        padding: "96px clamp(24px, 4vw, 48px) 112px",
         borderTop: `1px solid rgba(92,64,55,0.08)`,
         borderBottom: `1px solid rgba(92,64,55,0.08)`,
       }}
     >
-      <div style={{ maxWidth: "1440px", margin: "0 auto", padding: "0 64px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "64px", gap: "24px" }}>
+      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", width: "100%" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "64px", gap: "24px" }}>
           <h2
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -277,6 +280,7 @@ function ModulesSection() {
         </div>
 
         <div
+          className="services-modules-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -362,7 +366,7 @@ function ServiceCard({
         {desc}
       </p>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "34px" }}>
+      <div className="services-card-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "34px" }}>
         <MetricBox label={statA[0]} value={statA[1]} />
         <MetricBox label={statB[0]} value={statB[1]} />
       </div>
@@ -457,29 +461,31 @@ const protocolSteps = [
 function ProtocolSection() {
   return (
     <section
+      data-reveal
       id="process"
       style={{
         background: T.surface,
-        padding: "96px 0 112px",
+        padding: "96px clamp(24px, 4vw, 48px) 120px",
       }}
     >
-      <div style={{ maxWidth: "1440px", margin: "0 auto", padding: "0 64px" }}>
+      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", width: "100%" }}>
         <h2
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "60px",
+            fontSize: "clamp(40px, 5vw, 60px)",
             fontWeight: 700,
             color: T.onSurface,
             letterSpacing: "-0.04em",
-            textAlign: "center",
-            marginBottom: "72px",
+            textAlign: "left",
+            marginBottom: "56px",
             textTransform: "uppercase",
+            maxWidth: "min(1200px, 100%)",
           }}
         >
           The Architectural Protocol
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "64px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(72px, 8vw, 112px)" }}>
           {protocolSteps.map((step) => (
             <ProtocolRow key={step.phase} {...step} />
           ))}
@@ -504,13 +510,15 @@ function ProtocolRow({
 }) {
   const textBlock = (
     <div
+      className="protocol-row-text"
       style={{
-        width: "52%",
+        flex: "1 1 0",
+        minWidth: 0,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         textAlign: imageLeft ? "left" : "right",
-        padding: imageLeft ? "0 0 0 72px" : "0 72px 0 0",
+        padding: imageLeft ? "16px 0 16px clamp(8px, 3vw, 48px)" : "16px clamp(8px, 3vw, 48px) 16px 0",
       }}
     >
       <div
@@ -520,7 +528,7 @@ function ProtocolRow({
           fontWeight: 700,
           letterSpacing: "0.34em",
           color: T.primaryCtn,
-          marginBottom: "12px",
+          marginBottom: "16px",
           textTransform: "uppercase",
         }}
       >
@@ -529,11 +537,12 @@ function ProtocolRow({
       <div
         style={{
           fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "28px",
+          fontSize: "clamp(22px, 2.4vw, 30px)",
           fontWeight: 700,
           color: T.onSurface,
-          marginBottom: "14px",
+          marginBottom: "18px",
           textTransform: "uppercase",
+          lineHeight: 1.15,
         }}
       >
         {title}
@@ -541,10 +550,10 @@ function ProtocolRow({
       <div
         style={{
           fontFamily: "var(--font-inter, Inter, sans-serif)",
-          fontSize: "15px",
-          lineHeight: 1.7,
+          fontSize: "16px",
+          lineHeight: 1.75,
           color: T.onSurfaceVar,
-          maxWidth: imageLeft ? "500px" : "520px",
+          maxWidth: "min(100%, 580px)",
           marginLeft: imageLeft ? 0 : "auto",
         }}
       >
@@ -554,14 +563,21 @@ function ProtocolRow({
   );
 
   const imageBlock = (
-    <div style={{ width: "48%", padding: imageLeft ? "0 72px 0 0" : "0 0 0 72px" }}>
+    <div
+      className="protocol-row-image"
+      style={{
+        flex: "1 1 0",
+        minWidth: 0,
+        padding: imageLeft ? "0 clamp(8px, 3vw, 40px) 0 0" : "0 0 0 clamp(8px, 3vw, 40px)",
+      }}
+    >
       <img
         src={image}
         alt={title}
         style={{
           display: "block",
           width: "100%",
-          height: "240px",
+          height: "clamp(240px, 28vw, 320px)",
           objectFit: "cover",
           border: `1px solid rgba(92,64,55,0.18)`,
           filter: "grayscale(1) brightness(0.78) contrast(1.05)",
@@ -571,10 +587,18 @@ function ProtocolRow({
   );
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div
+      className="protocol-row"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        gap: "clamp(28px, 4vw, 72px)",
+      }}
+    >
       {imageLeft ? imageBlock : textBlock}
-      <div style={{ width: "36px", display: "flex", justifyContent: "center" }}>
-        <div style={{ width: "7px", height: "7px", background: T.primaryCtn }} />
+      <div className="protocol-row-mid" style={{ flex: "0 0 40px", display: "flex", justifyContent: "center", alignSelf: "center" }}>
+        <div style={{ width: "8px", height: "8px", background: T.primaryCtn }} />
       </div>
       {imageLeft ? textBlock : imageBlock}
     </div>
@@ -584,18 +608,19 @@ function ProtocolRow({
 function ContactSection() {
   return (
     <section
+      data-reveal
       id="contact"
       style={{
         background: "#191919",
-        padding: "120px 0 120px",
+        padding: "clamp(72px, 12vw, 120px) 0",
         position: "relative",
         overflow: "hidden",
       }}
     >
       <div className="micro-grid" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
 
-      <div style={{ maxWidth: "1360px", margin: "0 auto", padding: "0 64px", position: "relative", zIndex: 1 }}>
-        <div style={{ maxWidth: "760px", margin: "0 auto", textAlign: "center" }}>
+      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", padding: "0 clamp(20px, 4vw, 48px)", position: "relative", zIndex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
+        <div style={{ maxWidth: "min(720px, 100%)" }}>
           <h2
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -617,7 +642,7 @@ function ContactSection() {
               fontSize: "16px",
               lineHeight: 1.7,
               color: T.onSurfaceVar,
-              maxWidth: "600px",
+              maxWidth: "640px",
               margin: "0 auto 44px",
             }}
           >
@@ -626,12 +651,13 @@ function ContactSection() {
           </p>
 
           <div
+            className="services-contact-form"
             style={{
-              maxWidth: "520px",
+              maxWidth: "min(560px, 100%)",
               margin: "0 auto",
               border: `1px solid rgba(92,64,55,0.2)`,
               display: "grid",
-              gridTemplateColumns: "1fr 170px",
+              gridTemplateColumns: "1fr min(170px, 34%)",
               overflow: "hidden",
             }}
           >
@@ -707,6 +733,7 @@ function ContactSection() {
 function Footer() {
   return (
     <footer
+      data-reveal
       id="footer"
       style={{
         background: "#191919",
@@ -714,11 +741,13 @@ function Footer() {
       }}
     >
       <div
+        className="services-footer-inner"
         style={{
-          maxWidth: "1200px",
+          maxWidth: "min(1920px, 100%)",
           margin: "0 auto",
-          padding: "0 48px",
+          padding: "0 clamp(20px, 4vw, 48px)",
           display: "flex",
+          flexWrap: "wrap",
           justifyContent: "space-between",
           alignItems: "flex-end",
           gap: "24px",
@@ -784,11 +813,28 @@ export default function ServicesPage() {
       <Footer />
 
       <style>{`
+        .services-card {
+          transition:
+            background 0.35s ease,
+            transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
         .services-card:hover {
           background: ${T.surfaceContainer} !important;
+          transform: translateY(-3px);
+        }
+        .service-link {
+          transition: gap 0.35s cubic-bezier(0.22, 1, 0.36, 1);
         }
         .service-link:hover {
           gap: 16px !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .services-card {
+            transition: background 0.2s ease !important;
+          }
+          .services-card:hover {
+            transform: none !important;
+          }
         }
         @media (max-width: 900px) {
           #site-nav {
@@ -796,8 +842,56 @@ export default function ServicesPage() {
           }
         }
         @media (max-width: 980px) {
-          section > div[style*="grid-template-columns: 1.18fr 0.82fr"] {
+          .services-hero-grid {
             grid-template-columns: 1fr !important;
+            min-height: 0 !important;
+          }
+        }
+        @media (max-width: 900px) {
+          .services-modules-grid {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 480px) {
+          .services-card-metrics {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 520px) {
+          .services-contact-form {
+            grid-template-columns: 1fr !important;
+          }
+          .services-contact-form button {
+            min-height: 48px;
+          }
+          .services-card {
+            min-height: 0 !important;
+            padding: 36px 22px 32px !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .services-footer-inner {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+        }
+        @media (max-width: 900px) {
+          .protocol-row {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 28px !important;
+          }
+          .protocol-row-mid {
+            display: none !important;
+          }
+          .protocol-row-text {
+            text-align: left !important;
+            padding: 0 !important;
+            order: 2;
+          }
+          .protocol-row-image {
+            padding: 0 !important;
+            order: 1;
           }
         }
       `}</style>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import { ScrollReveal } from "./components/ScrollReveal";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default function RootLayout({
         />
       </head>
       <body style={{ fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
+        <ScrollReveal />
         {children}
       </body>
     </html>

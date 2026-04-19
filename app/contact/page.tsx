@@ -90,11 +90,11 @@ export default function ContactPage() {
   return (
     <>
       <SiteHeader active="contact" />
-      <main className="contact-main-bg" style={{ minHeight: "100vh", paddingTop: "120px" }}>
+      <main className="contact-main-bg" style={{ minHeight: "100vh", paddingTop: "clamp(88px, 14vw, 120px)" }}>
         {/* Hero */}
-        <section style={{ padding: "0 32px 48px", maxWidth: "1920px", margin: "0 auto" }}>
-          <div
-            style={{
+        <section data-reveal style={{ padding: "0 clamp(16px, 4vw, 32px) 48px", maxWidth: "1920px", margin: "0 auto" }}>
+        <div
+          style={{
               display: "flex",
               flexDirection: "row",
               flexWrap: "wrap",
@@ -158,7 +158,7 @@ export default function ContactPage() {
         </section>
 
         {/* Form + sidebar */}
-        <section style={{ padding: "0 32px 96px", maxWidth: "1920px", margin: "0 auto" }}>
+        <section data-reveal style={{ padding: "0 clamp(16px, 4vw, 32px) 96px", maxWidth: "1920px", margin: "0 auto" }}>
           {submitted ? (
             <div
               style={{
@@ -198,6 +198,7 @@ export default function ContactPage() {
                 {/* Left column */}
                 <div style={{ gridColumn: "span 12" }} className="contact-sidebar">
                   <div
+                    className="contact-sidebar-steps"
                     style={{
                       background: T.surfaceLow,
                       padding: "40px",
@@ -866,9 +867,10 @@ export default function ContactPage() {
 
         {/* Global Nodes */}
         <section
+          data-reveal
           style={{
             background: T.surfaceLow,
-            padding: "96px 32px",
+            padding: "clamp(56px, 8vw, 96px) clamp(16px, 4vw, 32px)",
             borderTop: "1px solid rgba(255,255,255,0.05)",
           }}
         >
@@ -971,9 +973,9 @@ export default function ContactPage() {
         </section>
 
         {/* Client Direct Link */}
-        <section style={{ padding: "96px 32px", maxWidth: "1920px", margin: "0 auto" }}>
-          <div
-            style={{
+        <section data-reveal style={{ padding: "clamp(56px, 8vw, 96px) clamp(16px, 4vw, 32px)", maxWidth: "1920px", margin: "0 auto" }}>
+                <div
+                  style={{
               background: T.surfaceHighest,
               border: `1px solid rgba(255,181,156,0.2)`,
               padding: "clamp(32px, 5vw, 64px)",
@@ -985,7 +987,7 @@ export default function ContactPage() {
               <span style={{ width: "8px", height: "8px", background: T.primaryCtn }} />
               <span style={{ width: "8px", height: "8px", background: T.surfaceLow }} />
               <span style={{ width: "8px", height: "8px", background: T.surfaceLow }} />
-            </div>
+                </div>
             <div
               style={{
                 display: "grid",
@@ -1062,7 +1064,7 @@ export default function ContactPage() {
                 </div>
               </div>
               <div
-                style={{
+                        style={{
                   background: "rgba(0,0,0,0.45)",
                   padding: "28px",
                   fontFamily: "ui-monospace, monospace",
@@ -1089,8 +1091,8 @@ export default function ContactPage() {
                         background: T.primaryCtn,
                         animation: "contact-cursor-pulse 1s ease-in-out infinite",
                       }}
-                    />
-                  </div>
+                      />
+                    </div>
                 </div>
               </div>
             </div>
@@ -1098,12 +1100,12 @@ export default function ContactPage() {
         </section>
 
         {/* Footer */}
-        <footer style={{ background: "#1b1b1b", width: "100%", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+        <footer data-reveal style={{ background: "#1b1b1b", width: "100%", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
           <div
             style={{
               maxWidth: "1920px",
               margin: "0 auto",
-              padding: "64px 48px 48px",
+              padding: "clamp(40px, 6vw, 64px) clamp(20px, 4vw, 48px) 48px",
               display: "grid",
               gridTemplateColumns: "1fr 1fr",
               gap: "48px",
@@ -1236,8 +1238,22 @@ export default function ContactPage() {
         .contact-recover-btn:hover {
           border-color: ${T.primaryCtn} !important;
         }
+        .contact-node-card {
+          transition:
+            background 0.3s ease,
+            transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
         .contact-node-card:hover {
           background: ${T.surfaceContainer} !important;
+          transform: translateY(-3px);
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .contact-node-card {
+            transition: background 0.2s ease !important;
+          }
+          .contact-node-card:hover {
+            transform: none !important;
+          }
         }
         .contact-node-card:hover .contact-node-icon {
           color: ${T.primary} !important;
@@ -1254,6 +1270,10 @@ export default function ContactPage() {
           }
         }
         @media (max-width: 900px) {
+          .contact-hero-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
           .contact-hero-aside {
             border-left: none !important;
             padding-left: 0 !important;
@@ -1265,6 +1285,17 @@ export default function ContactPage() {
           }
           .contact-footer-grid {
             grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 640px) {
+          .contact-form-canvas {
+            padding: 28px 18px !important;
+          }
+          .contact-sidebar-steps {
+            padding: 28px 18px !important;
+          }
+          .contact-terminal-grid {
+            gap: 28px !important;
           }
         }
       `}</style>

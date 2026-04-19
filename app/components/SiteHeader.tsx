@@ -27,6 +27,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
     <>
       <nav
         id="site-nav"
+        className="site-header-enter"
         style={{
           position: "fixed",
           top: 0,
@@ -42,19 +43,20 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
         <div
           style={{
             width: "100%",
-            padding: "0 28px",
+            padding: "0 clamp(14px, 3vw, 28px)",
             display: "grid",
             gridTemplateColumns: "auto 1fr auto",
             alignItems: "center",
-            columnGap: "40px",
-            height: "78px",
+            columnGap: "clamp(12px, 3vw, 40px)",
+            minHeight: "78px",
           }}
         >
           <Link
             href="/"
+            className="site-logo-link"
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "18px",
+              fontSize: "clamp(10px, 2.6vw, 18px)",
               fontWeight: 700,
               color: T.onSurface,
               textDecoration: "none",
@@ -69,7 +71,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
             id="site-nav-links"
             style={{
               display: "flex",
-              gap: "36px",
+              gap: "clamp(12px, 3vw, 36px)",
               listStyle: "none",
               alignItems: "center",
               justifyContent: "center",
@@ -88,7 +90,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
                     className="site-nav-link"
                     style={{
                       fontFamily: "var(--font-inter, Inter, sans-serif)",
-                      fontSize: "12px",
+                      fontSize: "clamp(10px, 2.2vw, 12px)",
                       fontWeight: isActive ? 700 : 500,
                       color: isActive ? T.primaryCtn : "#9ca3af",
                       textDecoration: "none",
@@ -108,13 +110,14 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
 
           <Link
             href="/contact"
+            className="site-nav-cta"
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "12px",
+              fontSize: "clamp(10px, 2.2vw, 12px)",
               fontWeight: 700,
               color: T.onPrimary,
               background: T.primaryCtn,
-              padding: "14px 26px",
+              padding: "clamp(10px, 2vw, 14px) clamp(14px, 3vw, 26px)",
               textDecoration: "none",
               letterSpacing: "0.08em",
               textTransform: "uppercase",
@@ -138,13 +141,14 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
             align-items: center !important;
             height: auto !important;
             min-height: 0 !important;
-            padding: 16px 20px !important;
-            gap: 16px !important;
+            padding: 14px 16px 18px !important;
+            gap: 14px !important;
           }
           #site-nav-links {
-            gap: 16px 20px !important;
+            gap: 12px 16px !important;
             flex-wrap: wrap !important;
             justify-content: center !important;
+            max-width: 100%;
           }
         }
       `}</style>

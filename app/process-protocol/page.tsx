@@ -24,14 +24,15 @@ const T = {
 function HeroSection() {
   return (
     <section
+      data-reveal
       style={{
         position: "relative",
-        minHeight: "921px",
+        minHeight: "clamp(520px, 88dvh, 921px)",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "flex-start",
-        padding: "0 80px",
+        padding: "0 clamp(24px, 5vw, 80px)",
         overflow: "hidden",
         background: T.surface,
       }}
@@ -42,8 +43,8 @@ function HeroSection() {
           position: "absolute",
           inset: 0,
           zIndex: 0,
-          background: `linear-gradient(90deg, ${T.surface} 0%, transparent 50%, ${T.surfaceLow} 100%)`,
-          opacity: 0.4,
+          background: `linear-gradient(90deg, ${T.surface} 0%, ${T.surface} 38%, transparent 58%, ${T.surfaceLow} 100%)`,
+          opacity: 0.45,
         }}
       />
 
@@ -54,9 +55,10 @@ function HeroSection() {
           top: 0,
           width: "50%",
           height: "100%",
-          zIndex: 0,
+          zIndex: 1,
           opacity: 0.3,
           mixBlendMode: "screen",
+          pointerEvents: "none",
         }}
       >
         <img
@@ -66,14 +68,14 @@ function HeroSection() {
         />
       </div>
 
-      <div style={{ position: "relative", zIndex: 10, maxWidth: "960px" }}>
+      <div style={{ position: "relative", zIndex: 2, width: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
           <span style={{ width: "48px", height: "1px", background: T.primaryCtn }} />
           <span
             style={{
               color: T.primary,
               fontFamily: "monospace",
-              fontSize: "14px",
+              fontSize: "13px",
               letterSpacing: "0.3em",
               textTransform: "uppercase",
             }}
@@ -82,27 +84,29 @@ function HeroSection() {
           </span>
         </div>
 
-        <h1
-          style={{
-            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "clamp(64px, 8vw, 128px)",
-            fontWeight: 700,
-            lineHeight: 0.94,
-            letterSpacing: "-0.05em",
-            marginBottom: "32px",
-            color: T.onSurface,
-            textTransform: "uppercase",
-          }}
-        >
-          THE EXECUTION <br />
-          <span style={{ color: T.primaryCtn, textShadow: "0 0 15px rgba(255, 87, 8, 0.4)" }}>PROTOCOL</span>
-        </h1>
+        <div className="process-hero-head-wrap">
+          <h1
+            style={{
+              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+              fontSize: "clamp(40px, 7vw, 96px)",
+              fontWeight: 800,
+              lineHeight: 0.94,
+              letterSpacing: "-0.04em",
+              marginBottom: "32px",
+              color: T.onSurface,
+              textTransform: "uppercase",
+            }}
+          >
+            THE EXECUTION <br />
+            <span style={{ color: T.primaryCtn, textShadow: "0 0 18px rgba(255, 87, 8, 0.35)" }}>PROTOCOL</span>
+          </h1>
+        </div>
 
         <p
           style={{
             color: T.onSurfaceVar,
-            fontSize: "20px",
-            maxWidth: "760px",
+            fontSize: "clamp(17px, 1.6vw, 20px)",
+            maxWidth: "640px",
             lineHeight: 1.7,
             fontWeight: 300,
             fontFamily: "var(--font-inter, Inter, sans-serif)",
@@ -178,15 +182,19 @@ function PhaseLabel({ children }: { children: React.ReactNode }) {
 function PhasesSection() {
   return (
     <section
+      data-reveal
       style={{
-        padding: "96px 32px",
+        padding: "clamp(56px, 10vw, 96px) clamp(20px, 3.5vw, 48px)",
         background: T.surface,
+        overflowX: "hidden",
       }}
     >
       <div
+        className="process-phases-grid"
         style={{
-          maxWidth: "1440px",
+          maxWidth: "min(1920px, 100%)",
           margin: "0 auto",
+          width: "100%",
           display: "grid",
           gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
           gap: 0,
@@ -264,7 +272,7 @@ function PhasesSection() {
               architecture
             </span>
           </div>
-          <div style={{ maxWidth: "520px", position: "relative", zIndex: 1 }}>
+          <div style={{ maxWidth: "min(680px, 100%)", position: "relative", zIndex: 1 }}>
             <h3
               style={{
                 fontSize: "34px",
@@ -325,7 +333,7 @@ function PhasesSection() {
           <p style={{ color: "#71717a", marginBottom: "48px", lineHeight: 1.7 }}>
             Concurrent build streams utilizing proprietary framework injectors for extreme speed.
           </p>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
+          <div className="process-phase-code-pair" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div
               style={{
                 background: "rgba(9,9,9,0.8)",
@@ -445,8 +453,8 @@ function PhasesSection() {
               style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
-          <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: "48px" }}>
-            <div style={{ maxWidth: "720px" }}>
+          <div className="process-phase5-row" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: "48px" }}>
+            <div style={{ maxWidth: "min(960px, 100%)" }}>
               <span style={{ display: "block", marginBottom: "48px" }}>
                 <PhaseLabel>PHASE_05</PhaseLabel>
               </span>
@@ -467,7 +475,7 @@ function PhasesSection() {
                 Universal propagation across our private multi-cloud fabric. Zero downtime. Infinite capacity.
               </p>
             </div>
-            <div style={{ display: "flex", gap: "48px" }}>
+            <div className="process-phase5-stats" style={{ display: "flex", gap: "48px", flexShrink: 0 }}>
               {[
                 ["99.99%", "Uptime Sla"],
                 ["256+", "Edge Nodes"],
@@ -500,67 +508,83 @@ function PhasesSection() {
 function CTASection() {
   return (
     <section
+      data-reveal
       id="contact"
       className="micro-grid"
       style={{
-        padding: "128px 32px",
+        padding: "clamp(72px, 14vw, 128px) clamp(20px, 4vw, 48px)",
         display: "flex",
         flexDirection: "column",
-        alignItems: "center",
+        alignItems: "stretch",
         justifyContent: "center",
-        textAlign: "center",
         background: T.surfaceLow,
         borderTop: "1px solid rgba(92,64,55,0.1)",
       }}
     >
-      <h2
-        style={{
-          fontSize: "clamp(48px, 7vw, 88px)",
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontWeight: 700,
-          letterSpacing: "-0.05em",
-          marginBottom: "48px",
-          textTransform: "uppercase",
-          lineHeight: 1,
-          color: T.onSurface,
-        }}
-      >
-        READY TO <span style={{ color: T.primaryCtn }}>INITIALIZE?</span>
-      </h2>
-      <button
-        className="process-cta"
-        style={{
-          position: "relative",
-          padding: "24px 48px",
-          background: T.primaryCtn,
-          color: "#ffffff",
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontWeight: 700,
-          fontSize: "20px",
-          letterSpacing: "0.16em",
-          textTransform: "uppercase",
-          transition: "all 0.3s ease",
-          border: "none",
-          cursor: "pointer",
-        }}
-      >
-        START PROTOCOL
-        <span
-          className="process-cta-outline"
+      <div style={{ width: "100%", maxWidth: "min(1920px, 100%)", margin: "0 auto", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        <h2
           style={{
-            position: "absolute",
-            inset: 0,
-            border: "1px solid #ffffff",
-            opacity: 0,
-            transform: "scale(1)",
-            transition: "all 0.3s ease",
-            pointerEvents: "none",
+            fontSize: "clamp(48px, 7vw, 88px)",
+            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+            fontWeight: 700,
+            letterSpacing: "-0.05em",
+            marginBottom: "48px",
+            textTransform: "uppercase",
+            lineHeight: 1,
+            color: T.onSurface,
+            textAlign: "center",
+            maxWidth: "min(1200px, 100%)",
           }}
-        />
-      </button>
-      <p style={{ marginTop: "32px", fontFamily: "monospace", color: "#71717a", fontSize: "14px", textTransform: "uppercase", letterSpacing: "0.14em" }}>
-        Awaiting system signal...
-      </p>
+        >
+          READY TO <span style={{ color: T.primaryCtn }}>INITIALIZE?</span>
+        </h2>
+        <button
+          className="process-cta"
+          type="button"
+          style={{
+            position: "relative",
+            padding: "24px 48px",
+            background: T.primaryCtn,
+            color: "#ffffff",
+            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+            fontWeight: 700,
+            fontSize: "20px",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            transition: "all 0.3s ease",
+            border: "none",
+            cursor: "pointer",
+            margin: "0 auto",
+          }}
+        >
+          START PROTOCOL
+          <span
+            className="process-cta-outline"
+            style={{
+              position: "absolute",
+              inset: 0,
+              border: "1px solid #ffffff",
+              opacity: 0,
+              transform: "scale(1)",
+              transition: "all 0.3s ease",
+              pointerEvents: "none",
+            }}
+          />
+        </button>
+        <p
+          style={{
+            marginTop: "32px",
+            fontFamily: "monospace",
+            color: "#71717a",
+            fontSize: "14px",
+            textTransform: "uppercase",
+            letterSpacing: "0.14em",
+            textAlign: "center",
+          }}
+        >
+          Awaiting system signal...
+        </p>
+      </div>
     </section>
   );
 }
@@ -568,6 +592,7 @@ function CTASection() {
 function Footer() {
   return (
     <footer
+      data-reveal
       id="footer"
       style={{
         background: "#18181b",
@@ -576,14 +601,15 @@ function Footer() {
       }}
     >
       <div
+        className="process-footer-inner"
         style={{
           display: "flex",
           flexDirection: "row",
           justifyContent: "space-between",
           alignItems: "center",
-          padding: "64px 48px",
+          padding: "64px clamp(24px, 4vw, 48px)",
           width: "100%",
-          maxWidth: "1440px",
+          maxWidth: "min(1920px, 100%)",
           margin: "0 auto",
           gap: "24px",
         }}
@@ -652,6 +678,14 @@ export default function ProcessPage() {
       <Footer />
 
       <style>{`
+        .process-hero-head-wrap {
+          max-width: min(100%, calc(50% + clamp(96px, 24vw, 420px)));
+        }
+        @media (max-width: 720px) {
+          .process-hero-head-wrap {
+            max-width: 100% !important;
+          }
+        }
         .process-footer-link:hover {
           color: ${T.primaryCtn} !important;
           opacity: 1 !important;
@@ -662,6 +696,48 @@ export default function ProcessPage() {
         .process-cta:hover .process-cta-outline {
           opacity: 1 !important;
           transform: scale(1.1) !important;
+        }
+        @media (max-width: 1024px) {
+          .process-phases-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .process-phases-grid > div {
+            grid-column: 1 / -1 !important;
+            border-right: none !important;
+          }
+          .process-phase-code-pair {
+            grid-template-columns: 1fr !important;
+          }
+        }
+        @media (max-width: 768px) {
+          .process-phases-grid > div {
+            padding: clamp(24px, 5vw, 36px) !important;
+          }
+          .process-phase5-row {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 32px !important;
+          }
+          .process-phase5-stats {
+            width: 100%;
+            justify-content: space-between;
+            gap: 24px !important;
+          }
+        }
+        @media (max-width: 720px) {
+          .process-cta {
+            width: 100%;
+            max-width: min(100%, 360px);
+          }
+        }
+        @media (max-width: 640px) {
+          .process-footer-inner {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 32px !important;
+            padding-top: 40px !important;
+            padding-bottom: 40px !important;
+          }
         }
       `}</style>
     </>

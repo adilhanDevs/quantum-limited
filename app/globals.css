@@ -46,6 +46,8 @@
 
 html {
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 body {
@@ -115,8 +117,106 @@ h1, h2, h3, h4, h5, h6 {
 .animate-fade-up-delay-4 { animation-delay: 0.4s; }
 .animate-fade-up-delay-5 { animation-delay: 0.5s; }
 
+/* ─── Route transition (template wrapper) ─────────────────────────── */
+@keyframes ql-page-enter {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.page-transition-root {
+  animation: ql-page-enter 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ─── Site header (used with SiteHeader component) ──────────────── */
+@keyframes ql-header-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.site-header-enter {
+  animation: ql-header-enter 0.52s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-nav-cta {
+  transition:
+    filter 0.2s ease,
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+}
+
+.site-nav-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.site-logo-link {
+  transition: opacity 0.22s ease;
+}
+
+.site-logo-link:hover {
+  opacity: 0.86;
+}
+
+/* ─── Scroll-driven section reveals ───────────────────────────────
+   Default: visible (SSR / no-JS). After hydration, `html.reveal-enabled`
+   hides only elements not yet marked visible (see ScrollReveal.tsx). */
+html.reveal-enabled [data-reveal]:not([data-reveal-visible="true"]) {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+html.reveal-enabled [data-reveal] {
+  transition:
+    opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html.reveal-enabled [data-reveal][data-reveal-visible="true"] {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.reveal-enabled [data-reveal][data-reveal-delay="1"] { transition-delay: 0.06s; }
+html.reveal-enabled [data-reveal][data-reveal-delay="2"] { transition-delay: 0.12s; }
+html.reveal-enabled [data-reveal][data-reveal-delay="3"] { transition-delay: 0.18s; }
+html.reveal-enabled [data-reveal][data-reveal-delay="4"] { transition-delay: 0.24s; }
+
 /* ─── Focus ring (accessibility) ────────────────────────────────── */
 :focus-visible {
   outline: 2px solid var(--primary-container);
   outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .page-transition-root {
+    animation: none !important;
+  }
+
+  html.reveal-enabled [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .site-header-enter {
+    animation: none !important;
+  }
+
+  .site-nav-cta {
+    transition: none !important;
+  }
+
+  .site-nav-cta:hover {
+    transform: none !important;
+  }
 }
