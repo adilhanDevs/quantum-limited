@@ -1,26 +1,122 @@
 @import "tailwindcss";
 
+/* ─── Quantum Limited Design Tokens ─────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --surface:                #131313;
+  --surface-dim:            #131313;
+  --surface-bright:         #393939;
+  --surface-container-lowest:  #0e0e0e;
+  --surface-container-low:  #1b1b1b;
+  --surface-container:      #1f1f1f;
+  --surface-container-high: #2a2a2a;
+  --surface-container-highest: #353535;
+
+  --on-surface:             #e2e2e2;
+  --on-surface-variant:     #e5beb2;
+
+  --primary:                #ffb59c;
+  --primary-container:      #ff5500;
+  --on-primary:             #5c1900;
+  --on-primary-fixed:       #390c00;
+
+  --secondary:              #c6c6c7;
+  --secondary-container:    #454747;
+  --on-secondary:           #2f3131;
+
+  --tertiary:               #a1c9ff;
+  --tertiary-container:     #0494fc;
+
+  --outline:                #ac897e;
+  --outline-variant:        #5c4037;
+
+  --error:                  #ffb4ab;
+
+  /* Typography */
+  --font-display:     "Space Grotesk", sans-serif;
+  --font-body:        "Inter", sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Base reset ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* No rounded corners — design rule */
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--surface);
+  color: var(--on-surface);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── Typography scale ──────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* ─── Micro-grid background texture ────────────────────────────── */
+.grid-texture {
+  background-image:
+    linear-gradient(rgba(92, 64, 55, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(92, 64, 55, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ─── Scrollbar ─────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--surface-container-lowest); }
+::-webkit-scrollbar-thumb { background: var(--outline-variant); }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-container); }
+
+/* ─── Selection ─────────────────────────────────────────────────── */
+::selection {
+  background: var(--primary-container);
+  color: var(--on-primary-fixed);
+}
+
+/* ─── Utility animations ────────────────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+@keyframes scan-line {
+  from { transform: translateY(-100%); }
+  to   { transform: translateY(100vh); }
+}
+
+@keyframes counter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-up-delay-1 { animation-delay: 0.1s; }
+.animate-fade-up-delay-2 { animation-delay: 0.2s; }
+.animate-fade-up-delay-3 { animation-delay: 0.3s; }
+.animate-fade-up-delay-4 { animation-delay: 0.4s; }
+.animate-fade-up-delay-5 { animation-delay: 0.5s; }
+
+/* ─── Focus ring (accessibility) ────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--primary-container);
+  outline-offset: 2px;
 }
