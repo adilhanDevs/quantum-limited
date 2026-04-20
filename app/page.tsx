@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
 
@@ -23,8 +23,6 @@ const T = {
 const HERO_BG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAAxclwxqWLrdG100nf-QYWrq7kwBiyM3sks1Fb9VF6GKupN6p1RpgoHnb0Kqy0GCqL19IwNnWAQYaV1nir4zEwxunl9NnGx3yE7mpbW_czmo0xlCAgQLUkahySS_Kl7wJZTgB7_86aIVGRWx9L7VsLe5-bI2T5Shusf0BIytQUBRfgCjtb-OffL-X9TKL1SJ0H1Adf-658_bbvwRuYJEbd85UKSD4lMH60qvZinb8FRlZYKluFRdWhOnEv4M8uPQ8Y4CukrcbJdVs";
 
-const FEATURE_ILLUSTRATION = HERO_BG;
-
 const METHODOLOGY_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBWzHSFIp4T9U3KZXG4D44r6WOzXQFA4oGUfAU0KkO5BGnOwhyYq99a6iXtYoEL6Psv2TyMUNk1tKbuNdCkzCnDDUDak1UfrytE13OTu4ZqiBI-PRyMtdq4_HgODq7wgD5m5EwQtoDpFeCuRjtsMekQ_mt8K_EXh6VjPUd2AnWmqyNvR8LbdaB02TQp4LqeOMpT-mifJtgghFyHrg0YEVGcytVGv1Yue1d94m4kCNSZGYM8xrVdSbsFpTAtBGAHA6PKTBQUvKzR8D8";
 
@@ -38,10 +36,11 @@ const TRUST_LOGOS = [
   "VERTEX_SOLUTIONS",
 ];
 
+const SECTION_TINT = "rgba(10,10,10,0.16)";
+
 function HeroSection() {
   return (
     <section
-      data-reveal
       id="hero"
       style={{
         position: "relative",
@@ -49,28 +48,16 @@ function HeroSection() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        borderBottom: "1px solid rgba(92,64,55,0.1)",
+        background: SECTION_TINT,
         overflow: "hidden",
       }}
     >
       <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={HERO_BG}
-          alt=""
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.3,
-            filter: "grayscale(1) contrast(1.15)",
-          }}
-        />
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to top, #0a0a0a 0%, rgba(10,10,10,0.82) 45%, transparent 100%)",
+            background: "transparent",
           }}
         />
       </div>
@@ -184,16 +171,25 @@ function HeroSection() {
 function CompetenciesSection() {
   return (
     <section
-      data-reveal
       id="services"
       className="home-blueprint home-micro-radial home-competencies"
       style={{
         position: "relative",
         padding: "clamp(64px, 12vw, 120px) clamp(16px, 4vw, 32px)",
-        background: T.surfaceLowest,
+        background: SECTION_TINT,
         overflow: "hidden",
       }}
     >
+      <div
+        aria-hidden
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: "transparent",
+          zIndex: 1,
+          pointerEvents: "none",
+        }}
+      />
       <div className="home-tech-svg" aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.1 }}>
         <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%", maxWidth: "1200px", margin: "0 auto", display: "block" }}>
           <path d="M100 100 H900 V900 H100 Z" fill="none" stroke="#FF5500" strokeWidth="0.5" />
@@ -320,24 +316,6 @@ function CompetenciesSection() {
                     performance requirements. Our solutions are built with atomic precision and mathematical integrity.
                   </p>
                 </div>
-                <div className="home-feature-img-col" style={{ flexShrink: 0 }}>
-                  <div className="home-feature-img-wrap" style={{ width: "256px", height: "256px", maxWidth: "100%" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={FEATURE_ILLUSTRATION}
-                      alt=""
-                      className="home-feature-img-home"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "contain",
-                        opacity: 0.4,
-                        filter: "grayscale(1)",
-                        transition: "filter 0.65s ease, opacity 0.65s ease",
-                      }}
-                    />
-                  </div>
-                </div>
               </div>
               <div
                 style={{
@@ -449,14 +427,12 @@ function CompetenciesSection() {
 function MethodologySection() {
   return (
     <section
-      data-reveal
       id="process"
       style={{
         position: "relative",
         padding: "clamp(64px, 10vw, 120px) clamp(16px, 4vw, 32px)",
         overflow: "hidden",
-        borderTop: "1px solid rgba(92,64,55,0.08)",
-        background: T.surface,
+        background: SECTION_TINT,
       }}
     >
       <div
@@ -538,7 +514,7 @@ function MethodologySection() {
         </div>
 
         <div style={{ position: "relative" }}>
-          <div style={{ aspectRatio: "1", background: T.surfaceLow, border: "1px solid rgba(92,64,55,0.2)", padding: "12px", position: "relative" }}>
+          <div style={{ aspectRatio: "1", background: "rgba(10,10,10,0.18)", border: "1px solid rgba(92,64,55,0.2)", padding: "12px", position: "relative" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={METHODOLOGY_IMG} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) brightness(0.75)" }} />
             <div
@@ -546,7 +522,7 @@ function MethodologySection() {
                 position: "absolute",
                 bottom: "36px",
                 left: "36px",
-                background: T.surface,
+                background: "rgba(10,10,10,0.2)",
                 padding: "22px 24px",
                 border: "1px solid rgba(255,181,156,0.35)",
                 backdropFilter: "blur(8px)",
@@ -567,7 +543,7 @@ function MethodologySection() {
 function TrustLogosSection() {
   const loop = [...TRUST_LOGOS, ...TRUST_LOGOS];
   return (
-    <section data-reveal style={{ padding: "72px 0", borderTop: "1px solid rgba(92,64,55,0.1)", borderBottom: "1px solid rgba(92,64,55,0.1)", background: T.surface }}>
+    <section style={{ padding: "72px 0", background: SECTION_TINT }}>
       <div style={{ padding: "0 32px 28px", maxWidth: "1440px", margin: "0 auto", textAlign: "center" }}>
         <p style={{ fontSize: "11px", letterSpacing: "0.28em", textTransform: "uppercase", color: T.secondary, fontWeight: 700, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Trusted by Industry Leaders</p>
       </div>
@@ -608,7 +584,7 @@ function ContactSection() {
   };
 
   return (
-    <section data-reveal id="contact" style={{ padding: "clamp(64px, 10vw, 96px) clamp(16px, 4vw, 32px)", background: T.surfaceLowest }}>
+    <section id="contact" style={{ padding: "clamp(64px, 10vw, 96px) clamp(16px, 4vw, 32px)", background: SECTION_TINT }}>
       <div style={{ maxWidth: "1152px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "56px" }} className="home-contact-grid">
         <div>
           <h2
@@ -629,7 +605,7 @@ function ContactSection() {
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <span style={{ width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", background: T.surfaceHighest, border: "1px solid rgba(255,85,0,0.2)", color: T.primary }}>
+              <span style={{ width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.22)", border: "1px solid rgba(255,85,0,0.2)", color: T.primary }}>
                 <span className="material-symbols-outlined">mail</span>
               </span>
               <div>
@@ -638,7 +614,7 @@ function ContactSection() {
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-              <span style={{ width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", background: T.surfaceHighest, border: "1px solid rgba(255,85,0,0.2)", color: T.primary }}>
+              <span style={{ width: "48px", height: "48px", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(10,10,10,0.22)", border: "1px solid rgba(255,85,0,0.2)", color: T.primary }}>
                 <span className="material-symbols-outlined">location_on</span>
               </span>
               <div>
@@ -649,7 +625,7 @@ function ContactSection() {
           </div>
         </div>
 
-        <div style={{ background: T.surface, padding: "40px", border: "1px solid rgba(92,64,55,0.12)", position: "relative", overflow: "hidden" }}>
+        <div style={{ background: "rgba(10,10,10,0.2)", padding: "40px", border: "1px solid rgba(92,64,55,0.12)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, width: "4px", height: "100%", background: "rgba(255,85,0,0.45)" }} />
           {submitted ? (
             <p style={{ color: T.onSurfaceVar, textAlign: "center", padding: "40px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Transmission received. We will respond within 24 hours.</p>
@@ -691,7 +667,7 @@ function ContactSection() {
                     width: "100%",
                     border: "none",
                     borderBottom: border("service"),
-                    background: T.surface,
+                    background: "rgba(10,10,10,0.2)",
                     color: "#fff",
                     padding: "8px 0",
                     outline: "none",
@@ -747,7 +723,7 @@ function ContactSection() {
 
 function Footer() {
   return (
-    <footer data-reveal style={{ background: "#09090b", borderTop: "1px solid rgba(24,24,27,0.8)", padding: "clamp(32px, 6vw, 48px) clamp(16px, 4vw, 32px)" }}>
+    <footer style={{ background: SECTION_TINT, padding: "clamp(32px, 6vw, 48px) clamp(16px, 4vw, 32px)" }}>
       <div
         style={{
           maxWidth: "1440px",
@@ -780,10 +756,122 @@ function Footer() {
 }
 
 export default function QuantumLimitedHome() {
+  const backgroundVideoRef = useRef<HTMLVideoElement | null>(null);
+  const [videoDuration, setVideoDuration] = useState(1);
+  const targetTimeRef = useRef(0);
+  const smoothedTargetTimeRef = useRef(0);
+
+  useEffect(() => {
+    const video = backgroundVideoRef.current;
+    if (!video) return;
+
+    const onLoadedMetadata = () => {
+      if (Number.isFinite(video.duration) && video.duration > 0) {
+        setVideoDuration(video.duration);
+      }
+    };
+
+    if (video.readyState >= 1) {
+      onLoadedMetadata();
+    } else {
+      video.addEventListener("loadedmetadata", onLoadedMetadata);
+    }
+
+    return () => {
+      video.removeEventListener("loadedmetadata", onLoadedMetadata);
+    };
+  }, []);
+
+  useEffect(() => {
+    let raf = 0;
+    let lastTs = 0;
+    const video = backgroundVideoRef.current;
+    if (!video) return;
+
+    const readScrollTarget = () => {
+      const doc = document.documentElement;
+      const scrollable = Math.max(doc.scrollHeight - window.innerHeight, 1);
+      const progress = Math.min(Math.max(window.scrollY / scrollable, 0), 1);
+      targetTimeRef.current = progress * videoDuration;
+    };
+
+    const animateTowardsTarget = (ts: number) => {
+      if (!lastTs) lastTs = ts;
+      const dt = Math.min((ts - lastTs) / 1000, 0.05);
+      lastTs = ts;
+
+      // Step 1: smooth the raw scroll target to reduce wheel/touch spikes.
+      const targetFollow = 1 - Math.exp(-dt / 0.14);
+      smoothedTargetTimeRef.current += (targetTimeRef.current - smoothedTargetTimeRef.current) * targetFollow;
+
+      // Step 2: smoothly move video currentTime toward smoothed target.
+      const diff = smoothedTargetTimeRef.current - video.currentTime;
+
+      // Limit catch-up speed to avoid hard jumps on very fast scroll flicks.
+      const maxSeekSpeedPerSecond = Math.max(videoDuration * 1.15, 3);
+      const maxStep = maxSeekSpeedPerSecond * dt;
+      const nextStep = Math.sign(diff) * Math.min(Math.abs(diff), maxStep);
+
+      if (Math.abs(diff) > 0.004) {
+        video.currentTime = video.currentTime + nextStep;
+      }
+
+      raf = window.requestAnimationFrame(animateTowardsTarget);
+    };
+
+    const onScrollOrResize = () => {
+      readScrollTarget();
+    };
+
+    readScrollTarget();
+    smoothedTargetTimeRef.current = targetTimeRef.current;
+    raf = window.requestAnimationFrame(animateTowardsTarget);
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScrollOrResize);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [videoDuration]);
+
   return (
     <>
+      <div
+        aria-hidden
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: -1,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      >
+        <video
+          ref={backgroundVideoRef}
+          src="/Hero.mp4"
+          muted
+          playsInline
+          preload="auto"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.34,
+            filter: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "rgba(6,6,6,0.06)",
+          }}
+        />
+      </div>
       <SiteHeader active={null} />
-      <main style={{ background: T.surface, paddingTop: "78px" }}>
+      <main style={{ position: "relative", zIndex: 2, background: "transparent", paddingTop: "78px" }}>
         <HeroSection />
         <CompetenciesSection />
         <MethodologySection />
@@ -807,9 +895,9 @@ export default function QuantumLimitedHome() {
           mask-image: linear-gradient(to bottom, black, transparent);
         }
         .home-glass {
-          background: rgba(255, 255, 255, 0.02);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(255, 85, 0, 0.1);
+          background: linear-gradient(160deg, rgba(16, 16, 16, 0.18), rgba(16, 16, 16, 0.12));
+          backdrop-filter: blur(1px);
+          border: 1px solid rgba(255, 85, 0, 0.2);
         }
         .home-glass:hover {
           border-color: rgba(255, 85, 0, 0.35);
@@ -837,10 +925,6 @@ export default function QuantumLimitedHome() {
         }
         .home-pulse-dot {
           animation: home-pulse-dot 2s ease-in-out infinite;
-        }
-        .home-feature-card:hover .home-feature-img-home {
-          filter: grayscale(0) !important;
-          opacity: 1 !important;
         }
         .home-feature-card:hover .home-gear-icon {
           transform: rotate(12deg);
@@ -895,10 +979,6 @@ export default function QuantumLimitedHome() {
         @media (min-width: 1024px) {
           .home-comp-grid > div:first-child { grid-column: span 7 !important; }
           .home-side-stack { grid-column: span 5 !important; }
-          .home-feature-img-col { display: block !important; }
-        }
-        @media (max-width: 1023px) {
-          .home-feature-img-col { display: none !important; }
         }
         @media (max-width: 900px) {
           .home-comp-grid {
