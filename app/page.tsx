@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
 
@@ -20,9 +20,6 @@ const T = {
   secondary: "#c6c6c7",
 };
 
-const HERO_BG =
-  "https://lh3.googleusercontent.com/aida-public/AB6AXuAAxclwxqWLrdG100nf-QYWrq7kwBiyM3sks1Fb9VF6GKupN6p1RpgoHnb0Kqy0GCqL19IwNnWAQYaV1nir4zEwxunl9NnGx3yE7mpbW_czmo0xlCAgQLUkahySS_Kl7wJZTgB7_86aIVGRWx9L7VsLe5-bI2T5Shusf0BIytQUBRfgCjtb-OffL-X9TKL1SJ0H1Adf-658_bbvwRuYJEbd85UKSD4lMH60qvZinb8FRlZYKluFRdWhOnEv4M8uPQ8Y4CukrcbJdVs";
-
 const METHODOLOGY_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBWzHSFIp4T9U3KZXG4D44r6WOzXQFA4oGUfAU0KkO5BGnOwhyYq99a6iXtYoEL6Psv2TyMUNk1tKbuNdCkzCnDDUDak1UfrytE13OTu4ZqiBI-PRyMtdq4_HgODq7wgD5m5EwQtoDpFeCuRjtsMekQ_mt8K_EXh6VjPUd2AnWmqyNvR8LbdaB02TQp4LqeOMpT-mifJtgghFyHrg0YEVGcytVGv1Yue1d94m4kCNSZGYM8xrVdSbsFpTAtBGAHA6PKTBQUvKzR8D8";
 
@@ -39,6 +36,8 @@ const TRUST_LOGOS = [
 const SECTION_TINT = "rgba(10,10,10,0.16)";
 
 function HeroSection() {
+  const [isVideoFinished, setIsVideoFinished] = useState(false);
+
   return (
     <section
       id="hero"
@@ -53,17 +52,45 @@ function HeroSection() {
       }}
     >
       <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
+        <video
+          autoPlay
+          muted
+          playsInline
+          src="/Hero.mp4"
+          onEnded={() => setIsVideoFinished(true)}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            opacity: 0.34,
+            filter: "none",
+          }}
+        />
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "transparent",
+            background: "rgba(6,6,6,0.06)",
           }}
         />
       </div>
 
-      <div className="home-hero-inner" style={{ position: "relative", zIndex: 2, maxWidth: "1280px", margin: "0 auto", padding: "0 clamp(16px, 4vw, 32px) clamp(48px, 8vw, 80px)", width: "100%" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px" }}>
+      <div 
+        className="home-hero-inner" 
+        style={{ 
+          position: "relative", 
+          zIndex: 2, 
+          maxWidth: "1280px", 
+          margin: "0 auto", 
+          padding: "0 clamp(16px, 4vw, 32px) clamp(48px, 8vw, 80px)", 
+          width: "100%",
+          visibility: isVideoFinished ? "visible" : "hidden"
+        }}
+      >
+        <div 
+          className={isVideoFinished ? "animate-fade-up" : ""}
+          style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px", opacity: 0 }}
+        >
           <span style={{ width: "48px", height: "1px", background: T.primary }} />
           <span
             style={{
@@ -80,6 +107,7 @@ function HeroSection() {
         </div>
 
         <h1
+          className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-1" : ""}
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
             fontSize: "clamp(48px, 9vw, 10rem)",
@@ -89,6 +117,7 @@ function HeroSection() {
             color: "#ffffff",
             textTransform: "uppercase",
             marginBottom: "32px",
+            opacity: 0
           }}
         >
           Engineering
@@ -107,6 +136,7 @@ function HeroSection() {
           className="home-hero-cta-row"
         >
           <p
+            className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-2" : ""}
             style={{
               flex: "1 1 280px",
               maxWidth: "420px",
@@ -117,12 +147,16 @@ function HeroSection() {
               fontStyle: "italic",
               fontFamily: "var(--font-inter, Inter, sans-serif)",
               margin: 0,
+              opacity: 0
             }}
           >
             Technical architecture for visionaries. We build high-performance systems where speed meets architectural
             integrity.
           </p>
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div 
+            className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-3" : ""}
+            style={{ display: "flex", flexDirection: "column", gap: "16px", opacity: 0 }}
+          >
             <Link
               href="#contact"
               style={{
@@ -756,120 +790,8 @@ function Footer() {
 }
 
 export default function QuantumLimitedHome() {
-  const backgroundVideoRef = useRef<HTMLVideoElement | null>(null);
-  const [videoDuration, setVideoDuration] = useState(1);
-  const targetTimeRef = useRef(0);
-  const smoothedTargetTimeRef = useRef(0);
-
-  useEffect(() => {
-    const video = backgroundVideoRef.current;
-    if (!video) return;
-
-    const onLoadedMetadata = () => {
-      if (Number.isFinite(video.duration) && video.duration > 0) {
-        setVideoDuration(video.duration);
-      }
-    };
-
-    if (video.readyState >= 1) {
-      onLoadedMetadata();
-    } else {
-      video.addEventListener("loadedmetadata", onLoadedMetadata);
-    }
-
-    return () => {
-      video.removeEventListener("loadedmetadata", onLoadedMetadata);
-    };
-  }, []);
-
-  useEffect(() => {
-    let raf = 0;
-    let lastTs = 0;
-    const video = backgroundVideoRef.current;
-    if (!video) return;
-
-    const readScrollTarget = () => {
-      const doc = document.documentElement;
-      const scrollable = Math.max(doc.scrollHeight - window.innerHeight, 1);
-      const progress = Math.min(Math.max(window.scrollY / scrollable, 0), 1);
-      targetTimeRef.current = progress * videoDuration;
-    };
-
-    const animateTowardsTarget = (ts: number) => {
-      if (!lastTs) lastTs = ts;
-      const dt = Math.min((ts - lastTs) / 1000, 0.05);
-      lastTs = ts;
-
-      // Step 1: smooth the raw scroll target to reduce wheel/touch spikes.
-      const targetFollow = 1 - Math.exp(-dt / 0.14);
-      smoothedTargetTimeRef.current += (targetTimeRef.current - smoothedTargetTimeRef.current) * targetFollow;
-
-      // Step 2: smoothly move video currentTime toward smoothed target.
-      const diff = smoothedTargetTimeRef.current - video.currentTime;
-
-      // Limit catch-up speed to avoid hard jumps on very fast scroll flicks.
-      const maxSeekSpeedPerSecond = Math.max(videoDuration * 1.15, 3);
-      const maxStep = maxSeekSpeedPerSecond * dt;
-      const nextStep = Math.sign(diff) * Math.min(Math.abs(diff), maxStep);
-
-      if (Math.abs(diff) > 0.004) {
-        video.currentTime = video.currentTime + nextStep;
-      }
-
-      raf = window.requestAnimationFrame(animateTowardsTarget);
-    };
-
-    const onScrollOrResize = () => {
-      readScrollTarget();
-    };
-
-    readScrollTarget();
-    smoothedTargetTimeRef.current = targetTimeRef.current;
-    raf = window.requestAnimationFrame(animateTowardsTarget);
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
-
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
-    };
-  }, [videoDuration]);
-
   return (
     <>
-      <div
-        aria-hidden
-        style={{
-          position: "fixed",
-          inset: 0,
-          zIndex: -1,
-          pointerEvents: "none",
-          overflow: "hidden",
-        }}
-      >
-        <video
-          ref={backgroundVideoRef}
-          src="/Hero.mp4"
-          muted
-          playsInline
-          preload="auto"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: 0.34,
-            filter: "none",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "rgba(6,6,6,0.06)",
-          }}
-        />
-      </div>
       <SiteHeader active={null} />
       <main style={{ position: "relative", zIndex: 2, background: "transparent", paddingTop: "78px" }}>
         <HeroSection />
