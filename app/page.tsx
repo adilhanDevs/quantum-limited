@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
 
@@ -37,6 +37,19 @@ const SECTION_TINT = "rgba(10,10,10,0.16)";
 
 function HeroSection() {
   const [isVideoFinished, setIsVideoFinished] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {
+        // If autoplay fails (e.g. browser policy), show text after a short delay
+        setTimeout(() => setIsVideoFinished(true), 1000);
+      });
+    }
+    // Fallback: guarantee text appearance after 5s
+    const fallback = setTimeout(() => setIsVideoFinished(true), 5000);
+    return () => clearTimeout(fallback);
+  }, []);
 
   return (
     <section
@@ -47,13 +60,13 @@ function HeroSection() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        background: SECTION_TINT,
+        background: "#060606",
         overflow: "hidden",
       }}
     >
       <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
         <video
-          autoPlay
+          ref={videoRef}
           muted
           playsInline
           src="/Hero.mp4"
@@ -62,15 +75,21 @@ function HeroSection() {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            opacity: 0.34,
-            filter: "none",
+            opacity: isVideoFinished ? 0.35 : 0.7,
+            filter: isVideoFinished ? "blur(3px)" : "none",
+            transition: "opacity 1.2s ease, filter 1.2s ease",
           }}
         />
+        {/* Dynamic overlay that intensifies when video finishes for text readability */}
         <div
           style={{
             position: "absolute",
             inset: 0,
-            background: "rgba(6,6,6,0.06)",
+            background: isVideoFinished 
+              ? "radial-gradient(circle at 30% 50%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.3) 100%)"
+              : "rgba(0,0,0,0.1)",
+            zIndex: 1,
+            transition: "background 1.2s ease",
           }}
         />
       </div>
@@ -83,22 +102,21 @@ function HeroSection() {
           maxWidth: "1280px", 
           margin: "0 auto", 
           padding: "0 clamp(16px, 4vw, 32px) clamp(48px, 8vw, 80px)", 
-          width: "100%",
-          visibility: isVideoFinished ? "visible" : "hidden"
+          width: "100%"
         }}
       >
         <div 
           className={isVideoFinished ? "animate-fade-up" : ""}
-          style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px", opacity: 0 }}
+          style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px", opacity: isVideoFinished ? 1 : 0, transition: "opacity 0.1s" }}
         >
-          <span style={{ width: "48px", height: "1px", background: T.primary }} />
+          <span style={{ width: "48px", height: "1px", background: "#ff6a00" }} />
           <span
             style={{
               fontFamily: "var(--font-inter, Inter, sans-serif)",
               fontSize: "11px",
-              fontWeight: 700,
-              letterSpacing: "0.3em",
-              color: T.primary,
+              fontWeight: 600,
+              letterSpacing: "0.35em",
+              color: "#ff6a00",
               textTransform: "uppercase",
             }}
           >
@@ -113,11 +131,13 @@ function HeroSection() {
             fontSize: "clamp(48px, 9vw, 10rem)",
             fontWeight: 700,
             lineHeight: 0.9,
-            letterSpacing: "-0.04em",
+            letterSpacing: "-0.02em",
             color: "#ffffff",
             textTransform: "uppercase",
             marginBottom: "32px",
-            opacity: 0
+            opacity: isVideoFinished ? 1 : 0,
+            transition: "opacity 0.1s",
+            textShadow: "0 4px 30px rgba(0,0,0,0.8)",
           }}
         >
           Engineering
@@ -147,7 +167,8 @@ function HeroSection() {
               fontStyle: "italic",
               fontFamily: "var(--font-inter, Inter, sans-serif)",
               margin: 0,
-              opacity: 0
+              opacity: isVideoFinished ? 1 : 0,
+              transition: "opacity 0.1s"
             }}
           >
             Technical architecture for visionaries. We build high-performance systems where speed meets architectural
@@ -155,7 +176,7 @@ function HeroSection() {
           </p>
           <div 
             className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-3" : ""}
-            style={{ display: "flex", flexDirection: "column", gap: "16px", opacity: 0 }}
+            style={{ display: "flex", flexDirection: "column", gap: "16px", opacity: isVideoFinished ? 1 : 0, transition: "opacity 0.1s" }}
           >
             <Link
               href="#contact"
