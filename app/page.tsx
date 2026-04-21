@@ -41,9 +41,9 @@ function HeroSection() {
 
   useEffect(() => {
     if (videoRef.current) {
+      // Ensure the video plays as fast as possible
       videoRef.current.play().catch(() => {
-        // If autoplay fails (e.g. browser policy), show text after a short delay
-        setTimeout(() => setIsVideoFinished(true), 1000);
+        setIsVideoFinished(true);
       });
     }
     // Fallback: guarantee text appearance after 5s
@@ -60,7 +60,7 @@ function HeroSection() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        background: "#060606",
+        background: "#060606", // Solid dark background while video loads
         overflow: "hidden",
       }}
     >
@@ -69,6 +69,7 @@ function HeroSection() {
           ref={videoRef}
           muted
           playsInline
+          preload="auto"
           src="/Hero.mp4"
           onEnded={() => setIsVideoFinished(true)}
           style={{
@@ -78,6 +79,7 @@ function HeroSection() {
             opacity: isVideoFinished ? 0.35 : 0.7,
             filter: isVideoFinished ? "blur(3px)" : "none",
             transition: "opacity 1.2s ease, filter 1.2s ease",
+            backgroundColor: "#060606",
           }}
         />
         {/* Dynamic overlay that intensifies when video finishes for text readability */}
@@ -87,7 +89,7 @@ function HeroSection() {
             inset: 0,
             background: isVideoFinished 
               ? "radial-gradient(circle at 30% 50%, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.5) 60%, rgba(0,0,0,0.3) 100%)"
-              : "rgba(0,0,0,0.1)",
+              : "rgba(0,0,0,0.15)",
             zIndex: 1,
             transition: "background 1.2s ease",
           }}
