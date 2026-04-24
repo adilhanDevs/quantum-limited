@@ -1,10 +1,8 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
-
-export const metadata: Metadata = {
-  title: "Quantum Limited | The Execution Protocol",
-};
+import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
   surface: "#131313",
@@ -22,6 +20,7 @@ const T = {
 };
 
 function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -80,7 +79,7 @@ function HeroSection() {
               textTransform: "uppercase",
             }}
           >
-            High-Velocity Engineering
+            {t("process.hero.badge")}
           </span>
         </div>
 
@@ -97,8 +96,8 @@ function HeroSection() {
               textTransform: "uppercase",
             }}
           >
-            THE EXECUTION <br />
-            <span style={{ color: T.primaryCtn, textShadow: "0 0 18px rgba(255, 87, 8, 0.35)" }}>PROTOCOL</span>
+            {t("process.hero.title1")} <br />
+            <span style={{ color: T.primaryCtn, textShadow: "0 0 18px rgba(255, 87, 8, 0.35)" }}>{t("process.hero.title2")}</span>
           </h1>
         </div>
 
@@ -112,8 +111,7 @@ function HeroSection() {
             fontFamily: "var(--font-inter, Inter, sans-serif)",
           }}
         >
-          We bridge the gap between abstract architectural vision and mission-critical performance through a rigid,
-          data-driven deployment framework.
+          {t("process.hero.description")}
         </p>
 
         <div style={{ marginTop: "48px", display: "flex", gap: "16px" }}>
@@ -134,7 +132,7 @@ function HeroSection() {
                 marginBottom: "4px",
               }}
             >
-              Status: Operational
+              {t("process.hero.status")}
             </span>
             <span
               style={{
@@ -155,7 +153,7 @@ function HeroSection() {
                 textTransform: "uppercase",
               }}
             >
-              Avg. Response Latency
+              {t("process.hero.latency")}
             </span>
           </div>
         </div>
@@ -506,6 +504,7 @@ function PhasesSection() {
 }
 
 function CTASection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -536,7 +535,7 @@ function CTASection() {
             maxWidth: "min(1200px, 100%)",
           }}
         >
-          READY TO <span style={{ color: T.primaryCtn }}>INITIALIZE?</span>
+          {t("process.cta.title1")} <span style={{ color: T.primaryCtn }}>{t("process.cta.title2")}</span>
         </h2>
         <button
           className="process-cta"
@@ -557,7 +556,7 @@ function CTASection() {
             margin: "0 auto",
           }}
         >
-          START PROTOCOL
+          {t("process.cta.button")}
           <span
             className="process-cta-outline"
             style={{
@@ -582,7 +581,7 @@ function CTASection() {
             textAlign: "center",
           }}
         >
-          Awaiting system signal...
+          {t("process.cta.note")}
         </p>
       </div>
     </section>
@@ -590,6 +589,7 @@ function CTASection() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer
       data-reveal
@@ -626,7 +626,7 @@ function Footer() {
               marginBottom: "8px",
             }}
           >
-            QUANTUM LIMITED
+            {t("process.footer.brand")}
           </div>
           <div
             style={{
@@ -637,11 +637,11 @@ function Footer() {
               color: "#71717a",
             }}
           >
-            © 2024 QUANTUM LIMITED. PRECISION ENGINEERED.
+            {t("process.footer.copy")}
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "40px" }}>
-          {["Privacy Policy", "Terms of Service", "Architecture", "GitHub"].map((item) => (
+          {[t("process.footer.privacy"), t("process.footer.terms"), t("process.footer.architecture"), t("process.footer.github")].map((item) => (
             <a
               key={item}
               href="#"

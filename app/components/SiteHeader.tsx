@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useLanguage } from "../i18n/LanguageContext";
 
 /** Matches `Services` page nav: grid layout, Inter links, Space Grotesk logo & CTA. */
 const T = {
@@ -9,20 +12,22 @@ const T = {
 
 export type SiteNavActive = "services" | "process-protocol" | "clients" | "contact" | null;
 
-const NAV_LINKS: { label: string; href: string; key: NonNullable<SiteNavActive> }[] = [
-  { label: "Services", href: "/services", key: "services" },
-  { label: "Process", href: "/process-protocol", key: "process-protocol" },
-  { label: "Clients", href: "/clients", key: "clients" },
-  { label: "Contact", href: "/contact", key: "contact" },
+const NAV_LINKS: { labelKey: string; href: string; key: NonNullable<SiteNavActive> }[] = [
+  { labelKey: "header.nav.services", href: "/services", key: "services" },
+  { labelKey: "header.nav.process", href: "/process-protocol", key: "process-protocol" },
+  { labelKey: "header.nav.clients", href: "/clients", key: "clients" },
+  { labelKey: "header.nav.contact", href: "/contact", key: "contact" },
 ];
 
-function ctaLabel(active: SiteNavActive): string {
-  if (active === "clients" || active === "contact") return "GET STARTED";
-  if (active === null || active === "process-protocol") return "INQUIRY";
-  return "INITIATE PROJECT";
+function ctaLabel(active: SiteNavActive, t: (key: string) => string): string {
+  if (active === "clients" || active === "contact") return t("header.cta.getStarted");
+  if (active === null || active === "process-protocol") return t("header.cta.inquiry");
+  return t("header.cta.initiate");
 }
 
 export function SiteHeader({ active }: { active: SiteNavActive }) {
+  const { t } = useLanguage();
+
   return (
     <>
       <nav
@@ -101,7 +106,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
                       transition: "color 0.2s, border-color 0.2s",
                     }}
                   >
-                    {link.label}
+                    {t(link.labelKey)}
                   </Link>
                 </li>
               );
@@ -125,7 +130,7 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
               justifySelf: "end",
             }}
           >
-            {ctaLabel(active)}
+            {ctaLabel(active, t)}
           </Link>
         </div>
       </nav>

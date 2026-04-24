@@ -163,6 +163,17 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 0.86;
 }
 
+/* Override global square rule for language FAB */
+.lang-switcher-fab {
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  clip-path: circle(50% at 50% 50%);
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  aspect-ratio: 1 / 1;
+}
+
 /* ─── Scroll-driven section reveals ───────────────────────────────
    Default: visible (SSR / no-JS). After hydration, `html.reveal-enabled`
    hides only elements not yet marked visible (see ScrollReveal.tsx). */

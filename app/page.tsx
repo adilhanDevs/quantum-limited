@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
+import { useLanguage } from "./i18n/LanguageContext";
 
 const T = {
   surface: "#0a0a0a",
@@ -36,6 +37,7 @@ const TRUST_LOGOS = [
 const SECTION_TINT = "rgba(10,10,10,0.16)";
 
 function HeroSection() {
+  const { t } = useLanguage();
   const [isVideoFinished, setIsVideoFinished] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -122,7 +124,7 @@ function HeroSection() {
               textTransform: "uppercase",
             }}
           >
-            Precision Software Systems
+            {t("home.hero.badge")}
           </span>
         </div>
 
@@ -142,9 +144,9 @@ function HeroSection() {
             textShadow: "0 4px 30px rgba(0,0,0,0.8)",
           }}
         >
-          Engineering
+          {t("home.hero.title1")}
           <br />
-          The Future
+          {t("home.hero.title2")}
         </h1>
 
         <div
@@ -173,8 +175,7 @@ function HeroSection() {
               transition: "opacity 0.1s"
             }}
           >
-            Technical architecture for visionaries. We build high-performance systems where speed meets architectural
-            integrity.
+            {t("home.hero.description")}
           </p>
           <div 
             className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-3" : ""}
@@ -197,7 +198,7 @@ function HeroSection() {
               }}
               className="home-start-dev"
             >
-              Start Development
+              {t("home.hero.cta")}
             </Link>
             <div
               style={{
@@ -226,6 +227,7 @@ function HeroSection() {
 }
 
 function CompetenciesSection() {
+  const { t } = useLanguage();
   return (
     <section
       id="services"
@@ -294,7 +296,7 @@ function CompetenciesSection() {
                 margin: 0,
               }}
             >
-              Technical <span style={{ color: T.primary }}>Competencies</span>
+              {t("home.competencies.title")}
             </h2>
           </div>
           <div
@@ -355,9 +357,9 @@ function CompetenciesSection() {
                       marginBottom: "20px",
                     }}
                   >
-                    Custom <span style={{ color: T.primary }}>Software</span>
+                    {t("home.feature.title1")} <span style={{ color: T.primary }}>{t("home.feature.title2")}</span>
                     <br />
-                    Engineering
+                    {t("home.feature.title3")}
                   </h3>
                   <p
                     style={{
@@ -369,8 +371,7 @@ function CompetenciesSection() {
                       margin: 0,
                     }}
                   >
-                    End-to-end engineering of proprietary systems designed for extreme scale and high-frequency
-                    performance requirements. Our solutions are built with atomic precision and mathematical integrity.
+                    {t("home.feature.description")}
                   </p>
                 </div>
               </div>
@@ -482,6 +483,7 @@ function CompetenciesSection() {
 }
 
 function MethodologySection() {
+  const { t } = useLanguage();
   return (
     <section
       id="process"
@@ -536,7 +538,7 @@ function MethodologySection() {
               fontFamily: "var(--font-inter, Inter, sans-serif)",
             }}
           >
-            The Methodology
+            {t("home.method.badge")}
           </p>
           <h2
             style={{
@@ -550,21 +552,21 @@ function MethodologySection() {
               marginBottom: "36px",
             }}
           >
-            Precision is
+            {t("home.method.title1")}
             <br />
-            <span style={{ color: T.primary }}>Non-Negotiable</span>
+            <span style={{ color: T.primary }}>{t("home.method.title2")}</span>
           </h2>
           <div style={{ display: "flex", flexDirection: "column", gap: "28px", maxWidth: "520px" }}>
             <div style={{ borderLeft: `4px solid ${T.primary}`, paddingLeft: "22px", paddingTop: "4px", paddingBottom: "4px" }}>
-              <p style={{ fontSize: "19px", fontWeight: 500, color: "#fff", marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Atomic Commit Frequency</p>
+              <p style={{ fontSize: "19px", fontWeight: 500, color: "#fff", marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.method.card1.title")}</p>
               <p style={{ color: T.onSurfaceVar, lineHeight: 1.65, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-                We maintain a relentless development cycle where every line of code is peer-reviewed and stress-tested before deployment.
+                {t("home.method.card1.body")}
               </p>
             </div>
             <div style={{ borderLeft: `4px solid ${T.surfaceHighest}`, paddingLeft: "22px", paddingTop: "4px", paddingBottom: "4px" }}>
-              <p style={{ fontSize: "19px", fontWeight: 500, color: "#fff", marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Mathematical Integrity</p>
+              <p style={{ fontSize: "19px", fontWeight: 500, color: "#fff", marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.method.card2.title")}</p>
               <p style={{ color: T.onSurfaceVar, lineHeight: 1.65, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-                Our architecture is built on formal verification methods to ensure security and predictability at every scale.
+                {t("home.method.card2.body")}
               </p>
             </div>
           </div>
@@ -598,11 +600,12 @@ function MethodologySection() {
 }
 
 function TrustLogosSection() {
+  const { t } = useLanguage();
   const loop = [...TRUST_LOGOS, ...TRUST_LOGOS];
   return (
     <section style={{ padding: "72px 0", background: SECTION_TINT }}>
       <div style={{ padding: "0 32px 28px", maxWidth: "1440px", margin: "0 auto", textAlign: "center" }}>
-        <p style={{ fontSize: "11px", letterSpacing: "0.28em", textTransform: "uppercase", color: T.secondary, fontWeight: 700, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Trusted by Industry Leaders</p>
+        <p style={{ fontSize: "11px", letterSpacing: "0.28em", textTransform: "uppercase", color: T.secondary, fontWeight: 700, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.trusted.title")}</p>
       </div>
       <div className="home-trust-marquee-track">
         <div className="home-trust-marquee-inner">
@@ -629,6 +632,7 @@ function TrustLogosSection() {
 }
 
 function ContactSection() {
+  const { t } = useLanguage();
   const [form, setForm] = useState({ name: "", email: "", service: "", requirements: "" });
   const [focused, setFocused] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -655,10 +659,10 @@ function ContactSection() {
               marginBottom: "24px",
             }}
           >
-            Start a <span style={{ color: T.primary }}>Project</span>
+            {t("home.contact.title1")} <span style={{ color: T.primary }}>{t("home.contact.title2")}</span>
           </h2>
           <p style={{ color: T.onSurfaceVar, fontSize: "17px", lineHeight: 1.65, marginBottom: "40px", maxWidth: "420px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-            Ready to deploy high-precision software? Define your requirements and our lead architect will reach out within 24 hours.
+            {t("home.contact.description")}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "22px" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -666,7 +670,7 @@ function ContactSection() {
                 <span className="material-symbols-outlined">mail</span>
               </span>
               <div>
-                <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Inquiries</p>
+                <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.inquiries")}</p>
                 <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>engineering@quantumlimited.io</p>
               </div>
             </div>
@@ -675,7 +679,7 @@ function ContactSection() {
                 <span className="material-symbols-outlined">location_on</span>
               </span>
               <div>
-                <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Node 01</p>
+                <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.node")}</p>
                 <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Zurich, CH / Remote</p>
               </div>
             </div>
@@ -685,36 +689,36 @@ function ContactSection() {
         <div style={{ background: "rgba(10,10,10,0.2)", padding: "40px", border: "1px solid rgba(92,64,55,0.12)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, width: "4px", height: "100%", background: "rgba(255,85,0,0.45)" }} />
           {submitted ? (
-            <p style={{ color: T.onSurfaceVar, textAlign: "center", padding: "40px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Transmission received. We will respond within 24 hours.</p>
+            <p style={{ color: T.onSurfaceVar, textAlign: "center", padding: "40px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.success")}</p>
           ) : (
             <form onSubmit={submit} style={{ display: "flex", flexDirection: "column", gap: "28px", paddingLeft: "12px" }}>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "24px" }}>
                 <div>
-                  <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "name" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Client Name</label>
+                  <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "name" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.clientName")}</label>
                   <input
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     onFocus={() => setFocused("name")}
                     onBlur={() => setFocused(null)}
-                    placeholder="Enter name"
+                    placeholder={t("home.contact.placeholder.name")}
                     style={{ width: "100%", border: "none", borderBottom: border("name"), background: "transparent", color: "#fff", padding: "8px 0", outline: "none", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
                   />
                 </div>
                 <div>
-                  <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "email" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Email Address</label>
+                  <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "email" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.emailAddress")}</label>
                   <input
                     type="email"
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     onFocus={() => setFocused("email")}
                     onBlur={() => setFocused(null)}
-                    placeholder="Enter email"
+                    placeholder={t("home.contact.placeholder.email")}
                     style={{ width: "100%", border: "none", borderBottom: border("email"), background: "transparent", color: "#fff", padding: "8px 0", outline: "none", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
                   />
                 </div>
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "service" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Service Interest</label>
+                <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "service" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.serviceInterest")}</label>
                 <select
                   value={form.service}
                   onChange={(e) => setForm({ ...form, service: e.target.value })}
@@ -733,21 +737,21 @@ function ContactSection() {
                     cursor: "pointer",
                   }}
                 >
-                  <option value="">Select a service...</option>
-                  <option value="custom">Custom Development</option>
-                  <option value="cloud">Cloud Engineering</option>
-                  <option value="ai">AI Integration</option>
+                  <option value="">{t("home.contact.placeholder.service")}</option>
+                  <option value="custom">{t("home.contact.service.custom")}</option>
+                  <option value="cloud">{t("home.contact.service.cloud")}</option>
+                  <option value="ai">{t("home.contact.service.ai")}</option>
                 </select>
               </div>
               <div>
-                <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "requirements" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Technical Requirements</label>
+                <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "requirements" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.requirements")}</label>
                 <textarea
                   rows={4}
                   value={form.requirements}
                   onChange={(e) => setForm({ ...form, requirements: e.target.value })}
                   onFocus={() => setFocused("requirements")}
                   onBlur={() => setFocused(null)}
-                  placeholder="Briefly describe your project goals"
+                  placeholder={t("home.contact.placeholder.requirements")}
                   style={{ width: "100%", border: "none", borderBottom: border("requirements"), background: "transparent", color: "#fff", padding: "8px 0", outline: "none", resize: "none", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
                 />
               </div>
@@ -768,7 +772,7 @@ function ContactSection() {
                 }}
                 className="home-init-project"
               >
-                Initialize Project
+                {t("home.contact.submit")}
               </button>
             </form>
           )}
@@ -779,6 +783,7 @@ function ContactSection() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer style={{ background: SECTION_TINT, padding: "clamp(32px, 6vw, 48px) clamp(16px, 4vw, 32px)" }}>
       <div
@@ -795,13 +800,13 @@ function Footer() {
         className="home-footer-flex"
       >
         <div>
-          <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", marginBottom: "12px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>QUANTUM LIMITED</div>
+          <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", marginBottom: "12px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.footer.brand")}</div>
           <div style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#71717a", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-            {"\u00a9"} 2024 QUANTUM LIMITED. PRECISION ENGINEERED.
+            {t("home.footer.copy")}
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "24px 40px", justifyContent: "center" }}>
-          {["Privacy Policy", "Terms of Service", "Architecture", "GitHub"].map((l) => (
+          {[t("home.footer.privacy"), t("home.footer.terms"), t("home.footer.architecture"), t("home.footer.github")].map((l) => (
             <Link key={l} href="#" style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#71717a", textDecoration: "none", fontFamily: "var(--font-inter, Inter, sans-serif)" }} className="home-footer-link">
               {l}
             </Link>

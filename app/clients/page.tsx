@@ -1,12 +1,8 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
-
-export const metadata: Metadata = {
-  title: "Quantum Limited | Clients",
-  description:
-    "Trusted by the architects of the future. Enterprise nodes, global regions, and encrypted client feedback.",
-};
+import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
   surface: "#131313",
@@ -24,6 +20,7 @@ const T = {
 };
 
 function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -66,7 +63,7 @@ function HeroSection() {
               textTransform: "uppercase",
             }}
           >
-            Global Network V.04
+            {t("clients.hero.badge")}
           </span>
         </div>
 
@@ -83,7 +80,7 @@ function HeroSection() {
             maxWidth: "min(1100px, 100%)",
           }}
         >
-          Trusted By The{" "}
+          {t("clients.hero.title1")}{" "}
           <span
             style={{
               background: `linear-gradient(90deg, ${T.primary} 0%, ${T.primaryCtn} 100%)`,
@@ -92,9 +89,9 @@ function HeroSection() {
               color: "transparent",
             }}
           >
-            Architects
+            {t("clients.hero.title2")}
           </span>{" "}
-          Of The Future
+          {t("clients.hero.title3")}
         </h1>
 
         <p
@@ -108,8 +105,7 @@ function HeroSection() {
             marginBottom: "64px",
           }}
         >
-          We provide the substrate for the next generation of industrial automation and cyber-physical systems.
-          Precision engineering meets quantum-ready security.
+          {t("clients.hero.description")}
         </p>
       </div>
 
@@ -155,7 +151,7 @@ function HeroSection() {
                 textTransform: "uppercase",
               }}
             >
-              Enterprise Nodes
+              {t("clients.hero.metric1")}
             </div>
           </div>
 
@@ -191,7 +187,7 @@ function HeroSection() {
                 textTransform: "uppercase",
               }}
             >
-              Global Regions
+              {t("clients.hero.metric2")}
             </div>
           </div>
         </div>
@@ -672,6 +668,7 @@ const testimonials = [
 ];
 
 function TransmissionSection() {
+  const { t } = useLanguage();
   return (
     <section data-reveal style={{ padding: "96px clamp(24px, 3.5vw, 40px)", background: T.surface, borderTop: `1px solid rgba(92,64,55,0.12)` }}>
       <div style={{ maxWidth: "min(1320px, 100%)", margin: "0 auto" }}>
@@ -699,7 +696,7 @@ function TransmissionSection() {
                 lineHeight: 1.05,
               }}
             >
-              Transmission_Logs
+              {t("clients.transmission.title")}
             </h2>
             <p
               style={{
@@ -711,7 +708,7 @@ function TransmissionSection() {
                 textTransform: "uppercase",
               }}
             >
-              Encrypted Feedback Reception [Secure]
+              {t("clients.transmission.subtitle")}
             </p>
           </div>
           <div
@@ -839,6 +836,7 @@ const FOOTER_STATUS_BG = "#1e1e1e";
 const FOOTER_LABEL_PEACH = "#e9c4b1";
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer
       data-reveal
@@ -872,7 +870,7 @@ function Footer() {
               marginBottom: "32px",
             }}
           >
-            Quantum Limited
+            {t("clients.footer.brand")}
           </div>
 
           <div
@@ -883,7 +881,7 @@ function Footer() {
               marginBottom: "18px",
             }}
           >
-            {["Privacy Policy", "Terms of Service", "Global Offices"].map((l) => (
+            {[t("clients.footer.privacy"), t("clients.footer.terms"), t("clients.footer.offices")].map((l) => (
               <Link
                 key={l}
                 href="#"
@@ -917,7 +915,7 @@ function Footer() {
                 textDecoration: "none",
               }}
             >
-              Technical Specifications
+              {t("clients.footer.specs")}
             </Link>
           </div>
 
@@ -931,7 +929,7 @@ function Footer() {
               lineHeight: 1.6,
             }}
           >
-            © 2024 Quantum Limited. Precision Engineered.
+            {t("clients.footer.copy")}
           </p>
         </div>
 

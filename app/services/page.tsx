@@ -1,10 +1,8 @@
-import type { Metadata } from "next";
+"use client";
+
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
-
-export const metadata: Metadata = {
-  title: "Quantum Limited | System Capabilities",
-};
+import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
   surface: "#131313",
@@ -60,6 +58,7 @@ function AccentLine() {
 }
 
 function HeroSection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -92,7 +91,7 @@ function HeroSection() {
           <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px" }}>
             <AccentLine />
             <Label color={T.primaryCtn} letterSpacing="0.32em">
-              SYSTEM_CAPABILITIES_V2.0
+              {t("services.hero.badge")}
             </Label>
           </div>
 
@@ -107,9 +106,9 @@ function HeroSection() {
               marginBottom: "36px",
             }}
           >
-            ENGINEERED
+            {t("services.hero.title1")}
             <br />
-            FOR <span style={{ color: T.primaryCtn }}>PRECISION.</span>
+            {t("services.hero.title2")} <span style={{ color: T.primaryCtn }}>{t("services.hero.title3")}</span>
           </h1>
 
           <p
@@ -123,14 +122,12 @@ function HeroSection() {
               marginBottom: "40px",
             }}
           >
-            Quantum Limited delivers high-performance software architectures designed for industrial-scale complexity.
-            We engineer systems that operate at the edge of physical possibility, ensuring zero-latency execution in
-            mission-critical environments.
+            {t("services.hero.description")}
           </p>
 
           <div style={{ display: "flex", gap: "28px", flexWrap: "wrap" }}>
-            <Metric label="Uptime Target" value="99.9999%" />
-            <Metric label="Latency" value="<1.2MS" />
+            <Metric label={t("services.hero.metric1")} value="99.9999%" />
+            <Metric label={t("services.hero.metric2")} value="<1.2MS" />
           </div>
         </div>
 
@@ -251,6 +248,7 @@ const serviceCards = [
 ];
 
 function ModulesSection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -274,9 +272,9 @@ function ModulesSection() {
               textTransform: "uppercase",
             }}
           >
-            Operational Modules
+            {t("services.modules.title")}
           </h2>
-          <Label letterSpacing="0.44em">Status: All Systems Nominal</Label>
+          <Label letterSpacing="0.44em">{t("services.modules.status")}</Label>
         </div>
 
         <div
@@ -606,6 +604,7 @@ function ProtocolRow({
 }
 
 function ContactSection() {
+  const { t } = useLanguage();
   return (
     <section
       data-reveal
@@ -633,7 +632,7 @@ function ContactSection() {
               textTransform: "uppercase",
             }}
           >
-            Initialize Partnership
+            {t("services.contact.title")}
           </h2>
 
           <p
@@ -646,8 +645,7 @@ function ContactSection() {
               margin: "0 auto 44px",
             }}
           >
-            Connect with our engineering team to audit your current system infrastructure and begin the modernization
-            protocol.
+            {t("services.contact.description")}
           </p>
 
           <div
@@ -681,7 +679,7 @@ function ContactSection() {
               </span>
               <input
                 type="email"
-                placeholder="ENTER_IDENTIFIER@NETWORK.COM"
+                placeholder={t("services.contact.placeholder")}
                 style={{
                   width: "100%",
                   background: "transparent",
@@ -708,7 +706,7 @@ function ContactSection() {
                 cursor: "pointer",
               }}
             >
-              Execute
+              {t("services.contact.execute")}
             </button>
           </div>
 
@@ -722,7 +720,7 @@ function ContactSection() {
               color: "#8a7c76",
             }}
           >
-            Encrypted channel established. Ready for transmission.
+            {t("services.contact.note")}
           </div>
         </div>
       </div>
@@ -731,6 +729,7 @@ function ContactSection() {
 }
 
 function Footer() {
+  const { t } = useLanguage();
   return (
     <footer
       data-reveal
@@ -764,7 +763,7 @@ function Footer() {
               marginBottom: "10px",
             }}
           >
-            QUANTUM LIMITED
+            {t("services.footer.brand")}
           </div>
           <div
             style={{
@@ -775,12 +774,12 @@ function Footer() {
               letterSpacing: "0.02em",
             }}
           >
-            © 2024 Quantum Limited. All Rights Reserved. Engineered For Precision.
+            {t("services.footer.copy")}
           </div>
         </div>
 
         <div style={{ display: "flex", gap: "28px", flexWrap: "wrap" }}>
-          {["Privacy Protocol", "Service Level Agreement", "Network Status"].map((item) => (
+          {[t("services.footer.privacy"), t("services.footer.sla"), t("services.footer.network")].map((item) => (
             <a
               key={item}
               href="#"

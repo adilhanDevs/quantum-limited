@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
+import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
   surface: "#131313",
@@ -52,6 +53,7 @@ const DROPDOWN_HIGHLIGHT = "#2563eb";
 const DROPDOWN_MUTED = "#9ca3af";
 
 export default function ContactPage() {
+  const { t } = useLanguage();
   const [service, setService] = useState<"neural" | "quantum">("neural");
   const [projectName, setProjectName] = useState("");
   const [scope, setScope] = useState("");
@@ -118,7 +120,7 @@ export default function ContactPage() {
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                 }}
               >
-                SYSTEM.INIT()
+                {t("contact.hero.badge")}
               </span>
               <h1
                 style={{
@@ -132,9 +134,9 @@ export default function ContactPage() {
                   margin: 0,
                 }}
               >
-                Initialize Connection
+                {t("contact.hero.title1")}
                 <br />
-                Protocol
+                {t("contact.hero.title2")}
                 <span style={{ color: T.primaryCtn }}>_</span>
               </h1>
             </div>
@@ -151,8 +153,7 @@ export default function ContactPage() {
               }}
               className="contact-hero-aside"
             >
-              Bridge the gap between vision and execution. Our engineering team is standing by to analyze your
-              technical requirements.
+              {t("contact.hero.description")}
             </div>
           </div>
         </section>
@@ -180,9 +181,9 @@ export default function ContactPage() {
                   textTransform: "uppercase",
                 }}
               >
-                Transmission Received
+                {t("contact.success.title")}
               </p>
-              <p style={{ color: T.onSurfaceVar, fontSize: "15px" }}>Engineering will respond within 24 hours.</p>
+              <p style={{ color: T.onSurfaceVar, fontSize: "15px" }}>{t("contact.success.description")}</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit}>
@@ -887,7 +888,7 @@ export default function ContactPage() {
                   marginBottom: "12px",
                 }}
               >
-                Global Nodes
+                {t("contact.nodes.title")}
               </h2>
               <p
                 style={{
@@ -899,7 +900,7 @@ export default function ContactPage() {
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                 }}
               >
-                Precision Mapping of Quantum Labs
+                {t("contact.nodes.subtitle")}
               </p>
             </div>
             <div
@@ -1009,7 +1010,7 @@ export default function ContactPage() {
                     marginBottom: "20px",
                   }}
                 >
-                  Client Direct Link
+                  {t("contact.direct.title")}
                 </h2>
                 <p
                   style={{
@@ -1021,8 +1022,7 @@ export default function ContactPage() {
                     fontFamily: "var(--font-inter, Inter, sans-serif)",
                   }}
                 >
-                  Already a part of the ecosystem? Authenticate your credentials to access the high-priority
-                  engineering terminal.
+                  {t("contact.direct.description")}
                 </p>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
                   <button
@@ -1041,7 +1041,7 @@ export default function ContactPage() {
                     }}
                     className="contact-portal-btn"
                   >
-                    Access Portal
+                    {t("contact.direct.portal")}
                   </button>
                   <button
                     type="button"
@@ -1059,7 +1059,7 @@ export default function ContactPage() {
                     }}
                     className="contact-recover-btn"
                   >
-                    Recover Auth_Key
+                    {t("contact.direct.recover")}
                   </button>
                 </div>
               </div>
@@ -1122,7 +1122,7 @@ export default function ContactPage() {
                   marginBottom: "20px",
                 }}
               >
-                QUANTUM LIMITED
+                {t("contact.footer.brand")}
               </div>
               <p
                 style={{
@@ -1135,7 +1135,7 @@ export default function ContactPage() {
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                 }}
               >
-                Precision Engineered.
+                {t("contact.footer.tagline")}
               </p>
               <p
                 style={{
@@ -1147,8 +1147,7 @@ export default function ContactPage() {
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                 }}
               >
-                Advancing the boundaries of technical infrastructure through rigorous logic and uncompromising
-                execution.
+                {t("contact.footer.description")}
               </p>
             </div>
             <div
@@ -1209,7 +1208,7 @@ export default function ContactPage() {
                 fontFamily: "var(--font-inter, Inter, sans-serif)",
               }}
             >
-              {"\u00a9"} 2024 Quantum Limited. Precision Engineered.
+              {t("contact.footer.copy")}
             </div>
           </div>
         </footer>
