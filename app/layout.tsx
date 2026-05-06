@@ -21,8 +21,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Quantum Limited — Engineering The Future",
-  description:
-    "Technical architecture for visionaries. We build high-performance systems where speed meets architectural integrity.",
+  description: "Technical architecture for visionaries.",
   keywords: ["software engineering", "cloud architecture", "neural integration", "quantum computing"],
 };
 

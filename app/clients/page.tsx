@@ -19,6 +19,118 @@ const T = {
   outlineVar: "#5c4037",
 };
 
+export default function ClientsPage() {
+  return (
+    <>
+      <SiteHeader active="clients" />
+      <main style={{ position: "relative", background: T.surface, paddingTop: "78px" }}>
+        <HeroSection />
+        <MarqueeSection />
+        <MetricsSection />
+        <CaseStudySection />
+        <TransmissionSection />
+      </main>
+      <Footer />
+
+      <style>{`
+        .clients-hero-grid {
+          background-image: radial-gradient(circle, rgba(92, 64, 55, 0.12) 1px, transparent 1px);
+          background-size: 40px 40px;
+        }
+        @keyframes clients-marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .clients-marquee-track {
+          overflow: hidden;
+          width: 100%;
+        }
+        .clients-marquee-inner {
+          display: flex;
+          gap: 64px;
+          width: max-content;
+          animation: clients-marquee 32s linear infinite;
+        }
+        .clients-metric-card {
+          transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .clients-metric-card:hover {
+          transform: translateY(-2px);
+        }
+        .clients-metric-deco {
+          transition: filter 0.55s ease;
+        }
+        .clients-metric-card:hover .clients-metric-deco {
+          filter: grayscale(0%) !important;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .clients-metric-card {
+            transition: none !important;
+          }
+          .clients-metric-card:hover {
+            transform: none !important;
+          }
+        }
+        .clients-case-study:hover .clients-case-study-image img {
+          filter: grayscale(0%) !important;
+        }
+        .clients-tm-cell:first-child {
+          border-right: 1px solid rgba(92,64,55,0.22);
+        }
+        .clients-case-study-cta:hover {
+          opacity: 0.85;
+        }
+        .clients-footer-link:hover {
+          color: #a3a3a3 !important;
+        }
+        @media (max-width: 900px) {
+          .clients-transmission-head {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+          }
+          .clients-transmission-head > div:last-child {
+            align-self: flex-start !important;
+          }
+          .clients-hero-stats {
+            grid-template-columns: 1fr !important;
+            text-align: center;
+          }
+          .clients-hero-stats > div[aria-hidden="true"] {
+            display: none !important;
+          }
+          .clients-metrics-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .clients-case-study {
+            grid-template-columns: 1fr !important;
+          }
+          .clients-tm-cell:first-child {
+            border-right: none !important;
+            border-bottom: 1px solid rgba(92,64,55,0.22) !important;
+          }
+          .clients-tm-grid {
+            grid-template-columns: 1fr !important;
+          }
+          .clients-footer-grid {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 40px !important;
+          }
+          .clients-footer-status {
+            width: 100% !important;
+            min-width: 0 !important;
+          }
+        }
+        @media (max-width: 600px) {
+          .clients-tm-cell {
+            padding: 32px 22px !important;
+          }
+        }
+      `}</style>
+    </>
+  );
+}
+
 function HeroSection() {
   const { t } = useLanguage();
   return (
@@ -139,7 +251,7 @@ function HeroSection() {
                 marginBottom: "12px",
               }}
             >
-              400+
+              {t("clients.hero.metric1.value")}
             </div>
             <div
               style={{
@@ -175,7 +287,7 @@ function HeroSection() {
                 marginBottom: "12px",
               }}
             >
-              12
+              {t("clients.hero.metric2.value")}
             </div>
             <div
               style={{
@@ -244,6 +356,7 @@ function MarqueeSection() {
 }
 
 function MetricCardUptime() {
+  const { t } = useLanguage();
   return (
     <div
       className="clients-metric-card"
@@ -286,7 +399,7 @@ function MetricCardUptime() {
           zIndex: 1,
         }}
       >
-        99.9%
+        {t("clients.metric.uptime.value")}
       </h3>
       <div
         style={{
@@ -299,7 +412,7 @@ function MetricCardUptime() {
           marginBottom: "16px",
         }}
       >
-        System Uptime
+        {t("clients.metric.uptime.title")}
       </div>
       <p
         style={{
@@ -311,7 +424,7 @@ function MetricCardUptime() {
           flex: 1,
         }}
       >
-        Continuous delivery metrics sustained across high-load global cluster deployments since inception.
+        {t("clients.metric.uptime.desc")}
       </p>
       <div
         style={{
@@ -327,6 +440,7 @@ function MetricCardUptime() {
 }
 
 function MetricCardDeployments() {
+  const { t } = useLanguage();
   const bars = [0.35, 0.55, 0.25, 0.7, 0.4, 0.9, 0.3, 0.5];
   return (
     <div
@@ -351,7 +465,7 @@ function MetricCardDeployments() {
           marginBottom: "12px",
         }}
       >
-        100K+
+        {t("clients.metric.deployments.value")}
       </h3>
       <div
         style={{
@@ -364,7 +478,7 @@ function MetricCardDeployments() {
           marginBottom: "16px",
         }}
       >
-        Deployments
+        {t("clients.metric.deployments.title")}
       </div>
       <p
         style={{
@@ -376,7 +490,7 @@ function MetricCardDeployments() {
           flex: 1,
         }}
       >
-        Automated provisioning and scaling for micro-infrastructure units across planetary networks.
+        {t("clients.metric.deployments.desc")}
       </p>
       <div
         className="clients-barcode clients-metric-deco"
@@ -408,6 +522,7 @@ function MetricCardDeployments() {
 }
 
 function MetricCardLatency() {
+  const { t } = useLanguage();
   return (
     <div
       className="clients-metric-card"
@@ -431,7 +546,7 @@ function MetricCardLatency() {
             lineHeight: 0.9,
           }}
         >
-          2.4
+          {t("clients.metric.latency.value")}
         </span>
         <span
           style={{
@@ -442,7 +557,7 @@ function MetricCardLatency() {
             marginTop: "6px",
           }}
         >
-          MS
+          {t("clients.metric.latency.unit")}
         </span>
       </div>
       <div
@@ -456,7 +571,7 @@ function MetricCardLatency() {
           marginBottom: "16px",
         }}
       >
-        Avg Latency
+        {t("clients.metric.latency.title")}
       </div>
       <p
         style={{
@@ -468,7 +583,7 @@ function MetricCardLatency() {
           flex: 1,
         }}
       >
-        Optimized edge processing ensuring near-instantaneous command execution for critical robotics.
+        {t("clients.metric.latency.desc")}
       </p>
       <div
         className="clients-latency-bars clients-metric-deco"
@@ -523,10 +638,10 @@ function MetricsSection() {
 const CASE_STUDY_IMAGE =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDURAjrXGd3lzhq1hXzfDsW8R_JKSRWPW8ejJuS02w4VxFW0ILRIhUpMGNqm19vTUDlax_Ur983qXC7rqhw6jgU_lCLKRoTjvcuROYlDxVMUIMDL17GkbkODPOdjfoDrqlQSqfqGy37M-ZM_QwnSLaukt5wTD3KqkNCKDsAqW-rwXpZBO-SwV2bB7qcIpCTCJ9FwCer5Am533lUE2xqQ8qMCvpSduZ3sG5aveo2bFcRizPcnUUK17iUFd9olw_ONLqGaJcYWFpa4Cw";
 
-/** Copper accent for transmission / terminal UI (closer to reference). */
 const COPPER = "#b37b5d";
 
 function CaseStudySection() {
+  const { t } = useLanguage();
   return (
     <section data-reveal style={{ padding: "0 clamp(24px, 3.5vw, 40px) 96px", background: T.surface }}>
       <div
@@ -589,7 +704,7 @@ function CaseStudySection() {
               alignSelf: "flex-start",
             }}
           >
-            Case Study: Cyber-Dynamics
+            {t("clients.case_study.badge")}
           </div>
           <h2
             style={{
@@ -601,13 +716,10 @@ function CaseStudySection() {
               letterSpacing: "-0.02em",
               lineHeight: 1.06,
               marginBottom: "24px",
+              whiteSpace: "pre-line",
             }}
           >
-            Scaling The Neural
-            <br />
-            Grid For
-            <br />
-            Autonomous Cities
+            {t("clients.case_study.title")}
           </h2>
           <p
             style={{
@@ -619,8 +731,7 @@ function CaseStudySection() {
               maxWidth: "42ch",
             }}
           >
-            Discover how Quantum Limited architected a zero-trust network fabric that supports over 1.2 million
-            concurrent IoT nodes with sub-millisecond jitter.
+            {t("clients.case_study.desc")}
           </p>
           <Link
             href="#"
@@ -639,7 +750,7 @@ function CaseStudySection() {
               transition: "opacity 0.2s ease",
             }}
           >
-            Read Specifications
+            {t("clients.case_study.cta")}
             <span aria-hidden style={{ fontSize: "16px" }}>
               →
             </span>
@@ -649,23 +760,6 @@ function CaseStudySection() {
     </section>
   );
 }
-
-const testimonials = [
-  {
-    trace: "TRACE_ID: 9822-TECH",
-    quote:
-      "The integration of the Quantum fabric into our global operations was seamless. Their architectural precision is unmatched in the industry today.",
-    role: "Chief Architect",
-    org: "TECH_CORP GLOBAL",
-  },
-  {
-    trace: "TRACE_ID: 1109-VOID",
-    quote:
-      "Quantum Limited doesn't just build software; they engineer digital environments that are resilient enough for high-stakes autonomous logic.",
-    role: "System Director",
-    org: "VOID.LOGIC",
-  },
-];
 
 function TransmissionSection() {
   const { t } = useLanguage();
@@ -720,7 +814,7 @@ function TransmissionSection() {
               alignSelf: "flex-end",
             }}
           >
-            0X4F92A // PKT_RECV // 200_OK
+            {t("clients.transmission.status")}
           </div>
         </div>
 
@@ -732,9 +826,9 @@ function TransmissionSection() {
           }}
           className="clients-tm-grid"
         >
-          {testimonials.map((t) => (
+          {[0, 1].map((i) => (
             <div
-              key={t.trace}
+              key={i}
               className="clients-tm-cell"
               style={{
                 background: T.surfaceLow,
@@ -763,7 +857,7 @@ function TransmissionSection() {
                     textTransform: "uppercase",
                   }}
                 >
-                  {t.trace}
+                  {t(`clients.testimonial.${i}.trace`)}
                 </span>
               </div>
               <blockquote
@@ -777,7 +871,7 @@ function TransmissionSection() {
                   margin: 0,
                 }}
               >
-                &ldquo;{t.quote}&rdquo;
+                &ldquo;{t(`clients.testimonial.${i}.quote`)}&rdquo;
               </blockquote>
               <div style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: "auto" }}>
                 <div
@@ -806,7 +900,7 @@ function TransmissionSection() {
                       textTransform: "uppercase",
                     }}
                   >
-                    {t.role}
+                    {t(`clients.testimonial.${i}.role`)}
                   </div>
                   <div
                     style={{
@@ -818,7 +912,7 @@ function TransmissionSection() {
                       textTransform: "uppercase",
                     }}
                   >
-                    {t.org}
+                    {t(`clients.testimonial.${i}.org`)}
                   </div>
                 </div>
               </div>
@@ -958,7 +1052,7 @@ function Footer() {
                 marginBottom: "14px",
               }}
             >
-              HQ_Latitude
+              {t("clients.footer.hq_label")}
             </div>
             <div
               style={{
@@ -968,11 +1062,10 @@ function Footer() {
                 color: "#ffffff",
                 lineHeight: 1.55,
                 letterSpacing: "0.02em",
+                whiteSpace: "pre-line",
               }}
             >
-              40.7128° N
-              <br />
-              74.0060° W
+              {t("clients.footer.hq_value")}
             </div>
           </div>
           <div>
@@ -987,7 +1080,7 @@ function Footer() {
                 marginBottom: "14px",
               }}
             >
-              Status
+              {t("clients.footer.status_label")}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
               <span
@@ -1010,124 +1103,12 @@ function Footer() {
                   textTransform: "uppercase",
                 }}
               >
-                All Systems Nominal
+                {t("clients.footer.status_value")}
               </span>
             </div>
           </div>
         </div>
       </div>
     </footer>
-  );
-}
-
-export default function ClientsPage() {
-  return (
-    <>
-      <SiteHeader active="clients" />
-      <main style={{ position: "relative", background: T.surface, paddingTop: "78px" }}>
-        <HeroSection />
-        <MarqueeSection />
-        <MetricsSection />
-        <CaseStudySection />
-        <TransmissionSection />
-      </main>
-      <Footer />
-
-      <style>{`
-        .clients-hero-grid {
-          background-image: radial-gradient(circle, rgba(92, 64, 55, 0.12) 1px, transparent 1px);
-          background-size: 40px 40px;
-        }
-        @keyframes clients-marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .clients-marquee-track {
-          overflow: hidden;
-          width: 100%;
-        }
-        .clients-marquee-inner {
-          display: flex;
-          gap: 64px;
-          width: max-content;
-          animation: clients-marquee 32s linear infinite;
-        }
-        .clients-metric-card {
-          transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .clients-metric-card:hover {
-          transform: translateY(-2px);
-        }
-        .clients-metric-deco {
-          transition: filter 0.55s ease;
-        }
-        .clients-metric-card:hover .clients-metric-deco {
-          filter: grayscale(0%) !important;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .clients-metric-card {
-            transition: none !important;
-          }
-          .clients-metric-card:hover {
-            transform: none !important;
-          }
-        }
-        .clients-case-study:hover .clients-case-study-image img {
-          filter: grayscale(0%) !important;
-        }
-        .clients-tm-cell:first-child {
-          border-right: 1px solid rgba(92,64,55,0.22);
-        }
-        .clients-case-study-cta:hover {
-          opacity: 0.85;
-        }
-        .clients-footer-link:hover {
-          color: #a3a3a3 !important;
-        }
-        @media (max-width: 900px) {
-          .clients-transmission-head {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-          }
-          .clients-transmission-head > div:last-child {
-            align-self: flex-start !important;
-          }
-          .clients-hero-stats {
-            grid-template-columns: 1fr !important;
-            text-align: center;
-          }
-          .clients-hero-stats > div[aria-hidden="true"] {
-            display: none !important;
-          }
-          .clients-metrics-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .clients-case-study {
-            grid-template-columns: 1fr !important;
-          }
-          .clients-tm-cell:first-child {
-            border-right: none !important;
-            border-bottom: 1px solid rgba(92,64,55,0.22) !important;
-          }
-          .clients-tm-grid {
-            grid-template-columns: 1fr !important;
-          }
-          .clients-footer-grid {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 40px !important;
-          }
-          .clients-footer-status {
-            width: 100% !important;
-            min-width: 0 !important;
-          }
-        }
-        @media (max-width: 600px) {
-          .clients-tm-cell {
-            padding: 32px 22px !important;
-          }
-        }
-      `}</style>
-    </>
   );
 }

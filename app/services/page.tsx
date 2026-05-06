@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import React from "react";
 import { SiteHeader } from "../components/SiteHeader";
 import { useLanguage } from "../i18n/LanguageContext";
 
@@ -14,46 +14,85 @@ const T = {
   onSurfaceVar: "#c9b0a8",
   primary: "#ffb59c",
   primaryCtn: "#ff5500",
-  onPrimary: "#390c00",
+  onPrimary: "#511500",
   outline: "#ac897e",
-  outlineVar: "#5c4037",
+  outlineVar: "rgba(92,64,55,0.3)",
 };
 
-function Label({
-  children,
-  color = T.onSurfaceVar,
-  letterSpacing = "0.12em",
-}: {
-  children: React.ReactNode;
-  color?: string;
-  letterSpacing?: string;
-}) {
-  return (
-    <span
-      style={{
-        fontFamily: "var(--font-inter, Inter, sans-serif)",
-        fontSize: "11px",
-        fontWeight: 500,
-        letterSpacing,
-        textTransform: "uppercase",
-        color,
-      }}
-    >
-      {children}
-    </span>
-  );
-}
+const serviceIcons = [
+  "developer_mode_tv",
+  "cloud_done",
+  "neurology",
+  "precision_manufacturing",
+];
 
-function AccentLine() {
+const protocolImages = [
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDSn--JFlMPSBvi_EnY0ljxDoKJnbzt3onWqr9xSD_13OKqmKNtupjfI5HVqOIP2sx36YmvT8l-kP9oGGOIW6ch4DYTNx0yxrzkyodvJqVc2D7v36ZVf_Y0OnU9owE1YRlzOfIDgu4Y9SxznCnUHEHCY2bMCdEsDAkVytB5cNA374LLt85jKuxd2aSkpAkQnln_NJLyXI3CglPb_RJGIU4nBRRGYx_OaiUfV8WZEB_mJN5gH28l3sAaSeC6Y0s2Ovg1u8JDhgXoSDI",
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDrpYaA6xCcGbaX9vf8Mhq6w-fxyzcMHnFxS3Y1ktvgRC4x9cMLc1CNek8dxf70MkvN81_IAY77J3JqHkWMPiefcevCiYn6XGfhvsDlCook9XwgHKiSeMIKSHXPcq97Nn504-kK2nO_53gunGzoWsNITvcWr_W0M8gWTY7VyPrgsi-Sr9pGJSm71FnDxzJbRpkxKWBK1JgNvy0aYjM2MZ0ZyecUyfnq57NTmVFagCsvtart_q55vE_ZQTu_KVF01bol4eIfgakWUKQ",
+  "https://lh3.googleusercontent.com/aida-public/AB6AXuDnbuZXqigG8X3ZNgeVNFt7UvjMpo8JxuBwjw2wornLjOLRVBatADchP7US7Mq3TbFlWT0XqvBhSBkvwZp1KqJSZUIUqaLJL7E0AKf8UPps5g3I793e0P9oJquNvw_9QhMbeey0h2xk6WLISGVEneoPxmgW7dI1J3vEllb-1Eo-36OYhe9tZyVgtospHmBSfuUTLY4WL_AcxPY2hUyWBLnbSifTw4q5z_iA2Fw5zqQNDh0p6-QEqnF4ji37vDRi7Spjogy09_7pmHg",
+];
+
+export default function ServicesPage() {
   return (
-    <div
-      style={{
-        width: "40px",
-        height: "2px",
-        background: T.primaryCtn,
-        flexShrink: 0,
-      }}
-    />
+    <>
+      <SiteHeader active="services" />
+      <main style={{ background: T.surface, minHeight: "100vh", paddingTop: "78px" }}>
+        <HeroSection />
+        <ModulesSection />
+        <ProtocolSection />
+        <ContactSection />
+        <Footer />
+      </main>
+
+      <style>{`
+        #services-hero {
+          background-image: radial-gradient(circle at 2px 2px, rgba(92,64,55,0.12) 1px, transparent 0);
+          background-size: 40px 40px;
+        }
+        .services-card {
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+          border: 1px solid rgba(92,64,55,0.1);
+        }
+        .services-card:hover {
+          transform: translateY(-4px);
+          background: #231d1b !important;
+          border-color: rgba(255,85,0,0.25);
+        }
+        .service-link:hover { gap: 12px !important; }
+        .protocol-row-image img {
+          transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .protocol-row:hover .protocol-row-image img {
+          transform: scale(1.04);
+        }
+        .services-contact-input:focus {
+          border-bottom-color: ${T.primaryCtn} !important;
+        }
+        .services-contact-btn:hover {
+          filter: brightness(1.1);
+        }
+        @media (max-width: 1100px) {
+          .services-hero-grid { grid-template-columns: 1fr !important; gap: 64px !important; }
+          .services-hero-image-wrap { max-width: 600px; margin: 0 auto; }
+        }
+        @media (max-width: 900px) {
+          .services-modules-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 768px) {
+          .protocol-row { flex-direction: column !important; gap: 40px !important; }
+          .protocol-row-content { 
+            max-width: 100% !important; 
+            text-align: left !important; 
+            padding: 0 !important;
+            order: 2;
+          }
+          .protocol-row-image { 
+            padding: 0 !important;
+            order: 1;
+          }
+        }
+      `}</style>
+    </>
   );
 }
 
@@ -62,92 +101,71 @@ function HeroSection() {
   return (
     <section
       data-reveal
+      id="services-hero"
       style={{
-        minHeight: "clamp(560px, 78dvh, 820px)",
-        background: T.surface,
-        borderBottom: `1px solid rgba(92,64,55,0.15)`,
-        position: "relative",
-        overflow: "hidden",
-        paddingTop: "78px",
+        padding: "clamp(64px, 12vw, 120px) clamp(24px, 4vw, 48px)",
+        borderBottom: `1px solid rgba(92,64,55,0.1)`,
       }}
     >
-      <div className="micro-grid" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
-      <div className="scan-line" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
-
       <div
         className="services-hero-grid"
         style={{
           maxWidth: "min(1920px, 100%)",
           margin: "0 auto",
-          padding: "0 clamp(24px, 4vw, 48px)",
-          minHeight: "min(788px, 70dvh)",
           display: "grid",
-          gridTemplateColumns: "1.18fr 0.82fr",
-          gap: "clamp(48px, 6vw, 96px)",
+          gridTemplateColumns: "1.2fr 1fr",
           alignItems: "center",
+          gap: "96px",
         }}
       >
-        <div style={{ position: "relative", zIndex: 2 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "28px" }}>
-            <AccentLine />
-            <Label color={T.primaryCtn} letterSpacing="0.32em">
-              {t("services.hero.badge")}
-            </Label>
-          </div>
-
+        <div>
+          <Label letterSpacing="0.4em">{t("services.hero.badge")}</Label>
           <h1
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "clamp(64px, 7vw, 96px)",
+              fontSize: "clamp(48px, 8vw, 120px)",
               fontWeight: 700,
-              letterSpacing: "-0.05em",
-              lineHeight: 0.92,
+              lineHeight: 0.9,
               color: T.onSurface,
-              marginBottom: "36px",
+              letterSpacing: "-0.04em",
+              textTransform: "uppercase",
+              margin: "32px 0 40px",
             }}
           >
             {t("services.hero.title1")}
             <br />
-            {t("services.hero.title2")} <span style={{ color: T.primaryCtn }}>{t("services.hero.title3")}</span>
+            {t("services.hero.title2")}
+            <br />
+            <span style={{ color: T.primaryCtn }}>{t("services.hero.title3")}</span>
           </h1>
-
           <p
             style={{
               fontFamily: "var(--font-inter, Inter, sans-serif)",
-              fontSize: "16px",
-              fontWeight: 400,
+              fontSize: "clamp(18px, 2vw, 22px)",
+              lineHeight: 1.6,
               color: T.onSurfaceVar,
-              maxWidth: "min(640px, 100%)",
-              lineHeight: 1.7,
-              marginBottom: "40px",
+              maxWidth: "600px",
+              fontWeight: 300,
+              marginBottom: "56px",
             }}
           >
             {t("services.hero.description")}
           </p>
 
-          <div style={{ display: "flex", gap: "28px", flexWrap: "wrap" }}>
-            <Metric label={t("services.hero.metric1")} value="99.9999%" />
-            <Metric label={t("services.hero.metric2")} value="<1.2MS" />
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
+            <Metric label={t("services.hero.metric1")} value="99.99%" />
+            <Metric label={t("services.hero.metric2")} value="<2MS" />
           </div>
         </div>
 
-        <div style={{ position: "relative" }}>
+        <div className="services-hero-image-wrap" style={{ position: "relative" }}>
           <div
             style={{
-              position: "absolute",
-              inset: "14% 10%",
-              background: `radial-gradient(circle, ${T.primaryCtn}18 0%, transparent 70%)`,
-              filter: "blur(70px)",
-            }}
-          />
-          <div
-            style={{
-              position: "relative",
-              background: "#080808",
-              border: `1px solid rgba(92,64,55,0.2)`,
-              padding: "0",
+              padding: "1px",
+              background: `linear-gradient(135deg, rgba(255,85,0,0.3) 0%, transparent 100%)`,
             }}
           >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttXQVEV3FwQ7cfpG2bHXL2J0OQ1MJqtlH_9rebYkFRa8b7bX64HD2KHYwCm4FYFghmRyTsT3YHwLmAUPWBxxQ0jGr_KEPyNN3c1TJMbDzMJK9LnkMSGlyrqFuCFrVVp0h_yohY7cmu34TOL9CAk1KRht9Q2kK_uix1Iv99SZria3XPRMSLT6ozgA3IrnOLn0oNW0o5XscfldShYC-szRhh2-d2GeVEbjBIVZOtskcZqkyvsJ8XeJHLMb_BcBIq2I4NxYdA-QhKpE"
               alt="Technical render"
@@ -173,7 +191,7 @@ function HeroSection() {
                 letterSpacing: "0.14em",
               }}
             >
-              [OBJECT_RENDER_001]
+              {t("services.hero.render_label")}
             </div>
           </div>
         </div>
@@ -181,71 +199,6 @@ function HeroSection() {
     </section>
   );
 }
-
-function Metric({ label, value }: { label: string; value: string }) {
-  return (
-    <div style={{ borderLeft: `2px solid ${T.primaryCtn}`, paddingLeft: "14px" }}>
-      <div
-        style={{
-          fontFamily: "var(--font-inter, Inter, sans-serif)",
-          fontSize: "10px",
-          letterSpacing: "0.14em",
-          textTransform: "uppercase",
-          color: T.primary,
-          marginBottom: "6px",
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "30px",
-          fontWeight: 700,
-          color: T.onSurface,
-          lineHeight: 1,
-        }}
-      >
-        {value}
-      </div>
-    </div>
-  );
-}
-
-const serviceCards = [
-  {
-    mod: "MOD_01",
-    icon: "developer_mode_tv",
-    title: "Custom Software Engineering",
-    desc: "High-scale, high-frequency execution environments tailored for financial markets and complex data processing pipelines.",
-    statA: ["Throughput", "1.2M REQ/S"],
-    statB: ["Architecture", "RUST/LLVM"],
-  },
-  {
-    mod: "MOD_02",
-    icon: "cloud_done",
-    title: "Cloud Infrastructure",
-    desc: "Redundant, zero-latency distributed systems with global failover and autonomous infrastructure scaling protocols.",
-    statA: ["Global Latency", "<15MS AVG"],
-    statB: ["Redundancy", "MULTI-AZ L3"],
-  },
-  {
-    mod: "MOD_03",
-    icon: "neurology",
-    title: "AI & Neural Integration",
-    desc: "Automated decision-making and predictive analytics at the edge, utilizing custom neural weights for industrial precision.",
-    statA: ["Inference Time", "0.4MS"],
-    statB: ["Precision", "FP16/INT8"],
-  },
-  {
-    mod: "MOD_04",
-    icon: "precision_manufacturing",
-    title: "Cyber-Physical Systems",
-    desc: "Bridging the gap between software and industrial hardware through robust PLC integrations and real-time SCADA systems.",
-    statA: ["IO Sync", "10KHZ"],
-    statB: ["Protocol", "ETHERCAT/MQTT"],
-  },
-];
 
 function ModulesSection() {
   const { t } = useLanguage();
@@ -287,8 +240,8 @@ function ModulesSection() {
             border: "1px solid rgba(92,64,55,0.18)",
           }}
         >
-          {serviceCards.map((card) => (
-            <ServiceCard key={card.mod} {...card} />
+          {serviceIcons.map((icon, i) => (
+            <ServiceCard key={i} index={i} icon={icon} />
           ))}
         </div>
       </div>
@@ -297,20 +250,13 @@ function ModulesSection() {
 }
 
 function ServiceCard({
-  mod,
+  index,
   icon,
-  title,
-  desc,
-  statA,
-  statB,
 }: {
-  mod: string;
+  index: number;
   icon: string;
-  title: string;
-  desc: string;
-  statA: string[];
-  statB: string[];
 }) {
+  const { t } = useLanguage();
   return (
     <article className="services-card" style={{ background: "#1b1715", padding: "52px 40px 48px", minHeight: "430px" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "44px" }}>
@@ -323,7 +269,7 @@ function ServiceCard({
             color: T.primaryCtn,
           }}
         >
-          {mod}
+          {t(`services.card.${index}.mod`)}
         </div>
         <span
           className="material-symbols-outlined"
@@ -348,7 +294,7 @@ function ServiceCard({
           maxWidth: "360px",
         }}
       >
-        {title}
+        {t(`services.card.${index}.title`)}
       </h3>
 
       <p
@@ -361,12 +307,12 @@ function ServiceCard({
           maxWidth: "420px",
         }}
       >
-        {desc}
+        {t(`services.card.${index}.desc`)}
       </p>
 
       <div className="services-card-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "34px" }}>
-        <MetricBox label={statA[0]} value={statA[1]} />
-        <MetricBox label={statB[0]} value={statB[1]} />
+        <MetricBox label={t(`services.card.${index}.statA.label`)} value={t(`services.card.${index}.statA.value`)} />
+        <MetricBox label={t(`services.card.${index}.statB.label`)} value={t(`services.card.${index}.statB.value`)} />
       </div>
 
       <a
@@ -385,12 +331,375 @@ function ServiceCard({
           transition: "gap 0.3s ease",
         }}
       >
-        View Protocol
+        {t("services.card.view_protocol")}
         <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontSize: "16px" }}>
           arrow_forward
         </span>
       </a>
     </article>
+  );
+}
+
+function ProtocolSection() {
+  const { t } = useLanguage();
+  return (
+    <section
+      data-reveal
+      id="process"
+      style={{
+        background: T.surface,
+        padding: "96px clamp(24px, 4vw, 48px) 120px",
+      }}
+    >
+      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", width: "100%" }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+            fontSize: "clamp(40px, 5vw, 60px)",
+            fontWeight: 700,
+            color: T.onSurface,
+            letterSpacing: "-0.04em",
+            textAlign: "left",
+            marginBottom: "56px",
+            textTransform: "uppercase",
+            maxWidth: "min(1200px, 100%)",
+          }}
+        >
+          {t("services.protocol.title")}
+        </h2>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(72px, 8vw, 112px)" }}>
+          {[0, 1, 2].map((i) => (
+            <ProtocolRow
+              key={i}
+              phase={t(`services.protocol.${i}.phase`)}
+              title={t(`services.protocol.${i}.title`)}
+              desc={t(`services.protocol.${i}.desc`)}
+              image={protocolImages[i]}
+              imageLeft={i === 1}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ProtocolRow({
+  phase,
+  title,
+  desc,
+  image,
+  imageLeft = false,
+}: {
+  phase: string;
+  title: string;
+  desc: string;
+  image: string;
+  imageLeft?: boolean;
+}) {
+  return (
+    <div
+      className="protocol-row"
+      style={{
+        display: "flex",
+        flexDirection: imageLeft ? "row-reverse" : "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: "64px",
+      }}
+    >
+      <div
+        className="protocol-row-content"
+        style={{
+          flex: "1 1 50%",
+          maxWidth: "520px",
+          textAlign: "left",
+        }}
+      >
+        <Label color={T.primaryCtn} letterSpacing="0.22em">
+          {phase}
+        </Label>
+        <h3
+          style={{
+            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+            fontSize: "clamp(28px, 3.5vw, 44px)",
+            fontWeight: 700,
+            color: "#ffffff",
+            textTransform: "uppercase",
+            letterSpacing: "-0.02em",
+            margin: "24px 0 28px",
+          }}
+        >
+          {title}
+        </h3>
+        <p
+          style={{
+            fontFamily: "var(--font-inter, Inter, sans-serif)",
+            fontSize: "17px",
+            lineHeight: 1.7,
+            color: T.onSurfaceVar,
+            margin: 0,
+          }}
+        >
+          {desc}
+        </p>
+      </div>
+
+      <div
+        className="protocol-row-image"
+        style={{
+          flex: "1 1 50%",
+          padding: imageLeft ? "0 48px 0 0" : "0 0 0 48px",
+        }}
+      >
+        <div style={{ position: "relative", padding: "1px", background: `rgba(92,64,55,0.15)` }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={image}
+            alt={title}
+            style={{
+              display: "block",
+              width: "100%",
+              height: "auto",
+              aspectRatio: "16 / 10",
+              objectFit: "cover",
+              filter: "grayscale(1) brightness(0.85)",
+            }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ContactSection() {
+  const { t } = useLanguage();
+  return (
+    <section
+      data-reveal
+      style={{
+        padding: "clamp(80px, 10vw, 120px) clamp(24px, 4vw, 48px)",
+        background: "#0d0d0d",
+        borderTop: `1px solid rgba(92,64,55,0.1)`,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "800px",
+          margin: "0 auto",
+          textAlign: "center",
+        }}
+      >
+        <h2
+          style={{
+            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+            fontSize: "clamp(32px, 5vw, 56px)",
+            fontWeight: 700,
+            color: "#ffffff",
+            textTransform: "uppercase",
+            letterSpacing: "-0.03em",
+            marginBottom: "24px",
+          }}
+        >
+          {t("services.contact.title")}
+        </h2>
+        <p
+          style={{
+            fontFamily: "var(--font-inter, Inter, sans-serif)",
+            fontSize: "18px",
+            color: T.onSurfaceVar,
+            lineHeight: 1.6,
+            marginBottom: "48px",
+          }}
+        >
+          {t("services.contact.description")}
+        </p>
+
+        <form
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "24px",
+            maxWidth: "480px",
+            margin: "0 auto",
+          }}
+        >
+          <input
+            className="services-contact-input"
+            type="email"
+            placeholder={t("services.contact.placeholder")}
+            style={{
+              background: "transparent",
+              border: "none",
+              borderBottom: `1px solid rgba(92,64,55,0.4)`,
+              padding: "16px 0",
+              color: "#ffffff",
+              fontFamily: "ui-monospace, monospace",
+              fontSize: "14px",
+              outline: "none",
+              textAlign: "center",
+              transition: "border-color 0.3s ease",
+            }}
+          />
+          <button
+            className="services-contact-btn"
+            style={{
+              background: T.primaryCtn,
+              color: T.onPrimary,
+              padding: "18px",
+              border: "none",
+              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+              fontWeight: 700,
+              fontSize: "14px",
+              letterSpacing: "0.14em",
+              textTransform: "uppercase",
+              cursor: "pointer",
+              transition: "filter 0.3s ease",
+            }}
+          >
+            {t("services.contact.execute")}
+          </button>
+          <p
+            style={{
+              fontSize: "10px",
+              letterSpacing: "0.12em",
+              color: "rgba(172, 137, 126, 0.45)",
+              textTransform: "uppercase",
+              marginTop: "12px",
+            }}
+          >
+            {t("services.contact.note")}
+          </p>
+        </form>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  const { t } = useLanguage();
+  return (
+    <footer
+      style={{
+        padding: "64px clamp(24px, 4vw, 48px) 48px",
+        background: T.surface,
+        borderTop: `1px solid rgba(92,64,55,0.08)`,
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "min(1920px, 100%)",
+          margin: "0 auto",
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "40px",
+        }}
+      >
+        <div>
+          <div
+            style={{
+              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+              fontSize: "16px",
+              fontWeight: 700,
+              color: "#ffffff",
+              letterSpacing: "0.1em",
+              marginBottom: "12px",
+            }}
+          >
+            {t("services.footer.brand")}
+          </div>
+          <p
+            style={{
+              fontFamily: "var(--font-inter, Inter, sans-serif)",
+              fontSize: "12px",
+              color: "rgba(161, 161, 170, 0.6)",
+              margin: 0,
+            }}
+          >
+            {t("services.footer.copy")}
+          </p>
+        </div>
+
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "32px" }}>
+          {[t("services.footer.privacy"), t("services.footer.sla"), t("services.footer.network")].map((link) => (
+            <a
+              key={link}
+              href="#"
+              style={{
+                fontSize: "11px",
+                textTransform: "uppercase",
+                letterSpacing: "0.14em",
+                color: "rgba(161, 161, 170, 0.7)",
+                textDecoration: "none",
+                fontFamily: "var(--font-inter, Inter, sans-serif)",
+              }}
+            >
+              {link}
+            </a>
+          ))}
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+function Label({
+  children,
+  color = T.primary,
+  letterSpacing = "0.3em",
+}: {
+  children: React.ReactNode;
+  color?: string;
+  letterSpacing?: string;
+}) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <span
+        style={{
+          fontFamily: "ui-monospace, monospace",
+          fontSize: "11px",
+          fontWeight: 700,
+          letterSpacing,
+          color: color,
+          textTransform: "uppercase",
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div style={{ borderLeft: `2px solid ${T.primaryCtn}`, paddingLeft: "14px" }}>
+      <div
+        style={{
+          fontFamily: "var(--font-inter, Inter, sans-serif)",
+          fontSize: "10px",
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: T.primary,
+          marginBottom: "6px",
+        }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+          fontSize: "30px",
+          fontWeight: 700,
+          color: T.onSurface,
+          lineHeight: 1,
+        }}
+      >
+        {value}
+      </div>
+    </div>
   );
 }
 
@@ -426,474 +735,5 @@ function MetricBox({ label, value }: { label: string; value: string }) {
         {value}
       </div>
     </div>
-  );
-}
-
-const protocolSteps = [
-  {
-    phase: "PHASE_01",
-    title: "SYSTEM DISCOVERY",
-    desc: "Deep analysis of operational requirements, data flow mapping, and performance bottleneck identification.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDSn--JFlMPSBvi_EnY0ljxDoKJnbzt3onWqr9xSD_13OKqmKNtupjfI5HVqOIP2sx36YmvT8l-kP9oGGOIW6ch4DYTNx0yxrzkyodvJqVc2D7v36ZVf_Y0OnU9owE1YRlzOfIDgu4Y9SxznCnUHEHCY2bMCdEsDAkVytB5cNA374LLt85jKuxd2aSkpAkQnln_NJLyXI3CglPb_RJGIU4nBRRGYx_OaiUfV8WZEB_mJN5gH28l3sAaSeC6Y0s2Ovg1u8JDhgXoSDI",
-    imageLeft: false,
-  },
-  {
-    phase: "PHASE_02",
-    title: "ENGINEERING",
-    desc: "Implementation of core logic using performance-first languages and highly optimized data structures.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDrpYaA6xCcGbaX9vf8Mhq6w-fxyzcMHnFxS3Y1ktvgRC4x9cMLc1CNek8dxf70MkvN81_IAY77J3JqHkWMPiefcevCiYn6XGfhvsDlCook9XwgHKiSeMIKSHXPcq97Nn504-kK2nO_53gunGzoWsNITvcWr_W0M8gWTY7VyPrgsi-Sr9pGJSm71FnDxzJbRpkxKWBK1JgNvy0aYjM2MZ0ZyecUyfnq57NTmVFagCsvtart_q55vE_ZQTu_KVF01bol4eIfgakWUKQ",
-    imageLeft: true,
-  },
-  {
-    phase: "PHASE_03",
-    title: "STRESS TESTING",
-    desc: "Synthetic load generation to test edge-case stability and system endurance under extreme conditions.",
-    image:
-      "https://lh3.googleusercontent.com/aida-public/AB6AXuDnbuZXqigG8X3ZNgeVNFt7UvjMpo8JxuBwjw2wornLjOLRVBatADchP7US7Mq3TbFlWT0XqvBhSBkvwZp1KqJSZUIUqaLJL7E0AKf8UPps5g3I793e0P9oJquNvw_9QhMbeey0h2xk6WLISGVEneoPxmgW7dI1J3vEllb-1Eo-36OYhe9tZyVgtospHmBSfuUTLY4WL_AcxPY2hUyWBLnbSifTw4q5z_iA2Fw5zqQNDh0p6-QEqnF4ji37vDRi7Spjogy09_7pmHg",
-    imageLeft: false,
-  },
-];
-
-function ProtocolSection() {
-  return (
-    <section
-      data-reveal
-      id="process"
-      style={{
-        background: T.surface,
-        padding: "96px clamp(24px, 4vw, 48px) 120px",
-      }}
-    >
-      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", width: "100%" }}>
-        <h2
-          style={{
-            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "clamp(40px, 5vw, 60px)",
-            fontWeight: 700,
-            color: T.onSurface,
-            letterSpacing: "-0.04em",
-            textAlign: "left",
-            marginBottom: "56px",
-            textTransform: "uppercase",
-            maxWidth: "min(1200px, 100%)",
-          }}
-        >
-          The Architectural Protocol
-        </h2>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: "clamp(72px, 8vw, 112px)" }}>
-          {protocolSteps.map((step) => (
-            <ProtocolRow key={step.phase} {...step} />
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function ProtocolRow({
-  phase,
-  title,
-  desc,
-  image,
-  imageLeft,
-}: {
-  phase: string;
-  title: string;
-  desc: string;
-  image: string;
-  imageLeft: boolean;
-}) {
-  const textBlock = (
-    <div
-      className="protocol-row-text"
-      style={{
-        flex: "1 1 0",
-        minWidth: 0,
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        textAlign: imageLeft ? "left" : "right",
-        padding: imageLeft ? "16px 0 16px clamp(8px, 3vw, 48px)" : "16px clamp(8px, 3vw, 48px) 16px 0",
-      }}
-    >
-      <div
-        style={{
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "11px",
-          fontWeight: 700,
-          letterSpacing: "0.34em",
-          color: T.primaryCtn,
-          marginBottom: "16px",
-          textTransform: "uppercase",
-        }}
-      >
-        {phase}
-      </div>
-      <div
-        style={{
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "clamp(22px, 2.4vw, 30px)",
-          fontWeight: 700,
-          color: T.onSurface,
-          marginBottom: "18px",
-          textTransform: "uppercase",
-          lineHeight: 1.15,
-        }}
-      >
-        {title}
-      </div>
-      <div
-        style={{
-          fontFamily: "var(--font-inter, Inter, sans-serif)",
-          fontSize: "16px",
-          lineHeight: 1.75,
-          color: T.onSurfaceVar,
-          maxWidth: "min(100%, 580px)",
-          marginLeft: imageLeft ? 0 : "auto",
-        }}
-      >
-        {desc}
-      </div>
-    </div>
-  );
-
-  const imageBlock = (
-    <div
-      className="protocol-row-image"
-      style={{
-        flex: "1 1 0",
-        minWidth: 0,
-        padding: imageLeft ? "0 clamp(8px, 3vw, 40px) 0 0" : "0 0 0 clamp(8px, 3vw, 40px)",
-      }}
-    >
-      <img
-        src={image}
-        alt={title}
-        style={{
-          display: "block",
-          width: "100%",
-          height: "clamp(240px, 28vw, 320px)",
-          objectFit: "cover",
-          border: `1px solid rgba(92,64,55,0.18)`,
-          filter: "grayscale(1) brightness(0.78) contrast(1.05)",
-        }}
-      />
-    </div>
-  );
-
-  return (
-    <div
-      className="protocol-row"
-      style={{
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        gap: "clamp(28px, 4vw, 72px)",
-      }}
-    >
-      {imageLeft ? imageBlock : textBlock}
-      <div className="protocol-row-mid" style={{ flex: "0 0 40px", display: "flex", justifyContent: "center", alignSelf: "center" }}>
-        <div style={{ width: "8px", height: "8px", background: T.primaryCtn }} />
-      </div>
-      {imageLeft ? textBlock : imageBlock}
-    </div>
-  );
-}
-
-function ContactSection() {
-  const { t } = useLanguage();
-  return (
-    <section
-      data-reveal
-      id="contact"
-      style={{
-        background: "#191919",
-        padding: "clamp(72px, 12vw, 120px) 0",
-        position: "relative",
-        overflow: "hidden",
-      }}
-    >
-      <div className="micro-grid" style={{ position: "absolute", inset: 0, pointerEvents: "none" }} />
-
-      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto", padding: "0 clamp(20px, 4vw, 48px)", position: "relative", zIndex: 1, width: "100%", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" }}>
-        <div style={{ maxWidth: "min(720px, 100%)" }}>
-          <h2
-            style={{
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "clamp(56px, 7vw, 78px)",
-              fontWeight: 700,
-              letterSpacing: "-0.05em",
-              lineHeight: 0.96,
-              color: T.onSurface,
-              marginBottom: "24px",
-              textTransform: "uppercase",
-            }}
-          >
-            {t("services.contact.title")}
-          </h2>
-
-          <p
-            style={{
-              fontFamily: "var(--font-inter, Inter, sans-serif)",
-              fontSize: "16px",
-              lineHeight: 1.7,
-              color: T.onSurfaceVar,
-              maxWidth: "640px",
-              margin: "0 auto 44px",
-            }}
-          >
-            {t("services.contact.description")}
-          </p>
-
-          <div
-            className="services-contact-form"
-            style={{
-              maxWidth: "min(560px, 100%)",
-              margin: "0 auto",
-              border: `1px solid rgba(92,64,55,0.2)`,
-              display: "grid",
-              gridTemplateColumns: "1fr min(170px, 34%)",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                background: "#111111",
-                display: "flex",
-                alignItems: "center",
-                gap: "14px",
-                padding: "20px 18px",
-              }}
-            >
-              <span
-                style={{
-                  color: T.primary,
-                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                  fontWeight: 700,
-                }}
-              >
-                &gt;
-              </span>
-              <input
-                type="email"
-                placeholder={t("services.contact.placeholder")}
-                style={{
-                  width: "100%",
-                  background: "transparent",
-                  border: "none",
-                  outline: "none",
-                  color: T.onSurface,
-                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                  fontSize: "12px",
-                  letterSpacing: "0.14em",
-                }}
-              />
-            </div>
-
-            <button
-              style={{
-                background: T.primaryCtn,
-                color: T.onPrimary,
-                border: "none",
-                fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                fontSize: "16px",
-                fontWeight: 700,
-                letterSpacing: "0.12em",
-                textTransform: "uppercase",
-                cursor: "pointer",
-              }}
-            >
-              {t("services.contact.execute")}
-            </button>
-          </div>
-
-          <div
-            style={{
-              marginTop: "20px",
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "9px",
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: "#8a7c76",
-            }}
-          >
-            {t("services.contact.note")}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer
-      data-reveal
-      id="footer"
-      style={{
-        background: "#191919",
-        padding: "0 0 36px",
-      }}
-    >
-      <div
-        className="services-footer-inner"
-        style={{
-          maxWidth: "min(1920px, 100%)",
-          margin: "0 auto",
-          padding: "0 clamp(20px, 4vw, 48px)",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
-          gap: "24px",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "20px",
-              fontWeight: 700,
-              color: T.onSurface,
-              letterSpacing: "0.12em",
-              marginBottom: "10px",
-            }}
-          >
-            {t("services.footer.brand")}
-          </div>
-          <div
-            style={{
-              fontFamily: "var(--font-inter, Inter, sans-serif)",
-              fontSize: "10px",
-              color: "#6f6763",
-              textTransform: "uppercase",
-              letterSpacing: "0.02em",
-            }}
-          >
-            {t("services.footer.copy")}
-          </div>
-        </div>
-
-        <div style={{ display: "flex", gap: "28px", flexWrap: "wrap" }}>
-          {[t("services.footer.privacy"), t("services.footer.sla"), t("services.footer.network")].map((item) => (
-            <a
-              key={item}
-              href="#"
-              style={{
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-                fontSize: "10px",
-                color: "#6f6763",
-                textTransform: "uppercase",
-                letterSpacing: "0.04em",
-                textDecoration: "none",
-              }}
-            >
-              {item}
-            </a>
-          ))}
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-export default function ServicesPage() {
-  return (
-    <>
-      <SiteHeader active="services" />
-      <HeroSection />
-      <ModulesSection />
-      <ProtocolSection />
-      <ContactSection />
-      <Footer />
-
-      <style>{`
-        .services-card {
-          transition:
-            background 0.35s ease,
-            transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .services-card:hover {
-          background: ${T.surfaceContainer} !important;
-          transform: translateY(-3px);
-        }
-        .service-link {
-          transition: gap 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-        .service-link:hover {
-          gap: 16px !important;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .services-card {
-            transition: background 0.2s ease !important;
-          }
-          .services-card:hover {
-            transform: none !important;
-          }
-        }
-        @media (max-width: 900px) {
-          #site-nav {
-            position: sticky !important;
-          }
-        }
-        @media (max-width: 980px) {
-          .services-hero-grid {
-            grid-template-columns: 1fr !important;
-            min-height: 0 !important;
-          }
-        }
-        @media (max-width: 900px) {
-          .services-modules-grid {
-            grid-template-columns: 1fr !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .services-card-metrics {
-            grid-template-columns: 1fr !important;
-          }
-        }
-        @media (max-width: 520px) {
-          .services-contact-form {
-            grid-template-columns: 1fr !important;
-          }
-          .services-contact-form button {
-            min-height: 48px;
-          }
-          .services-card {
-            min-height: 0 !important;
-            padding: 36px 22px 32px !important;
-          }
-        }
-        @media (max-width: 640px) {
-          .services-footer-inner {
-            flex-direction: column !important;
-            align-items: flex-start !important;
-          }
-        }
-        @media (max-width: 900px) {
-          .protocol-row {
-            flex-direction: column !important;
-            align-items: stretch !important;
-            gap: 28px !important;
-          }
-          .protocol-row-mid {
-            display: none !important;
-          }
-          .protocol-row-text {
-            text-align: left !important;
-            padding: 0 !important;
-            order: 2;
-          }
-          .protocol-row-image {
-            padding: 0 !important;
-            order: 1;
-          }
-        }
-      `}</style>
-    </>
   );
 }

@@ -43,12 +43,10 @@ function HeroSection() {
 
   useEffect(() => {
     if (videoRef.current) {
-      // Ensure the video plays as fast as possible
       videoRef.current.play().catch(() => {
         setIsVideoFinished(true);
       });
     }
-    // Fallback: guarantee text appearance after 5s
     const fallback = setTimeout(() => setIsVideoFinished(true), 5000);
     return () => clearTimeout(fallback);
   }, []);
@@ -62,7 +60,7 @@ function HeroSection() {
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
-        background: "#060606", // Solid dark background while video loads
+        background: "#060606",
         overflow: "hidden",
       }}
     >
@@ -84,7 +82,6 @@ function HeroSection() {
             backgroundColor: "#060606",
           }}
         />
-        {/* Dynamic overlay that intensifies when video finishes for text readability */}
         <div
           style={{
             position: "absolute",
@@ -217,7 +214,7 @@ function HeroSection() {
               <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
                 terminal
               </span>
-              EST. 2024 / PROTOCOL ALPHA
+              {t("home.hero.protocol")}
             </div>
           </div>
         </div>
@@ -239,16 +236,6 @@ function CompetenciesSection() {
         overflow: "hidden",
       }}
     >
-      <div
-        aria-hidden
-        style={{
-          position: "absolute",
-          inset: 0,
-          background: "transparent",
-          zIndex: 1,
-          pointerEvents: "none",
-        }}
-      />
       <div className="home-tech-svg" aria-hidden style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0.1 }}>
         <svg viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" style={{ width: "100%", height: "100%", maxWidth: "1200px", margin: "0 auto", display: "block" }}>
           <path d="M100 100 H900 V900 H100 Z" fill="none" stroke="#FF5500" strokeWidth="0.5" />
@@ -282,7 +269,7 @@ function CompetenciesSection() {
                   color: T.primarySoft,
                 }}
               >
-                SYSTEM_MODULE:04 // CAPABILITIES
+                {t("home.competencies.badge")}
               </span>
             </div>
             <h2
@@ -310,11 +297,11 @@ function CompetenciesSection() {
               maxWidth: "220px",
             }}
           >
-            [01] ANALYSIS_PROTOCOL
+            {t("home.competencies.protocol.0")}
             <br />
-            [02] ARCHITECTURE_DESIGN
+            {t("home.competencies.protocol.1")}
             <br />
-            [03] DEPLOYMENT_STREAM
+            {t("home.competencies.protocol.2")}
           </div>
         </div>
 
@@ -327,7 +314,6 @@ function CompetenciesSection() {
           }}
           className="home-comp-grid"
         >
-          {/* Featured card */}
           <div className="home-feature-card home-glass" style={{ gridColumn: "span 12", position: "relative", overflow: "hidden", padding: "1px" }}>
             <div className="home-scan-line" aria-hidden />
             <div style={{ position: "relative", zIndex: 2, padding: "clamp(32px, 4vw, 48px)", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "420px" }}>
@@ -389,12 +375,12 @@ function CompetenciesSection() {
               >
                 <div style={{ display: "flex", gap: "40px" }}>
                   <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", letterSpacing: "0.16em" }}>
-                    <span style={{ color: T.primary, display: "block", marginBottom: "4px" }}>STATUS</span>
-                    <span style={{ color: "#fff" }}>OPERATIONAL</span>
+                    <span style={{ color: T.primary, display: "block", marginBottom: "4px" }}>{t("common.status")}</span>
+                    <span style={{ color: "#fff" }}>{t("common.operational")}</span>
                   </div>
                   <div style={{ fontFamily: "ui-monospace, monospace", fontSize: "10px", letterSpacing: "0.16em" }}>
-                    <span style={{ color: T.primary, display: "block", marginBottom: "4px" }}>LATENCY</span>
-                    <span style={{ color: "#fff" }}>0.002MS</span>
+                    <span style={{ color: T.primary, display: "block", marginBottom: "4px" }}>{t("common.latency")}</span>
+                    <span style={{ color: "#fff" }}>{t("common.latency_value")}</span>
                   </div>
                 </div>
                 <Link
@@ -413,35 +399,26 @@ function CompetenciesSection() {
                   }}
                   className="home-schema-btn"
                 >
-                  VIEW SCHEMA_01
+                  {t("home.feature.cta")}
                 </Link>
               </div>
             </div>
           </div>
 
-          {/* Side stack */}
           <div style={{ gridColumn: "span 12", display: "flex", flexDirection: "column", gap: "32px" }} className="home-side-stack">
             {[
               {
-                title: (
-                  <>
-                    Cloud <span style={{ color: T.primary }}>Architecture</span>
-                  </>
-                ),
-                body: "Redundant, distributed infrastructure deployment optimized for global availability and zero-latency access across all nodes.",
+                title: t("home.competencies.card1.title"),
+                body: t("home.competencies.card1.body"),
                 icon: "hub",
-                tag: "INFRA_PROTOCOL.v2",
+                tag: t("home.competencies.card1.tag"),
                 scanDelay: "1.5s",
               },
               {
-                title: (
-                  <>
-                    Neural <span style={{ color: T.primary }}>Integration</span>
-                  </>
-                ),
-                body: "Seamless neural network implementation for automated decision-making and predictive analytics at the edge.",
+                title: t("home.competencies.card2.title"),
+                body: t("home.competencies.card2.body"),
                 icon: "memory",
-                tag: "NEURAL_SYNC_ACTIVE",
+                tag: t("home.competencies.card2.tag"),
                 scanDelay: "3s",
               },
             ].map((card) => (
@@ -589,7 +566,7 @@ function MethodologySection() {
             >
               <p style={{ fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", fontSize: "clamp(32px, 5vw, 40px)", fontWeight: 700, color: "#fff", margin: "0 0 6px 0" }}>99.99%</p>
               <p style={{ fontSize: "10px", letterSpacing: "0.2em", textTransform: "uppercase", fontWeight: 700, color: T.primarySoft, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-                System Uptime Protocol
+                {t("common.system_uptime_protocol")}
               </p>
             </div>
           </div>
@@ -680,7 +657,7 @@ function ContactSection() {
               </span>
               <div>
                 <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.node")}</p>
-                <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>Zurich, CH / Remote</p>
+                <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.node_location")}</p>
               </div>
             </div>
           </div>

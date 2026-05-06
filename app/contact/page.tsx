@@ -21,34 +21,6 @@ const T = {
 const SERVER_ROOM_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAeVeJBm0rxkvJbh-pus8hOy0LmLaJKWu3A-RBBZ0sl_zwbFdvMViZORDoF0y5tYKbxPyHhRKWIi-bSqg5BMa-NcG1go5ROB8mdJYVwV_RhdaNwzl2wKRKldsZ9N2D88RzdhBQrvYpLY3zTNTd4ewMkeAX7YYnF6FSQxzzhNHU4x5qcvu4fFXgLJIkEpaN8riI9hgjizkECHK4MNTFj0jdPzDDadlJ-hALWGwnvrrhGFdeN1UI7nDtZN3E1G2y6GtJS5-gck2YIV5E";
 
-const nodes = [
-  {
-    id: "NODE_01",
-    city: "Zurich",
-    icon: "hub",
-    lines: ["COORD: 47.3769\u00b0 N, 8.5417\u00b0 E", "SYSTEM: NEURAL CORE HQ", "STATUS: OPERATIONAL [24/7]"],
-  },
-  {
-    id: "NODE_02",
-    city: "Singapore",
-    icon: "memory",
-    lines: ["COORD: 1.3521\u00b0 N, 103.8198\u00b0 E", "SYSTEM: DATA HARVEST HUB", "STATUS: OPERATIONAL [24/7]"],
-  },
-  {
-    id: "NODE_03",
-    city: "San Francisco",
-    icon: "language",
-    lines: ["COORD: 37.7749\u00b0 N, 122.4194\u00b0 W", "SYSTEM: LOGIC IMPLEMENTATION", "STATUS: OPERATIONAL [24/7]"],
-  },
-];
-
-const PRIORITY_OPTIONS: { value: "" | "alpha" | "beta" | "gamma"; label: string }[] = [
-  { value: "", label: "SELECT PRIORITY" },
-  { value: "alpha", label: "ALPHA (CRITICAL)" },
-  { value: "beta", label: "BETA (HIGH)" },
-  { value: "gamma", label: "GAMMA (STANDARD)" },
-];
-
 const DROPDOWN_HIGHLIGHT = "#2563eb";
 const DROPDOWN_MUTED = "#9ca3af";
 
@@ -83,8 +55,9 @@ export default function ContactPage() {
     setSubmitted(true);
   };
 
-  const priorityTriggerLabel =
-    PRIORITY_OPTIONS.find((o) => o.value === priority)?.label ?? "SELECT PRIORITY";
+  const priorityTriggerLabel = priority
+    ? t(`contact.form.priority.${priority}`)
+    : t("contact.form.priority.placeholder");
 
   const borderBottom = (field: string) =>
     `2px solid ${focused === field ? T.primaryCtn : "rgba(92,64,55,0.35)"}`;
@@ -95,8 +68,8 @@ export default function ContactPage() {
       <main className="contact-main-bg" style={{ minHeight: "100vh", paddingTop: "clamp(88px, 14vw, 120px)" }}>
         {/* Hero */}
         <section data-reveal style={{ padding: "0 clamp(16px, 4vw, 32px) 48px", maxWidth: "1920px", margin: "0 auto" }}>
-        <div
-          style={{
+          <div
+            style={{
               display: "flex",
               flexDirection: "row",
               flexWrap: "wrap",
@@ -150,741 +123,754 @@ export default function ContactPage() {
                 borderLeft: `1px solid rgba(92,64,55,0.35)`,
                 paddingLeft: "32px",
                 paddingBottom: "8px",
+                fontFamily: "var(--font-inter, Inter, sans-serif)",
               }}
               className="contact-hero-aside"
             >
               {t("contact.hero.description")}
             </div>
           </div>
-        </section>
 
-        {/* Form + sidebar */}
-        <section data-reveal style={{ padding: "0 clamp(16px, 4vw, 32px) 96px", maxWidth: "1920px", margin: "0 auto" }}>
-          {submitted ? (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
+              gap: "1px",
+              background: "rgba(92,64,55,0.15)",
+              border: "1px solid rgba(92,64,55,0.15)",
+            }}
+            className="contact-form-grid"
+          >
+            {/* Sidebar */}
             <div
               style={{
-                background: T.surfaceLow,
-                border: `1px solid rgba(92,64,55,0.15)`,
-                padding: "64px 48px",
-                textAlign: "center",
-                maxWidth: "720px",
-                margin: "0 auto",
+                gridColumn: "span 4",
+                background: "#0c0c0c",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
               }}
+              className="contact-sidebar"
             >
-              <p
-                style={{
-                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                  fontSize: "24px",
-                  fontWeight: 700,
-                  color: T.onSurface,
-                  marginBottom: "12px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("contact.success.title")}
-              </p>
-              <p style={{ color: T.onSurfaceVar, fontSize: "15px" }}>{t("contact.success.description")}</p>
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(12, minmax(0, 1fr))",
-                  gap: "48px",
-                  alignItems: "start",
-                }}
-                className="contact-form-grid"
-              >
-                {/* Left column */}
-                <div style={{ gridColumn: "span 12" }} className="contact-sidebar">
+              <div style={{ padding: "48px 40px" }} className="contact-sidebar-steps">
+                <h3
+                  style={{
+                    fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    letterSpacing: "0.2em",
+                    color: T.primaryCtn,
+                    textTransform: "uppercase",
+                    marginBottom: "40px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                  }}
+                >
+                  <span
+                    style={{ width: "24px", height: "1px", background: T.primaryCtn }}
+                  />
+                  {t("contact.flow.title")}
+                </h3>
+                {[
+                  { n: "01", title: t("contact.flow.step.0.title"), sub: t("contact.flow.step.0.sub"), active: true },
+                  { n: "02", title: t("contact.flow.step.1.title"), sub: t("contact.flow.step.1.sub"), active: false },
+                  { n: "03", title: t("contact.flow.step.2.title"), sub: t("contact.flow.step.2.sub"), active: false },
+                ].map((step) => (
                   <div
-                    className="contact-sidebar-steps"
+                    key={step.n}
                     style={{
-                      background: T.surfaceLow,
-                      padding: "40px",
-                      borderLeft: `4px solid ${T.primaryCtn}`,
+                      display: "flex",
+                      gap: "24px",
+                      alignItems: "center",
+                      marginBottom: step.n !== "03" ? "32px" : 0,
+                      opacity: step.active ? 1 : 0.4,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: "48px",
+                        height: "48px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: step.active ? T.primaryCtn : T.surfaceHighest,
+                        color: step.active ? T.onPrimary : "#ffffff",
+                        fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                        fontWeight: 900,
+                        fontSize: "18px",
+                        flexShrink: 0,
+                      }}
+                    >
+                      {step.n}
+                    </span>
+                    <div>
+                      <p
+                        style={{
+                          color: "#ffffff",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.08em",
+                          fontSize: "13px",
+                          marginBottom: "4px",
+                          fontFamily: "var(--font-inter, Inter, sans-serif)",
+                        }}
+                      >
+                        {step.title}
+                      </p>
+                      <p
+                        style={{
+                          color: T.onSurfaceVar,
+                          fontSize: "10px",
+                          textTransform: "uppercase",
+                          letterSpacing: "0.2em",
+                          fontFamily: "var(--font-inter, Inter, sans-serif)",
+                        }}
+                      >
+                        {step.sub}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ position: "relative", overflow: "hidden", background: "#0a0a0a" }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={SERVER_ROOM_IMG}
+                  alt="Server room"
+                  style={{
+                    width: "100%",
+                    height: "320px",
+                    objectFit: "cover",
+                    filter: "grayscale(1) brightness(0.55) contrast(1.15)",
+                    display: "block",
+                  }}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(to top, #131313 0%, transparent 55%)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "flex-end",
+                    padding: "32px",
+                  }}
+                >
+                  <span
+                    style={{
+                      color: T.primaryCtn,
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      letterSpacing: "0.3em",
+                      textTransform: "uppercase",
+                      marginBottom: "8px",
+                      fontFamily: "var(--font-inter, Inter, sans-serif)",
+                    }}
+                  >
+                    {t("common.node")}
+                  </span>
+                  <h4
+                    style={{
+                      color: "#ffffff",
+                      fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                      fontSize: "20px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      margin: 0,
+                    }}
+                  >
+                    {t("common.status")}: 99.999%
+                  </h4>
+                </div>
+              </div>
+            </div>
+
+            {/* Form Canvas */}
+            <div
+              style={{
+                gridColumn: "span 8",
+                background: T.surface,
+                padding: "64px clamp(24px, 5vw, 56px)",
+              }}
+              className="contact-form-canvas"
+            >
+              {submitted ? (
+                <div
+                  style={{
+                    height: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "80px",
+                      height: "80px",
+                      borderRadius: "50%",
+                      background: "rgba(255,85,0,0.1)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                       marginBottom: "32px",
                     }}
                   >
-                    <h3
+                    <span
+                      className="material-symbols-outlined"
+                      style={{ fontSize: "40px", color: T.primaryCtn }}
+                    >
+                      check_circle
+                    </span>
+                  </div>
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                      fontSize: "32px",
+                      fontWeight: 700,
+                      color: "#ffffff",
+                      marginBottom: "16px",
+                    }}
+                  >
+                    {t("contact.success.title")}
+                  </h2>
+                  <p
+                    style={{
+                      color: T.onSurfaceVar,
+                      fontSize: "16px",
+                      fontFamily: "var(--font-inter, Inter, sans-serif)",
+                    }}
+                  >
+                    {t("contact.success.description")}
+                  </p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ display: "flex", flexDirection: "column", gap: "64px" }}
+                >
+                  {/* Step 1 */}
+                  <div>
+                    <h2
                       style={{
                         fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                        fontSize: "22px",
+                        fontSize: "clamp(22px, 3vw, 28px)",
                         fontWeight: 700,
                         color: "#ffffff",
                         textTransform: "uppercase",
-                        letterSpacing: "-0.02em",
                         marginBottom: "32px",
+                        letterSpacing: "-0.02em",
                       }}
                     >
-                      Transmission Flow
-                    </h3>
-                    {[
-                      { n: "01", title: "Service Selection", sub: "Identify required assets", active: true },
-                      { n: "02", title: "Project Blueprint", sub: "Scope definition & goals", active: false },
-                      { n: "03", title: "Technical Specs", sub: "Integration parameters", active: false },
-                    ].map((step) => (
-                      <div
-                        key={step.n}
-                        style={{
-                          display: "flex",
-                          gap: "24px",
-                          alignItems: "center",
-                          marginBottom: step.n !== "03" ? "32px" : 0,
-                          opacity: step.active ? 1 : 0.4,
-                        }}
-                      >
-                        <span
-                          style={{
-                            width: "48px",
-                            height: "48px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            background: step.active ? T.primaryCtn : T.surfaceHighest,
-                            color: step.active ? T.onPrimary : "#ffffff",
-                            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                            fontWeight: 900,
-                            fontSize: "18px",
-                            flexShrink: 0,
-                          }}
-                        >
-                          {step.n}
-                        </span>
-                        <div>
-                          <p
-                            style={{
-                              color: "#ffffff",
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.08em",
-                              fontSize: "13px",
-                              marginBottom: "4px",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            {step.title}
-                          </p>
-                          <p
-                            style={{
-                              color: T.onSurfaceVar,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.2em",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            {step.sub}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div style={{ position: "relative", overflow: "hidden", background: "#0a0a0a" }}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={SERVER_ROOM_IMG}
-                      alt="Server room"
-                      style={{
-                        width: "100%",
-                        height: "320px",
-                        objectFit: "cover",
-                        filter: "grayscale(1) brightness(0.55) contrast(1.15)",
-                        display: "block",
-                      }}
-                    />
+                      01 {t("contact.flow.step.0.title")}
+                    </h2>
                     <div
                       style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(to top, #131313 0%, transparent 55%)",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "flex-end",
-                        padding: "32px",
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                        gap: "20px",
                       }}
                     >
-                      <span
-                        style={{
-                          color: T.primaryCtn,
-                          fontSize: "10px",
-                          fontWeight: 700,
-                          letterSpacing: "0.3em",
-                          textTransform: "uppercase",
-                          marginBottom: "8px",
-                          fontFamily: "var(--font-inter, Inter, sans-serif)",
-                        }}
-                      >
-                        Core Server
-                      </span>
-                      <h4
-                        style={{
-                          color: "#ffffff",
-                          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                          fontSize: "20px",
-                          fontWeight: 700,
-                          textTransform: "uppercase",
-                          margin: 0,
-                        }}
-                      >
-                        Uptime: 99.999%
-                      </h4>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Form canvas */}
-                <div
-                  style={{
-                    gridColumn: "span 12",
-                    background: T.surfaceLow,
-                    padding: "48px",
-                    border: `1px solid rgba(92,64,55,0.12)`,
-                  }}
-                  className="contact-form-canvas"
-                >
-                  <div style={{ display: "flex", flexDirection: "column", gap: "64px" }}>
-                    {/* Step 1 */}
-                    <div>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "baseline",
-                          marginBottom: "32px",
-                          flexWrap: "wrap",
-                          gap: "12px",
-                        }}
-                      >
-                        <h2
-                          style={{
-                            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                            fontSize: "clamp(22px, 3vw, 28px)",
-                            fontWeight: 700,
-                            color: "#ffffff",
-                            textTransform: "uppercase",
-                            letterSpacing: "-0.02em",
-                            margin: 0,
-                          }}
-                        >
-                          01 Select Service
-                        </h2>
-                        <span
-                          style={{
-                            fontFamily: "ui-monospace, monospace",
-                            fontSize: "11px",
-                            color: T.primaryCtn,
-                          }}
-                        >
-                          [ STATUS: ACTIVE ]
-                        </span>
-                      </div>
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
-                          gap: "16px",
-                        }}
-                      >
-                        <button
-                          type="button"
-                          onClick={() => setService("neural")}
-                          style={{
-                            padding: "24px",
-                            background: T.surface,
-                            textAlign: "left",
-                            border:
-                              service === "neural"
-                                ? `1px solid ${T.primaryCtn}`
-                                : "1px solid rgba(92,64,55,0.2)",
-                            cursor: "pointer",
-                            transition: "border-color 0.2s",
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                            <span
-                              className="material-symbols-outlined"
-                              style={{
-                                fontSize: "28px",
-                                color: service === "neural" ? T.primaryCtn : T.onSurfaceVar,
-                                fontVariationSettings: "'FILL' 1",
-                              }}
-                            >
-                              dataset
-                            </span>
-                            <span
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                background: service === "neural" ? T.primaryCtn : "transparent",
-                                border:
-                                  service === "neural" ? "none" : `1px solid rgba(92,64,55,0.35)`,
-                              }}
-                            />
-                          </div>
-                          <h4
-                            style={{
-                              color: "#ffffff",
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.06em",
-                              fontSize: "14px",
-                              marginBottom: "8px",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Neural Architecture
-                          </h4>
-                          <p
-                            style={{
-                              color: T.onSurfaceVar,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.18em",
-                              lineHeight: 1.6,
-                              margin: 0,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Design and implementation of complex AI infrastructure.
-                          </p>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setService("quantum")}
-                          style={{
-                            padding: "24px",
-                            background: "rgba(53,53,53,0.35)",
-                            textAlign: "left",
-                            border:
-                              service === "quantum"
-                                ? `1px solid ${T.primaryCtn}`
-                                : "1px solid rgba(92,64,55,0.08)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
-                            <span
-                              className="material-symbols-outlined"
-                              style={{ fontSize: "28px", color: T.onSurfaceVar }}
-                            >
-                              terminal
-                            </span>
-                            <span
-                              style={{
-                                width: "10px",
-                                height: "10px",
-                                background: service === "quantum" ? T.primaryCtn : "transparent",
-                                border:
-                                  service === "quantum" ? "none" : `1px solid rgba(92,64,55,0.35)`,
-                              }}
-                            />
-                          </div>
-                          <h4
-                            style={{
-                              color: service === "quantum" ? "#ffffff" : T.onSurfaceVar,
-                              fontWeight: 700,
-                              textTransform: "uppercase",
-                              letterSpacing: "0.06em",
-                              fontSize: "14px",
-                              marginBottom: "8px",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Quantum Simulation
-                          </h4>
-                          <p
-                            style={{
-                              color: T.onSurfaceVar,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.18em",
-                              lineHeight: 1.6,
-                              margin: 0,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            High-fidelity predictive modeling for aerospace and energy.
-                          </p>
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Step 2 */}
-                    <div>
-                      <h2
-                        style={{
-                          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                          fontSize: "clamp(22px, 3vw, 28px)",
-                          fontWeight: 700,
-                          color: "#ffffff",
-                          textTransform: "uppercase",
-                          marginBottom: "32px",
-                          letterSpacing: "-0.02em",
-                        }}
-                      >
-                        02 Project Blueprint
-                      </h2>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-                        <div style={{ position: "relative", paddingTop: "12px" }}>
-                          <label
-                            htmlFor="project_name"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.3em",
-                              color: T.primaryCtn,
-                              fontWeight: 700,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Project Identification
-                          </label>
-                          <input
-                            id="project_name"
-                            required
-                            value={projectName}
-                            onChange={(e) => setProjectName(e.target.value)}
-                            onFocus={() => setFocused("project_name")}
-                            onBlur={() => setFocused(null)}
-                            placeholder="PROJECT CODENAME"
-                            style={{
-                              width: "100%",
-                              background: "transparent",
-                              border: "none",
-                              borderBottom: borderBottom("project_name"),
-                              padding: "16px 0",
-                              color: "#ffffff",
-                              fontSize: "20px",
-                              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                              outline: "none",
-                            }}
-                          />
-                        </div>
-                        <div style={{ position: "relative", paddingTop: "12px" }}>
-                          <label
-                            htmlFor="description"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.3em",
-                              color: T.primaryCtn,
-                              fontWeight: 700,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Scope Parameters
-                          </label>
-                          <textarea
-                            id="description"
-                            required
-                            rows={4}
-                            value={scope}
-                            onChange={(e) => setScope(e.target.value)}
-                            onFocus={() => setFocused("description")}
-                            onBlur={() => setFocused(null)}
-                            placeholder="DESCRIBE THE CORE OBJECTIVES..."
-                            style={{
-                              width: "100%",
-                              background: "transparent",
-                              border: "none",
-                              borderBottom: borderBottom("description"),
-                              padding: "16px 0",
-                              color: "#ffffff",
-                              fontSize: "15px",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                              outline: "none",
-                              resize: "none",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Step 3 */}
-                    <div>
-                      <h2
-                        style={{
-                          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                          fontSize: "clamp(22px, 3vw, 28px)",
-                          fontWeight: 700,
-                          color: "#ffffff",
-                          textTransform: "uppercase",
-                          marginBottom: "32px",
-                          letterSpacing: "-0.02em",
-                        }}
-                      >
-                        03 Technical Specs
-                      </h2>
-                      <div
-                        style={{
-                          display: "grid",
-                          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                          gap: "32px",
-                        }}
-                      >
-                        <div
-                          ref={priorityDropdownRef}
-                          style={{ position: "relative", paddingTop: "12px", zIndex: priorityMenuOpen ? 40 : 1 }}
-                        >
-                          <label
-                            id="priority-label"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.3em",
-                              color: T.primaryCtn,
-                              fontWeight: 700,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Execution Priority
-                          </label>
-                          <button
-                            type="button"
-                            aria-haspopup="listbox"
-                            aria-expanded={priorityMenuOpen}
-                            aria-labelledby="priority-label"
-                            onClick={() => {
-                              setPriorityMenuOpen((o) => !o);
-                              setFocused("priority");
-                            }}
-                            style={{
-                              width: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                              gap: "12px",
-                              background: "transparent",
-                              border: "none",
-                              borderBottom: `2px solid ${
-                                focused === "priority" || priorityMenuOpen ? T.primaryCtn : "rgba(92,64,55,0.35)"
-                              }`,
-                              padding: "16px 0 14px",
-                              color: "#ffffff",
-                              fontSize: "13px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.14em",
-                              cursor: "pointer",
-                              outline: "none",
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                              fontWeight: 600,
-                            }}
-                          >
-                            <span style={{ textAlign: "left" }}>{priorityTriggerLabel}</span>
-                            <svg
-                              width="14"
-                              height="14"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              aria-hidden
-                              style={{
-                                flexShrink: 0,
-                                color: "#ffffff",
-                                transform: priorityMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
-                                transition: "transform 0.2s ease",
-                              }}
-                            >
-                              <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
-                            </svg>
-                          </button>
-
-                          {priorityMenuOpen && (
-                            <div
-                              role="listbox"
-                              aria-labelledby="priority-label"
-                              style={{
-                                position: "absolute",
-                                left: 0,
-                                right: 0,
-                                top: "100%",
-                                marginTop: "6px",
-                                background: "#ffffff",
-                                boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
-                                border: "1px solid rgba(0,0,0,0.06)",
-                              }}
-                            >
-                              <div
-                                style={{
-                                  height: "2px",
-                                  background: T.primaryCtn,
-                                  width: "100%",
-                                }}
-                              />
-                              <div style={{ padding: "4px 0" }}>
-                                {PRIORITY_OPTIONS.map((opt) => {
-                                  const selected = priority === opt.value;
-                                  return (
-                                    <button
-                                      key={opt.value || "empty"}
-                                      type="button"
-                                      role="option"
-                                      aria-selected={selected}
-                                      onClick={() => {
-                                        setPriority(opt.value);
-                                        setPriorityMenuOpen(false);
-                                        setFocused(null);
-                                      }}
-                                      style={{
-                                        width: "100%",
-                                        textAlign: "left",
-                                        padding: "12px 16px",
-                                        border: "none",
-                                        cursor: "pointer",
-                                        fontFamily: "var(--font-inter, Inter, sans-serif)",
-                                        fontSize: "11px",
-                                        fontWeight: 600,
-                                        letterSpacing: "0.12em",
-                                        textTransform: "uppercase",
-                                        background: selected ? DROPDOWN_HIGHLIGHT : "transparent",
-                                        color: selected ? "#ffffff" : DROPDOWN_MUTED,
-                                        transition: "background 0.15s ease, color 0.15s ease",
-                                      }}
-                                      onMouseEnter={(e) => {
-                                        if (!selected) {
-                                          (e.currentTarget as HTMLButtonElement).style.background = "#f4f4f5";
-                                          (e.currentTarget as HTMLButtonElement).style.color = "#52525b";
-                                        }
-                                      }}
-                                      onMouseLeave={(e) => {
-                                        if (!selected) {
-                                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                                          (e.currentTarget as HTMLButtonElement).style.color = DROPDOWN_MUTED;
-                                        }
-                                      }}
-                                    >
-                                      {opt.label}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                        <div style={{ position: "relative", paddingTop: "12px" }}>
-                          <label
-                            htmlFor="repo"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              letterSpacing: "0.3em",
-                              color: T.primaryCtn,
-                              fontWeight: 700,
-                              fontFamily: "var(--font-inter, Inter, sans-serif)",
-                            }}
-                          >
-                            Data Repository (Optional)
-                          </label>
-                          <input
-                            id="repo"
-                            type="text"
-                            value={repo}
-                            onChange={(e) => setRepo(e.target.value)}
-                            onFocus={() => setFocused("repo")}
-                            onBlur={() => setFocused(null)}
-                            placeholder="GITHUB_REPO_OR_URL"
-                            style={{
-                              width: "100%",
-                              background: "transparent",
-                              border: "none",
-                              borderBottom: borderBottom("repo"),
-                              padding: "16px 0",
-                              color: "#ffffff",
-                              fontSize: "14px",
-                              fontFamily: "ui-monospace, monospace",
-                              outline: "none",
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        gap: "24px",
-                        paddingTop: "16px",
-                      }}
-                    >
-                      <p
-                        style={{
-                          fontSize: "10px",
-                          color: T.primaryCtn,
-                          textTransform: "uppercase",
-                          letterSpacing: "0.2em",
-                          maxWidth: "360px",
-                          lineHeight: 1.75,
-                          margin: 0,
-                          fontFamily: "var(--font-inter, Inter, sans-serif)",
-                          fontWeight: 600,
-                        }}
-                      >
-                        By executing this protocol, you agree to the Quantum Data Processing Standards.
-                      </p>
                       <button
-                        type="submit"
+                        type="button"
+                        onClick={() => setService("neural")}
                         style={{
-                          background: T.primaryCtn,
-                          color: T.onPrimary,
-                          padding: "20px 40px",
-                          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                          fontWeight: 900,
-                          fontSize: "15px",
-                          letterSpacing: "0.2em",
-                          textTransform: "uppercase",
-                          border: "none",
+                          padding: "24px",
+                          background: "rgba(53,53,53,0.35)",
+                          textAlign: "left",
+                          border:
+                            service === "neural"
+                              ? `1px solid ${T.primaryCtn}`
+                              : "1px solid rgba(92,64,55,0.08)",
                           cursor: "pointer",
-                          whiteSpace: "nowrap",
+                          transition: "all 0.2s",
                         }}
-                        className="contact-submit-btn"
                       >
-                        Initiate Transmission
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
+                          <span
+                            className="material-symbols-outlined"
+                            style={{ fontSize: "28px", color: T.primaryCtn }}
+                          >
+                            neurology
+                          </span>
+                          <span
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                              background: service === "neural" ? T.primaryCtn : "transparent",
+                              border: service === "neural" ? "none" : `1px solid rgba(92,64,55,0.35)`,
+                            }}
+                          />
+                        </div>
+                        <h4
+                          style={{
+                            color: "#ffffff",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            fontSize: "14px",
+                            marginBottom: "8px",
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.service.neural.title")}
+                        </h4>
+                        <p
+                          style={{
+                            color: T.onSurfaceVar,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.18em",
+                            lineHeight: 1.6,
+                            margin: 0,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.service.neural.desc")}
+                        </p>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setService("quantum")}
+                        style={{
+                          padding: "24px",
+                          background: "rgba(53,53,53,0.35)",
+                          textAlign: "left",
+                          border:
+                            service === "quantum"
+                              ? `1px solid ${T.primaryCtn}`
+                              : "1px solid rgba(92,64,55,0.08)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px" }}>
+                          <span
+                            className="material-symbols-outlined"
+                            style={{ fontSize: "28px", color: T.onSurfaceVar }}
+                          >
+                            terminal
+                          </span>
+                          <span
+                            style={{
+                              width: "10px",
+                              height: "10px",
+                              background: service === "quantum" ? T.primaryCtn : "transparent",
+                              border:
+                                service === "quantum" ? "none" : `1px solid rgba(92,64,55,0.35)`,
+                            }}
+                          />
+                        </div>
+                        <h4
+                          style={{
+                            color: service === "quantum" ? "#ffffff" : T.onSurfaceVar,
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.06em",
+                            fontSize: "14px",
+                            marginBottom: "8px",
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.service.quantum.title")}
+                        </h4>
+                        <p
+                          style={{
+                            color: T.onSurfaceVar,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.18em",
+                            lineHeight: 1.6,
+                            margin: 0,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.service.quantum.desc")}
+                        </p>
                       </button>
                     </div>
                   </div>
-                </div>
-              </div>
-            </form>
-          )}
+
+                  {/* Step 2 */}
+                  <div>
+                    <h2
+                      style={{
+                        fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                        fontSize: "clamp(22px, 3vw, 28px)",
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        textTransform: "uppercase",
+                        marginBottom: "32px",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      02 {t("contact.flow.step.1.title")}
+                    </h2>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
+                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                        <label
+                          htmlFor="project_name"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.3em",
+                            color: T.primaryCtn,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.label.project")}
+                        </label>
+                        <input
+                          id="project_name"
+                          required
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                          onFocus={() => setFocused("project_name")}
+                          onBlur={() => setFocused(null)}
+                          placeholder={t("contact.form.placeholder.project")}
+                          style={{
+                            width: "100%",
+                            background: "transparent",
+                            border: "none",
+                            borderBottom: borderBottom("project_name"),
+                            padding: "16px 0",
+                            color: "#ffffff",
+                            fontSize: "20px",
+                            fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
+                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                        <label
+                          htmlFor="description"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.3em",
+                            color: T.primaryCtn,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.label.scope")}
+                        </label>
+                        <textarea
+                          id="description"
+                          required
+                          rows={4}
+                          value={scope}
+                          onChange={(e) => setScope(e.target.value)}
+                          onFocus={() => setFocused("description")}
+                          onBlur={() => setFocused(null)}
+                          placeholder={t("contact.form.placeholder.scope")}
+                          style={{
+                            width: "100%",
+                            background: "transparent",
+                            border: "none",
+                            borderBottom: borderBottom("description"),
+                            padding: "16px 0",
+                            color: "#ffffff",
+                            fontSize: "15px",
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                            outline: "none",
+                            resize: "none",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Step 3 */}
+                  <div>
+                    <h2
+                      style={{
+                        fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                        fontSize: "clamp(22px, 3vw, 28px)",
+                        fontWeight: 700,
+                        color: "#ffffff",
+                        textTransform: "uppercase",
+                        marginBottom: "32px",
+                        letterSpacing: "-0.02em",
+                      }}
+                    >
+                      03 {t("contact.flow.step.2.title")}
+                    </h2>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                        gap: "32px",
+                      }}
+                    >
+                      <div
+                        ref={priorityDropdownRef}
+                        style={{ position: "relative", paddingTop: "12px", zIndex: priorityMenuOpen ? 40 : 1 }}
+                      >
+                        <label
+                          id="priority-label"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.3em",
+                            color: T.primaryCtn,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.label.priority")}
+                        </label>
+                        <button
+                          type="button"
+                          aria-haspopup="listbox"
+                          aria-expanded={priorityMenuOpen}
+                          aria-labelledby="priority-label"
+                          onClick={() => {
+                            setPriorityMenuOpen((o) => !o);
+                            setFocused("priority");
+                          }}
+                          style={{
+                            width: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "12px",
+                            background: "transparent",
+                            border: "none",
+                            borderBottom: `2px solid ${
+                              focused === "priority" || priorityMenuOpen ? T.primaryCtn : "rgba(92,64,55,0.35)"
+                            }`,
+                            padding: "16px 0 14px",
+                            color: "#ffffff",
+                            fontSize: "13px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.14em",
+                            cursor: "pointer",
+                            outline: "none",
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                            fontWeight: 600,
+                          }}
+                        >
+                          <span style={{ textAlign: "left" }}>{priorityTriggerLabel}</span>
+                          <svg
+                            width="14"
+                            height="14"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            aria-hidden
+                            style={{
+                              flexShrink: 0,
+                              color: "#ffffff",
+                              transform: priorityMenuOpen ? "rotate(180deg)" : "rotate(0deg)",
+                              transition: "transform 0.2s ease",
+                            }}
+                          >
+                            <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="square" />
+                          </svg>
+                        </button>
+
+                        {priorityMenuOpen && (
+                          <div
+                            role="listbox"
+                            aria-labelledby="priority-label"
+                            style={{
+                              position: "absolute",
+                              left: 0,
+                              right: 0,
+                              top: "100%",
+                              marginTop: "6px",
+                              background: "#ffffff",
+                              boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
+                              border: "1px solid rgba(0,0,0,0.06)",
+                            }}
+                          >
+                            <div
+                              style={{
+                                height: "2px",
+                                background: T.primaryCtn,
+                                width: "100%",
+                              }}
+                            />
+                            <div style={{ padding: "4px 0" }}>
+                              {[
+                                { value: "", label: t("contact.form.priority.placeholder") },
+                                { value: "alpha", label: t("contact.form.priority.alpha") },
+                                { value: "beta", label: t("contact.form.priority.beta") },
+                                { value: "gamma", label: t("contact.form.priority.gamma") },
+                              ].map((opt) => {
+                                const selected = priority === opt.value;
+                                return (
+                                  <button
+                                    key={opt.value || "empty"}
+                                    type="button"
+                                    role="option"
+                                    aria-selected={selected}
+                                    onClick={() => {
+                                      setPriority(opt.value as "" | "alpha" | "beta" | "gamma");
+                                      setPriorityMenuOpen(false);
+                                      setFocused(null);
+                                    }}
+
+                                    style={{
+                                      width: "100%",
+                                      textAlign: "left",
+                                      padding: "12px 16px",
+                                      border: "none",
+                                      cursor: "pointer",
+                                      fontFamily: "var(--font-inter, Inter, sans-serif)",
+                                      fontSize: "11px",
+                                      fontWeight: 600,
+                                      letterSpacing: "0.12em",
+                                      textTransform: "uppercase",
+                                      background: selected ? DROPDOWN_HIGHLIGHT : "transparent",
+                                      color: selected ? "#ffffff" : DROPDOWN_MUTED,
+                                      transition: "background 0.15s ease, color 0.15s ease",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                      if (!selected) {
+                                        (e.currentTarget as HTMLButtonElement).style.background = "#f4f4f5";
+                                        (e.currentTarget as HTMLButtonElement).style.color = "#52525b";
+                                      }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                      if (!selected) {
+                                        (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                                        (e.currentTarget as HTMLButtonElement).style.color = DROPDOWN_MUTED;
+                                      }
+                                    }}
+                                  >
+                                    {opt.label}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                        <label
+                          htmlFor="repo"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.3em",
+                            color: T.primaryCtn,
+                            fontWeight: 700,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.label.repo")}
+                        </label>
+                        <input
+                          id="repo"
+                          type="text"
+                          value={repo}
+                          onChange={(e) => setRepo(e.target.value)}
+                          onFocus={() => setFocused("repo")}
+                          onBlur={() => setFocused(null)}
+                          placeholder={t("contact.form.placeholder.repo")}
+                          style={{
+                            width: "100%",
+                            background: "transparent",
+                            border: "none",
+                            borderBottom: borderBottom("repo"),
+                            padding: "16px 0",
+                            color: "#ffffff",
+                            fontSize: "14px",
+                            fontFamily: "ui-monospace, monospace",
+                            outline: "none",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      flexWrap: "wrap",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      gap: "24px",
+                      paddingTop: "16px",
+                    }}
+                  >
+                    <p
+                      style={{
+                        fontSize: "10px",
+                        color: T.primaryCtn,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.2em",
+                        maxWidth: "360px",
+                        lineHeight: 1.75,
+                        margin: 0,
+                        fontFamily: "var(--font-inter, Inter, sans-serif)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {t("contact.form.note")}
+                    </p>
+                    <button
+                      type="submit"
+                      style={{
+                        background: T.primaryCtn,
+                        color: T.onPrimary,
+                        padding: "20px 40px",
+                        fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                        fontWeight: 900,
+                        fontSize: "15px",
+                        letterSpacing: "0.2em",
+                        textTransform: "uppercase",
+                        border: "none",
+                        cursor: "pointer",
+                        whiteSpace: "nowrap",
+                      }}
+                      className="contact-submit-btn"
+                    >
+                      {t("contact.form.submit")}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
+          </div>
         </section>
 
         {/* Global Nodes */}
         <section
           data-reveal
           style={{
-            background: T.surfaceLow,
-            padding: "clamp(56px, 8vw, 96px) clamp(16px, 4vw, 32px)",
-            borderTop: "1px solid rgba(255,255,255,0.05)",
+            padding: "96px clamp(16px, 4vw, 32px) 120px",
+            background: "#0a0a0a",
+            borderTop: `1px solid rgba(92,64,55,0.15)`,
           }}
         >
-          <div style={{ maxWidth: "1920px", margin: "0 auto" }}>
-            <div style={{ marginBottom: "56px" }}>
+          <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
+            <div style={{ marginBottom: "64px", textAlign: "center" }}>
               <h2
                 style={{
                   fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                  fontSize: "clamp(36px, 5vw, 52px)",
+                  fontSize: "48px",
                   fontWeight: 900,
-                  color: "#ffffff",
                   textTransform: "uppercase",
-                  letterSpacing: "-0.03em",
+                  color: "#ffffff",
+                  letterSpacing: "-0.04em",
                   marginBottom: "12px",
                 }}
               >
@@ -892,17 +878,18 @@ export default function ContactPage() {
               </h2>
               <p
                 style={{
-                  color: T.primary,
-                  letterSpacing: "0.35em",
-                  fontWeight: 700,
+                  color: T.primaryCtn,
                   fontSize: "12px",
                   textTransform: "uppercase",
+                  letterSpacing: "0.45em",
+                  fontWeight: 700,
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                 }}
               >
                 {t("contact.nodes.subtitle")}
               </p>
             </div>
+
             <div
               style={{
                 display: "grid",
@@ -912,9 +899,9 @@ export default function ContactPage() {
               }}
               className="contact-nodes-grid"
             >
-              {nodes.map((n) => (
+              {[0, 1, 2].map((i) => (
                 <div
-                  key={n.id}
+                  key={i}
                   className="contact-node-card"
                   style={{
                     background: T.surface,
@@ -930,13 +917,13 @@ export default function ContactPage() {
                         color: T.primaryCtn,
                       }}
                     >
-                      {n.id}
+                      {t(`contact.node.${i === 0 ? "0" : i === 1 ? "1" : "2"}.id`)}
                     </span>
                     <span
                       className="material-symbols-outlined contact-node-icon"
                       style={{ fontSize: "26px", color: T.onSurfaceVar }}
                     >
-                      {n.icon}
+                      {i === 0 ? "hub" : i === 1 ? "memory" : "language"}
                     </span>
                   </div>
                   <h3
@@ -944,12 +931,11 @@ export default function ContactPage() {
                       fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                       fontSize: "clamp(28px, 4vw, 36px)",
                       fontWeight: 700,
-                      color: "#ffffff",
                       textTransform: "uppercase",
                       marginBottom: "16px",
                     }}
                   >
-                    {n.city}
+                    {t(`contact.node.${i === 0 ? "0" : i === 1 ? "1" : "2"}.city`)}
                   </h3>
                   <div
                     style={{
@@ -961,9 +947,9 @@ export default function ContactPage() {
                       color: T.onSurfaceVar,
                     }}
                   >
-                    {n.lines.map((line) => (
-                      <p key={line} style={{ margin: 0 }}>
-                        {line}
+                    {[0, 1, 2].map((lineIndex) => (
+                      <p key={lineIndex} style={{ margin: 0 }}>
+                        {t(`contact.node.${i === 0 ? "0" : i === 1 ? "1" : "2"}.line.${lineIndex}`)}
                       </p>
                     ))}
                   </div>
@@ -973,126 +959,118 @@ export default function ContactPage() {
           </div>
         </section>
 
-        {/* Client Direct Link */}
-        <section data-reveal style={{ padding: "clamp(56px, 8vw, 96px) clamp(16px, 4vw, 32px)", maxWidth: "1920px", margin: "0 auto" }}>
-                <div
-                  style={{
-              background: T.surfaceHighest,
-              border: `1px solid rgba(255,181,156,0.2)`,
-              padding: "clamp(32px, 5vw, 64px)",
-              position: "relative",
-              overflow: "hidden",
+        {/* Portal Access */}
+        <section
+          data-reveal
+          style={{
+            padding: "96px clamp(24px, 5vw, 48px) 112px",
+            background: T.surfaceLow,
+          }}
+        >
+          <div
+            style={{
+              maxWidth: "1280px",
+              margin: "0 auto",
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "64px",
+              alignItems: "center",
             }}
+            className="contact-terminal-grid"
           >
-            <div style={{ position: "absolute", top: "24px", right: "24px", display: "flex", gap: "8px" }}>
-              <span style={{ width: "8px", height: "8px", background: T.primaryCtn }} />
-              <span style={{ width: "8px", height: "8px", background: T.surfaceLow }} />
-              <span style={{ width: "8px", height: "8px", background: T.surfaceLow }} />
-                </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "48px",
-                alignItems: "center",
-              }}
-              className="contact-terminal-grid"
-            >
-              <div>
-                <h2
-                  style={{
-                    fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                    fontSize: "clamp(28px, 4vw, 36px)",
-                    fontWeight: 700,
-                    color: "#ffffff",
-                    textTransform: "uppercase",
-                    letterSpacing: "-0.02em",
-                    marginBottom: "20px",
-                  }}
-                >
-                  {t("contact.direct.title")}
-                </h2>
-                <p
-                  style={{
-                    color: T.onSurfaceVar,
-                    lineHeight: 1.75,
-                    maxWidth: "420px",
-                    marginBottom: "36px",
-                    fontSize: "15px",
-                    fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  }}
-                >
-                  {t("contact.direct.description")}
-                </p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
-                  <button
-                    type="button"
-                    style={{
-                      background: "#ffffff",
-                      color: "#000000",
-                      padding: "16px 28px",
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      fontSize: "12px",
-                      letterSpacing: "0.14em",
-                      border: "none",
-                      cursor: "pointer",
-                      fontFamily: "var(--font-inter, Inter, sans-serif)",
-                    }}
-                    className="contact-portal-btn"
-                  >
-                    {t("contact.direct.portal")}
-                  </button>
-                  <button
-                    type="button"
-                    style={{
-                      border: "1px solid rgba(255,255,255,0.2)",
-                      color: "#ffffff",
-                      background: "transparent",
-                      padding: "16px 28px",
-                      fontWeight: 700,
-                      textTransform: "uppercase",
-                      fontSize: "12px",
-                      letterSpacing: "0.14em",
-                      cursor: "pointer",
-                      fontFamily: "var(--font-inter, Inter, sans-serif)",
-                    }}
-                    className="contact-recover-btn"
-                  >
-                    {t("contact.direct.recover")}
-                  </button>
-                </div>
-              </div>
-              <div
-                        style={{
-                  background: "rgba(0,0,0,0.45)",
-                  padding: "28px",
-                  fontFamily: "ui-monospace, monospace",
-                  fontSize: "13px",
-                  borderLeft: `2px solid ${T.primaryCtn}`,
+            <div>
+              <h2
+                style={{
+                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                  fontSize: "36px",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  color: "#ffffff",
+                  marginBottom: "24px",
+                  letterSpacing: "-0.02em",
                 }}
               >
-                <div style={{ display: "flex", gap: "12px", marginBottom: "16px", color: T.primaryCtn }}>
-                  <span>[SYSTEM]:</span>
-                  <span style={{ color: "#ffffff" }}>AWAITING INPUT...</span>
-                </div>
-                <div style={{ color: T.onSurfaceVar, display: "flex", flexDirection: "column", gap: "8px" }}>
-                  <p style={{ margin: 0, color: T.primaryCtn, opacity: 0.65 }}>
-                    &gt; quantum --authenticate user_id:8819
-                  </p>
-                  <p style={{ margin: 0 }}>&gt; validating biometric signature...</p>
-                  <p style={{ margin: 0 }}>&gt; access granted to high-tier support</p>
-                  <p style={{ margin: 0 }}>&gt; engineering team 04 is currently available</p>
-                  <div style={{ display: "flex", gap: "4px", marginTop: "12px", alignItems: "center" }}>
-                    <span
-                      style={{
-                        width: "8px",
-                        height: "20px",
-                        background: T.primaryCtn,
-                        animation: "contact-cursor-pulse 1s ease-in-out infinite",
-                      }}
-                      />
-                    </div>
+                {t("contact.direct.title")}
+              </h2>
+              <p
+                style={{
+                  color: T.onSurfaceVar,
+                  fontSize: "17px",
+                  lineHeight: 1.7,
+                  marginBottom: "40px",
+                  fontFamily: "var(--font-inter, Inter, sans-serif)",
+                }}
+              >
+                {t("contact.direct.description")}
+              </p>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                <button
+                  className="contact-portal-btn"
+                  style={{
+                    padding: "16px 32px",
+                    background: "transparent",
+                    color: "#ffffff",
+                    border: "1px solid #ffffff",
+                    fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.15em",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {t("contact.direct.portal")}
+                </button>
+                <button
+                  className="contact-recover-btn"
+                  style={{
+                    padding: "16px 32px",
+                    background: "transparent",
+                    color: T.onSurfaceVar,
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    fontFamily: "var(--font-inter, Inter, sans-serif)",
+                    fontWeight: 600,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.1em",
+                    fontSize: "12px",
+                    cursor: "pointer",
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {t("contact.direct.recover")}
+                </button>
+              </div>
+            </div>
+
+            <div
+              style={{
+                background: "rgba(0,0,0,0.45)",
+                padding: "28px",
+                fontFamily: "ui-monospace, monospace",
+                fontSize: "13px",
+                borderLeft: `2px solid ${T.primaryCtn}`,
+              }}
+            >
+              <div style={{ display: "flex", gap: "12px", marginBottom: "16px", color: T.primaryCtn }}>
+                <span>{t("contact.terminal.system")}</span>
+                <span style={{ color: "#ffffff" }}>{t("contact.terminal.awaiting")}</span>
+              </div>
+              <div style={{ color: T.onSurfaceVar, display: "flex", flexDirection: "column", gap: "8px" }}>
+                <p style={{ margin: 0, color: T.primaryCtn, opacity: 0.65 }}>
+                  {t("contact.terminal.auth")}
+                </p>
+                <p style={{ margin: 0 }}>{t("contact.terminal.validating")}</p>
+                <p style={{ margin: 0 }}>{t("contact.terminal.granted")}</p>
+                <p style={{ margin: 0 }}>{t("contact.terminal.available")}</p>
+                <div style={{ display: "flex", gap: "4px", marginTop: "12px", alignItems: "center" }}>
+                  <span
+                    style={{
+                      width: "8px",
+                      height: "20px",
+                      background: T.primaryCtn,
+                      animation: "contact-cursor-pulse 1s ease-in-out infinite",
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -1120,6 +1098,7 @@ export default function ContactPage() {
                   fontWeight: 700,
                   color: "#ffffff",
                   marginBottom: "20px",
+                  textTransform: "uppercase"
                 }}
               >
                 {t("contact.footer.brand")}
@@ -1158,7 +1137,7 @@ export default function ContactPage() {
               }}
             >
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {["Privacy Policy", "Terms of Service"].map((label) => (
+                {[t("contact.footer.privacy"), t("contact.footer.terms")].map((label) => (
                   <a
                     key={label}
                     href="#"
@@ -1177,7 +1156,7 @@ export default function ContactPage() {
                 ))}
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {["Global Offices", "Technical Specifications"].map((label) => (
+                {[t("contact.footer.offices"), t("contact.footer.specs")].map((label) => (
                   <a
                     key={label}
                     href="#"
