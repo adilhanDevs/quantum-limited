@@ -1,110 +1,92 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { SUPPORTED_LANGUAGES, useLanguage } from "../i18n/LanguageContext";
 
 export function LanguageSwitcher() {
   const { language, setLanguage, t } = useLanguage();
-  const [hovered, setHovered] = useState(false);
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const onClick = (event: MouseEvent) => {
-      if (!ref.current?.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    window.addEventListener("mousedown", onClick);
-    return () => window.removeEventListener("mousedown", onClick);
-  }, []);
 
   return (
-    <div ref={ref} style={{ position: "fixed", right: "16px", bottom: "16px", zIndex: 1200 }}>
-      <div
-        style={{
-          position: "absolute",
-          right: 0,
-          bottom: "50px",
-          minWidth: "132px",
-          border: "1px solid rgba(255,85,0,0.22)",
-          background: "rgba(18,18,18,0.96)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          boxShadow: "0 16px 32px rgba(0,0,0,0.35)",
-          opacity: open ? 1 : 0,
-          transform: open ? "translateY(0) scale(1)" : "translateY(8px) scale(0.96)",
-          transformOrigin: "bottom right",
-          pointerEvents: open ? "auto" : "none",
-          transition: "opacity 0.2s ease, transform 0.2s ease",
-        }}
-      >
-        {SUPPORTED_LANGUAGES.map((lang) => {
-          const selected = lang === language;
-          return (
-            <button
-              key={lang}
-              type="button"
-              onClick={() => {
-                setLanguage(lang);
-                setOpen(false);
-              }}
-              style={{
-                width: "100%",
-                textAlign: "left",
-                border: "none",
-                background: selected ? "rgba(255,85,0,0.15)" : "transparent",
-                color: selected ? "#ffb59c" : "#d4d4d8",
-                padding: "10px 12px",
-                fontSize: "12px",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase",
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-                cursor: "pointer",
-                transition: "background 0.2s ease, color 0.2s ease",
-              }}
-              onMouseEnter={(e) => {
-                if (!selected) e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-              }}
-              onMouseLeave={(e) => {
-                if (!selected) e.currentTarget.style.background = "transparent";
-              }}
-            >
-              {lang === "zh" ? "中文" : lang.toUpperCase()} - {t(`lang.name.${lang}`)}
-            </button>
-          );
-        })}
-      </div>
+    <div
+      className="site-language-switcher"
+      role="group"
+      aria-label={t("lang.switcher.aria")}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        border: "1px solid rgba(255,85,0,0.2)",
+        background: "rgba(12,12,12,0.82)",
+        backdropFilter: "blur(10px)",
+        WebkitBackdropFilter: "blur(10px)",
+        boxShadow: "inset 0 1px 0 rgba(255,255,255,0.03)",
+        minHeight: "44px",
+      }}
+    >
+      {SUPPORTED_LANGUAGES.map((lang, index) => {
+        const selected = lang === language;
 
-      <button
-        type="button"
-        className="lang-switcher-fab"
-        onClick={() => setOpen((v) => !v)}
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-        aria-label={open ? t("lang.switcher.close") : t("lang.switcher.open")}
-        style={{
-          width: "38px",
-          height: "38px",
-          borderRadius: "999px",
-          border: hovered ? "1px solid rgba(255,255,255,0.28)" : "1px solid rgba(255,255,255,0.16)",
-          background: hovered ? "rgba(34,34,34,0.96)" : "rgba(12,12,12,0.94)",
-          color: hovered ? "#ffffff" : "#e4e4e7",
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "10px",
-          fontWeight: 700,
-          letterSpacing: "0.08em",
-          textTransform: "uppercase",
-          backdropFilter: "blur(10px)",
-          WebkitBackdropFilter: "blur(10px)",
-          boxShadow: hovered ? "0 10px 24px rgba(0,0,0,0.5)" : "0 8px 18px rgba(0,0,0,0.38)",
-          transform: hovered ? "translateY(-1px)" : "translateY(0)",
-          transition: "all 0.24s cubic-bezier(0.22, 1, 0.36, 1)",
-          cursor: "pointer",
-        }}
-      >
-        🌐
-      </button>
+        return (
+          <button
+            key={lang}
+            type="button"
+            onClick={() => setLanguage(lang)}
+            aria-label={`${t("lang.switcher.aria")}: ${t(`lang.name.${lang}`)}`}
+            aria-pressed={selected}
+            aria-current={selected ? "true" : undefined}
+            lang={lang}
+            className="site-language-button"
+            style={{
+              border: "none",
+              borderRight:
+                index < SUPPORTED_LANGUAGES.length - 1
+                  ? "1px solid rgba(255,255,255,0.08)"
+                  : "none",
+              background: selected ? "rgba(255,85,0,0.18)" : "transparent",
+              color: selected ? "#ffffff" : "#c9c9cf",
+              padding: "0 12px",
+              minWidth: "48px",
+              minHeight: "42px",
+              fontSize: "11px",
+              fontWeight: selected ? 700 : 600,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              fontFamily: "var(--font-inter, Inter, sans-serif)",
+              cursor: "pointer",
+              transition: "background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease",
+              boxShadow: selected ? "inset 0 0 0 1px rgba(255,85,0,0.28)" : "none",
+            }}
+          >
+            {lang.toUpperCase()}
+          </button>
+        );
+      })}
+
+      <style>{`
+        .site-language-button:hover {
+          background: rgba(255,255,255,0.05) !important;
+          color: #ffffff !important;
+        }
+        .site-language-button[aria-pressed="true"]:hover {
+          background: rgba(255,85,0,0.22) !important;
+        }
+        .site-language-button:focus-visible {
+          outline: 2px solid rgba(255, 181, 156, 0.92);
+          outline-offset: -2px;
+          position: relative;
+          z-index: 1;
+        }
+        @media (max-width: 640px) {
+          .site-language-switcher {
+            min-height: 38px !important;
+          }
+          .site-language-button {
+            min-height: 36px !important;
+            min-width: 42px !important;
+            padding: 0 10px !important;
+            font-size: 10px !important;
+            letter-spacing: 0.14em !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

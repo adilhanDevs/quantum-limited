@@ -1,7 +1,9 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
 import { SiteHeader } from "../components/SiteHeader";
+import { isValidEmail, type ContactApiResponse } from "../lib/contact";
 import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
@@ -21,18 +23,23 @@ const T = {
 const SERVER_ROOM_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAeVeJBm0rxkvJbh-pus8hOy0LmLaJKWu3A-RBBZ0sl_zwbFdvMViZORDoF0y5tYKbxPyHhRKWIi-bSqg5BMa-NcG1go5ROB8mdJYVwV_RhdaNwzl2wKRKldsZ9N2D88RzdhBQrvYpLY3zTNTd4ewMkeAX7YYnF6FSQxzzhNHU4x5qcvu4fFXgLJIkEpaN8riI9hgjizkECHK4MNTFj0jdPzDDadlJ-hALWGwnvrrhGFdeN1UI7nDtZN3E1G2y6GtJS5-gck2YIV5E";
 
-const DROPDOWN_HIGHLIGHT = "#2563eb";
-const DROPDOWN_MUTED = "#9ca3af";
+const DROPDOWN_HIGHLIGHT = "rgba(255,85,0,0.16)";
+const DROPDOWN_MUTED = "rgba(201,176,168,0.82)";
 
 export default function ContactPage() {
   const { t } = useLanguage();
   const [service, setService] = useState<"neural" | "quantum">("neural");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [projectName, setProjectName] = useState("");
   const [scope, setScope] = useState("");
   const [priority, setPriority] = useState<"" | "alpha" | "beta" | "gamma">("");
   const [repo, setRepo] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [priorityMenuOpen, setPriorityMenuOpen] = useState(false);
   const priorityDropdownRef = useRef<HTMLDivElement>(null);
 
@@ -46,26 +53,100 @@ export default function ContactPage() {
     return () => document.removeEventListener("mousedown", onDoc);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!priority) {
+    const emailIsValid = isValidEmail(email.trim());
+    const isValid =
+      name.trim().length > 1 &&
+      emailIsValid &&
+      projectName.trim().length > 2 &&
+      scope.trim().length > 8 &&
+      priority.trim().length > 0;
+
+    if (!emailIsValid) {
+      setError(t("common.form_error_invalid_email"));
+      return;
+    }
+
+    if (!isValid) {
+      setError(t("common.form_error_required_priority"));
       setPriorityMenuOpen(true);
       return;
     }
-    setSubmitted(true);
+
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          source: "contact",
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          service: service.trim(),
+          projectName: projectName.trim(),
+          scope: scope.trim(),
+          priority: priority.trim(),
+          repo: repo.trim(),
+        }),
+      });
+
+      const result = (await response.json()) as ContactApiResponse;
+      if (!response.ok || !result.ok) {
+        if (!result.ok && result.errorCode === "NOT_CONFIGURED") {
+          setError(t("common.form_error_not_configured"));
+        } else if (!result.ok && result.errorCode === "INVALID_REQUEST") {
+          if (!isValidEmail(email.trim())) {
+            setError(t("common.form_error_invalid_email"));
+          } else {
+            setError(t("common.form_error_required_priority"));
+            setPriorityMenuOpen(true);
+          }
+        } else {
+          setError(t("common.form_error_submit"));
+        }
+        return;
+      }
+
+      setSubmitted(true);
+    } catch {
+      setError(t("common.form_error_submit"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const priorityTriggerLabel = priority
     ? t(`contact.form.priority.${priority}`)
     : t("contact.form.priority.placeholder");
 
-  const borderBottom = (field: string) =>
-    `2px solid ${focused === field ? T.primaryCtn : "rgba(92,64,55,0.35)"}`;
+  const nameInvalid = !!error && name.trim().length <= 1;
+  const emailInvalid = !!error && !isValidEmail(email.trim());
+  const projectInvalid = !!error && projectName.trim().length <= 2;
+  const scopeInvalid = !!error && scope.trim().length <= 8;
+  const priorityInvalid = !!error && priority.trim().length === 0;
+
+  const fieldBorder = (field: string, invalid = false) => {
+    if (invalid) return `1px solid rgba(255,180,171,0.65)`;
+    return focused === field
+      ? `1px solid rgba(255,85,0,0.7)`
+      : "1px solid rgba(92,64,55,0.32)";
+  };
+
+  const fieldLabelColor = (field: string, invalid = false) => {
+    if (invalid) return "#ffb4ab";
+    return focused === field ? T.primary : "rgba(201,176,168,0.78)";
+  };
 
   return (
     <>
       <SiteHeader active="contact" />
-      <main className="contact-main-bg" style={{ minHeight: "100vh", paddingTop: "clamp(88px, 14vw, 120px)" }}>
+      <main className="contact-main-bg" style={{ minHeight: "100vh", paddingTop: "max(var(--site-header-offset, 78px), clamp(88px, 14vw, 120px))" }}>
         {/* Hero */}
         <section data-reveal style={{ padding: "0 clamp(16px, 4vw, 32px) 48px", maxWidth: "1920px", margin: "0 auto" }}>
           <div
@@ -152,9 +233,9 @@ export default function ContactPage() {
               }}
               className="contact-sidebar"
             >
-              <div style={{ padding: "48px 40px" }} className="contact-sidebar-steps">
-                <h3
-                  style={{
+                <div style={{ padding: "48px 40px" }} className="contact-sidebar-steps">
+                  <h3
+                    style={{
                     fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                     fontSize: "11px",
                     fontWeight: 700,
@@ -179,6 +260,7 @@ export default function ContactPage() {
                 ].map((step) => (
                   <div
                     key={step.n}
+                    className="contact-sidebar-step"
                     style={{
                       display: "flex",
                       gap: "24px",
@@ -235,16 +317,17 @@ export default function ContactPage() {
               </div>
 
               <div style={{ position: "relative", overflow: "hidden", background: "#0a0a0a" }}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
+                <RemoteImageWithFallback
                   src={SERVER_ROOM_IMG}
-                  alt="Server room"
-                  style={{
-                    width: "100%",
-                    height: "320px",
+                  alt={t("media.alt.contact_server_room")}
+                  wrapperStyle={{ width: "100%", height: "320px" }}
+                  imgStyle={{
                     objectFit: "cover",
                     filter: "grayscale(1) brightness(0.55) contrast(1.15)",
-                    display: "block",
+                  }}
+                  fallbackStyle={{
+                    background:
+                      "radial-gradient(circle at 18% 18%, rgba(255,85,0,0.18), transparent 30%), linear-gradient(160deg, rgba(18,18,18,0.98) 0%, rgba(10,10,10,1) 100%)",
                   }}
                 />
                 <div
@@ -281,7 +364,7 @@ export default function ContactPage() {
                       margin: 0,
                     }}
                   >
-                    {t("common.status")}: 99.999%
+                    {t("common.status")}: {t("contact.node.status_value")}
                   </h4>
                 </div>
               </div>
@@ -291,13 +374,15 @@ export default function ContactPage() {
             <div
               style={{
                 gridColumn: "span 8",
-                background: T.surface,
+                background: "linear-gradient(180deg, rgba(19,19,19,0.96), rgba(16,16,16,0.98))",
                 padding: "64px clamp(24px, 5vw, 56px)",
+                position: "relative",
               }}
               className="contact-form-canvas"
             >
               {submitted ? (
                 <div
+                  className="contact-success-panel"
                   style={{
                     height: "100%",
                     display: "flex",
@@ -355,6 +440,7 @@ export default function ContactPage() {
                   {/* Step 1 */}
                   <div>
                     <h2
+                      className="contact-step-heading"
                       style={{
                         fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                         fontSize: "clamp(22px, 3vw, 28px)",
@@ -377,9 +463,10 @@ export default function ContactPage() {
                       <button
                         type="button"
                         onClick={() => setService("neural")}
+                        className="contact-service-card"
                         style={{
                           padding: "24px",
-                          background: "rgba(53,53,53,0.35)",
+                          background: "rgba(255,255,255,0.02)",
                           textAlign: "left",
                           border:
                             service === "neural"
@@ -435,9 +522,10 @@ export default function ContactPage() {
                       <button
                         type="button"
                         onClick={() => setService("quantum")}
+                        className="contact-service-card"
                         style={{
                           padding: "24px",
-                          background: "rgba(53,53,53,0.35)",
+                          background: "rgba(255,255,255,0.02)",
                           textAlign: "left",
                           border:
                             service === "quantum"
@@ -496,6 +584,7 @@ export default function ContactPage() {
                   {/* Step 2 */}
                   <div>
                     <h2
+                      className="contact-step-heading"
                       style={{
                         fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                         fontSize: "clamp(22px, 3vw, 28px)",
@@ -509,7 +598,138 @@ export default function ContactPage() {
                       02 {t("contact.flow.step.1.title")}
                     </h2>
                     <div style={{ display: "flex", flexDirection: "column", gap: "40px" }}>
-                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                          gap: "20px",
+                        }}
+                      >
+                        <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
+                          <label
+                            htmlFor="contact_name"
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              fontSize: "10px",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.3em",
+                              color: fieldLabelColor("contact_name", nameInvalid),
+                              fontWeight: 700,
+                              fontFamily: "var(--font-inter, Inter, sans-serif)",
+                            }}
+                          >
+                            {t("contact.form.label.name")}
+                          </label>
+                          <input
+                            id="contact_name"
+                            type="text"
+                            required
+                            aria-invalid={nameInvalid}
+                            aria-describedby={nameInvalid ? "contact-form-error" : undefined}
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            onFocus={() => setFocused("contact_name")}
+                            onBlur={() => setFocused(null)}
+                            placeholder={t("contact.form.placeholder.name")}
+                            style={{
+                              width: "100%",
+                              background: "rgba(8,8,8,0.38)",
+                              border: fieldBorder("contact_name", nameInvalid),
+                              padding: "18px 18px 16px",
+                              color: "#ffffff",
+                              fontSize: "18px",
+                              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                              outline: "none",
+                              transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
+                            }}
+                            className="contact-text-input"
+                          />
+                        </div>
+                        <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
+                          <label
+                            htmlFor="contact_email"
+                            style={{
+                              position: "absolute",
+                              top: 0,
+                              left: 0,
+                              fontSize: "10px",
+                              textTransform: "uppercase",
+                              letterSpacing: "0.3em",
+                              color: fieldLabelColor("contact_email", emailInvalid),
+                              fontWeight: 700,
+                              fontFamily: "var(--font-inter, Inter, sans-serif)",
+                            }}
+                          >
+                            {t("contact.form.label.email")}
+                          </label>
+                          <input
+                            id="contact_email"
+                            type="email"
+                            required
+                            aria-invalid={emailInvalid}
+                            aria-describedby={emailInvalid ? "contact-form-error" : undefined}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            onFocus={() => setFocused("contact_email")}
+                            onBlur={() => setFocused(null)}
+                            placeholder={t("contact.form.placeholder.email")}
+                            style={{
+                              width: "100%",
+                              background: "rgba(8,8,8,0.38)",
+                              border: fieldBorder("contact_email", emailInvalid),
+                              padding: "18px 18px 16px",
+                              color: "#ffffff",
+                              fontSize: "18px",
+                              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                              outline: "none",
+                              transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
+                            }}
+                            className="contact-text-input"
+                          />
+                        </div>
+                      </div>
+                      <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
+                        <label
+                          htmlFor="contact_phone"
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            fontSize: "10px",
+                            textTransform: "uppercase",
+                            letterSpacing: "0.3em",
+                            color: fieldLabelColor("contact_phone"),
+                            fontWeight: 700,
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                          }}
+                        >
+                          {t("contact.form.label.phone")}
+                        </label>
+                        <input
+                          id="contact_phone"
+                          type="text"
+                          value={phone}
+                          onChange={(e) => setPhone(e.target.value)}
+                          onFocus={() => setFocused("contact_phone")}
+                          onBlur={() => setFocused(null)}
+                          placeholder={t("contact.form.placeholder.phone")}
+                          style={{
+                            width: "100%",
+                            background: "rgba(8,8,8,0.38)",
+                            border: fieldBorder("contact_phone"),
+                            padding: "18px 18px 16px",
+                            color: "#ffffff",
+                            fontSize: "16px",
+                            fontFamily: "var(--font-inter, Inter, sans-serif)",
+                            outline: "none",
+                            transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
+                          }}
+                          className="contact-text-input"
+                        />
+                      </div>
+                      <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
                         <label
                           htmlFor="project_name"
                           style={{
@@ -519,7 +739,7 @@ export default function ContactPage() {
                             fontSize: "10px",
                             textTransform: "uppercase",
                             letterSpacing: "0.3em",
-                            color: T.primaryCtn,
+                            color: fieldLabelColor("project_name", projectInvalid),
                             fontWeight: 700,
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                           }}
@@ -529,6 +749,8 @@ export default function ContactPage() {
                         <input
                           id="project_name"
                           required
+                          aria-invalid={projectInvalid}
+                          aria-describedby={projectInvalid ? "contact-form-error" : undefined}
                           value={projectName}
                           onChange={(e) => setProjectName(e.target.value)}
                           onFocus={() => setFocused("project_name")}
@@ -536,18 +758,19 @@ export default function ContactPage() {
                           placeholder={t("contact.form.placeholder.project")}
                           style={{
                             width: "100%",
-                            background: "transparent",
-                            border: "none",
-                            borderBottom: borderBottom("project_name"),
-                            padding: "16px 0",
+                            background: "rgba(8,8,8,0.38)",
+                            border: fieldBorder("project_name", projectInvalid),
+                            padding: "18px 18px 16px",
                             color: "#ffffff",
                             fontSize: "20px",
                             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                             outline: "none",
+                            transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
                           }}
+                          className="contact-text-input"
                         />
                       </div>
-                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                      <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
                         <label
                           htmlFor="description"
                           style={{
@@ -557,7 +780,7 @@ export default function ContactPage() {
                             fontSize: "10px",
                             textTransform: "uppercase",
                             letterSpacing: "0.3em",
-                            color: T.primaryCtn,
+                            color: fieldLabelColor("description", scopeInvalid),
                             fontWeight: 700,
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                           }}
@@ -567,6 +790,8 @@ export default function ContactPage() {
                         <textarea
                           id="description"
                           required
+                          aria-invalid={scopeInvalid}
+                          aria-describedby={scopeInvalid ? "contact-form-error" : undefined}
                           rows={4}
                           value={scope}
                           onChange={(e) => setScope(e.target.value)}
@@ -575,16 +800,18 @@ export default function ContactPage() {
                           placeholder={t("contact.form.placeholder.scope")}
                           style={{
                             width: "100%",
-                            background: "transparent",
-                            border: "none",
-                            borderBottom: borderBottom("description"),
-                            padding: "16px 0",
+                            background: "rgba(8,8,8,0.38)",
+                            border: fieldBorder("description", scopeInvalid),
+                            padding: "18px 18px 16px",
                             color: "#ffffff",
                             fontSize: "15px",
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                             outline: "none",
                             resize: "none",
+                            lineHeight: 1.7,
+                            transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
                           }}
+                          className="contact-textarea-input"
                         />
                       </div>
                     </div>
@@ -593,6 +820,7 @@ export default function ContactPage() {
                   {/* Step 3 */}
                   <div>
                     <h2
+                      className="contact-step-heading"
                       style={{
                         fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                         fontSize: "clamp(22px, 3vw, 28px)",
@@ -614,6 +842,7 @@ export default function ContactPage() {
                     >
                       <div
                         ref={priorityDropdownRef}
+                        className="contact-field-shell"
                         style={{ position: "relative", paddingTop: "12px", zIndex: priorityMenuOpen ? 40 : 1 }}
                       >
                         <label
@@ -625,7 +854,7 @@ export default function ContactPage() {
                             fontSize: "10px",
                             textTransform: "uppercase",
                             letterSpacing: "0.3em",
-                            color: T.primaryCtn,
+                            color: fieldLabelColor("priority", priorityInvalid),
                             fontWeight: 700,
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                           }}
@@ -637,6 +866,7 @@ export default function ContactPage() {
                           aria-haspopup="listbox"
                           aria-expanded={priorityMenuOpen}
                           aria-labelledby="priority-label"
+                          aria-describedby={priorityInvalid ? "contact-form-error" : undefined}
                           onClick={() => {
                             setPriorityMenuOpen((o) => !o);
                             setFocused("priority");
@@ -647,12 +877,13 @@ export default function ContactPage() {
                             alignItems: "center",
                             justifyContent: "space-between",
                             gap: "12px",
-                            background: "transparent",
-                            border: "none",
-                            borderBottom: `2px solid ${
-                              focused === "priority" || priorityMenuOpen ? T.primaryCtn : "rgba(92,64,55,0.35)"
-                            }`,
-                            padding: "16px 0 14px",
+                            background: "rgba(8,8,8,0.38)",
+                            border: fieldBorder("priority", priorityInvalid),
+                            boxShadow:
+                              focused === "priority" || priorityMenuOpen
+                                ? "0 0 0 1px rgba(255,85,0,0.22)"
+                                : "none",
+                            padding: "18px 18px 16px",
                             color: "#ffffff",
                             fontSize: "13px",
                             textTransform: "uppercase",
@@ -661,7 +892,9 @@ export default function ContactPage() {
                             outline: "none",
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                             fontWeight: 600,
+                            transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
                           }}
+                          className="contact-priority-trigger"
                         >
                           <span style={{ textAlign: "left" }}>{priorityTriggerLabel}</span>
                           <svg
@@ -691,9 +924,12 @@ export default function ContactPage() {
                               right: 0,
                               top: "100%",
                               marginTop: "6px",
-                              background: "#ffffff",
-                              boxShadow: "0 16px 40px rgba(0,0,0,0.35)",
-                              border: "1px solid rgba(0,0,0,0.06)",
+                              background: "rgba(16,16,16,0.98)",
+                              boxShadow: "0 18px 40px rgba(0,0,0,0.42)",
+                              border: "1px solid rgba(92,64,55,0.42)",
+                              backdropFilter: "blur(12px)",
+                              WebkitBackdropFilter: "blur(12px)",
+                              overflow: "hidden",
                             }}
                           >
                             <div
@@ -736,12 +972,13 @@ export default function ContactPage() {
                                       textTransform: "uppercase",
                                       background: selected ? DROPDOWN_HIGHLIGHT : "transparent",
                                       color: selected ? "#ffffff" : DROPDOWN_MUTED,
+                                      borderBottom: "1px solid rgba(92,64,55,0.12)",
                                       transition: "background 0.15s ease, color 0.15s ease",
                                     }}
                                     onMouseEnter={(e) => {
                                       if (!selected) {
-                                        (e.currentTarget as HTMLButtonElement).style.background = "#f4f4f5";
-                                        (e.currentTarget as HTMLButtonElement).style.color = "#52525b";
+                                        (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,255,255,0.05)";
+                                        (e.currentTarget as HTMLButtonElement).style.color = "#ffffff";
                                       }
                                     }}
                                     onMouseLeave={(e) => {
@@ -759,7 +996,7 @@ export default function ContactPage() {
                           </div>
                         )}
                       </div>
-                      <div style={{ position: "relative", paddingTop: "12px" }}>
+                      <div className="contact-field-shell" style={{ position: "relative", paddingTop: "12px" }}>
                         <label
                           htmlFor="repo"
                           style={{
@@ -769,7 +1006,7 @@ export default function ContactPage() {
                             fontSize: "10px",
                             textTransform: "uppercase",
                             letterSpacing: "0.3em",
-                            color: T.primaryCtn,
+                            color: fieldLabelColor("repo"),
                             fontWeight: 700,
                             fontFamily: "var(--font-inter, Inter, sans-serif)",
                           }}
@@ -786,15 +1023,16 @@ export default function ContactPage() {
                           placeholder={t("contact.form.placeholder.repo")}
                           style={{
                             width: "100%",
-                            background: "transparent",
-                            border: "none",
-                            borderBottom: borderBottom("repo"),
-                            padding: "16px 0",
+                            background: "rgba(8,8,8,0.38)",
+                            border: fieldBorder("repo"),
+                            padding: "18px 18px 16px",
                             color: "#ffffff",
                             fontSize: "14px",
                             fontFamily: "ui-monospace, monospace",
                             outline: "none",
+                            transition: "border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease",
                           }}
+                          className="contact-text-input"
                         />
                       </div>
                     </div>
@@ -828,6 +1066,7 @@ export default function ContactPage() {
                     </p>
                     <button
                       type="submit"
+                      disabled={submitting}
                       style={{
                         background: T.primaryCtn,
                         color: T.onPrimary,
@@ -840,12 +1079,23 @@ export default function ContactPage() {
                         border: "none",
                         cursor: "pointer",
                         whiteSpace: "nowrap",
+                        opacity: submitting ? 0.75 : 1,
+                        transition: "transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease, opacity 0.2s ease",
                       }}
                       className="contact-submit-btn"
                     >
-                      {t("contact.form.submit")}
+                      {submitting ? t("common.submitting") : t("contact.form.submit")}
                     </button>
                   </div>
+                  {error ? (
+                    <p
+                      id="contact-form-error"
+                      className="contact-form-feedback contact-form-error"
+                      style={{ color: "#ffb4ab", margin: 0, fontSize: "12px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
+                    >
+                      {error}
+                    </p>
+                  ) : null}
                 </form>
               )}
             </div>
@@ -978,7 +1228,7 @@ export default function ContactPage() {
             }}
             className="contact-terminal-grid"
           >
-            <div>
+            <div className="contact-portal-copy">
               <h2
                 style={{
                   fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -1043,6 +1293,7 @@ export default function ContactPage() {
             </div>
 
             <div
+              className="contact-terminal-panel"
               style={{
                 background: "rgba(0,0,0,0.45)",
                 padding: "28px",
@@ -1051,11 +1302,11 @@ export default function ContactPage() {
                 borderLeft: `2px solid ${T.primaryCtn}`,
               }}
             >
-              <div style={{ display: "flex", gap: "12px", marginBottom: "16px", color: T.primaryCtn }}>
+              <div className="contact-terminal-head" style={{ display: "flex", gap: "12px", marginBottom: "16px", color: T.primaryCtn }}>
                 <span>{t("contact.terminal.system")}</span>
                 <span style={{ color: "#ffffff" }}>{t("contact.terminal.awaiting")}</span>
               </div>
-              <div style={{ color: T.onSurfaceVar, display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div className="contact-terminal-lines" style={{ color: T.onSurfaceVar, display: "flex", flexDirection: "column", gap: "8px" }}>
                 <p style={{ margin: 0, color: T.primaryCtn, opacity: 0.65 }}>
                   {t("contact.terminal.auth")}
                 </p>
@@ -1138,40 +1389,34 @@ export default function ContactPage() {
             >
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {[t("contact.footer.privacy"), t("contact.footer.terms")].map((label) => (
-                  <a
+                  <span
                     key={label}
-                    href="#"
                     style={{
-                      color: "rgba(156,163,175,0.95)",
+                      color: "rgba(156,163,175,0.82)",
                       fontSize: "12px",
                       textTransform: "uppercase",
                       letterSpacing: "0.16em",
-                      textDecoration: "none",
                       fontFamily: "var(--font-inter, Inter, sans-serif)",
                     }}
-                    className="contact-footer-link"
                   >
                     {label}
-                  </a>
+                  </span>
                 ))}
               </div>
               <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 {[t("contact.footer.offices"), t("contact.footer.specs")].map((label) => (
-                  <a
+                  <span
                     key={label}
-                    href="#"
                     style={{
-                      color: "rgba(156,163,175,0.95)",
+                      color: "rgba(156,163,175,0.82)",
                       fontSize: "12px",
                       textTransform: "uppercase",
                       letterSpacing: "0.16em",
-                      textDecoration: "none",
                       fontFamily: "var(--font-inter, Inter, sans-serif)",
                     }}
-                    className="contact-footer-link"
                   >
                     {label}
-                  </a>
+                  </span>
                 ))}
               </div>
             </div>
@@ -1206,15 +1451,107 @@ export default function ContactPage() {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.35; }
         }
+        .contact-sidebar-step {
+          transition: opacity 0.2s ease, transform 0.2s ease;
+        }
+        .contact-form-canvas::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          pointer-events: none;
+          background: linear-gradient(180deg, rgba(255,85,0,0.06), transparent 20%);
+        }
+        .contact-step-heading {
+          padding-bottom: 14px;
+          border-bottom: 1px solid rgba(92,64,55,0.16);
+        }
+        .contact-service-card {
+          transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .contact-service-card:hover,
+        .contact-service-card:focus-visible {
+          background: rgba(255,255,255,0.04) !important;
+          border-color: rgba(255,85,0,0.28) !important;
+          transform: translateY(-1px);
+          box-shadow: 0 12px 28px rgba(0,0,0,0.16);
+          outline: none;
+        }
+        .contact-field-shell {
+          display: flex;
+          flex-direction: column;
+          gap: 0;
+        }
+        .contact-text-input::placeholder,
+        .contact-textarea-input::placeholder {
+          color: rgba(201,176,168,0.38);
+        }
+        .contact-text-input:focus,
+        .contact-textarea-input:focus,
+        .contact-priority-trigger:focus-visible {
+          background: rgba(12,12,12,0.54) !important;
+          box-shadow: 0 0 0 1px rgba(255,85,0,0.22) !important;
+        }
+        .contact-priority-trigger:hover,
+        .contact-text-input:hover,
+        .contact-textarea-input:hover {
+          background: rgba(12,12,12,0.46) !important;
+        }
+        .contact-success-panel {
+          padding: 40px 28px;
+          border: 1px solid rgba(92,64,55,0.2);
+          background: linear-gradient(180deg, rgba(255,85,0,0.05), rgba(255,255,255,0.02));
+        }
+        .contact-form-feedback {
+          padding: 12px 14px;
+          border: 1px solid rgba(255,180,171,0.22);
+          background: rgba(255,180,171,0.08);
+          line-height: 1.6;
+        }
         .contact-submit-btn:hover {
           filter: brightness(1.08);
+          transform: translateY(-1px);
+          box-shadow: 0 16px 30px rgba(255,85,0,0.18);
+        }
+        .contact-submit-btn:focus-visible {
+          outline: 2px solid rgba(255,181,156,0.92);
+          outline-offset: 4px;
+        }
+        .contact-submit-btn:disabled {
+          cursor: progress;
+          filter: saturate(0.9);
         }
         .contact-portal-btn:hover {
           background: ${T.primary} !important;
           color: ${T.onPrimary} !important;
         }
+        .contact-portal-btn:focus-visible,
+        .contact-recover-btn:focus-visible {
+          outline: 2px solid rgba(255,181,156,0.92);
+          outline-offset: 4px;
+        }
         .contact-recover-btn:hover {
           border-color: ${T.primaryCtn} !important;
+        }
+        .contact-terminal-panel {
+          position: relative;
+          overflow: hidden;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+        }
+        .contact-terminal-panel::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(180deg, rgba(255,85,0,0.05), transparent 36%);
+          pointer-events: none;
+        }
+        .contact-terminal-head {
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(92,64,55,0.2);
+          position: relative;
+        }
+        .contact-terminal-lines {
+          position: relative;
+          padding-top: 4px;
         }
         .contact-node-card {
           transition:
@@ -1266,6 +1603,9 @@ export default function ContactPage() {
           }
         }
         @media (max-width: 640px) {
+          .contact-step-heading {
+            margin-bottom: 24px !important;
+          }
           .contact-form-canvas {
             padding: 28px 18px !important;
           }
@@ -1274,6 +1614,26 @@ export default function ContactPage() {
           }
           .contact-terminal-grid {
             gap: 28px !important;
+          }
+          .contact-text-input,
+          .contact-textarea-input,
+          .contact-priority-trigger {
+            padding: 16px 14px 14px !important;
+          }
+          .contact-submit-btn {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+        @media (max-width: 430px) {
+          .contact-form-canvas {
+            padding: 22px 14px !important;
+          }
+          .contact-sidebar-steps {
+            padding: 22px 14px !important;
+          }
+          .contact-terminal-panel {
+            padding: 22px !important;
           }
         }
       `}</style>

@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
+import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
 import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
@@ -18,7 +19,7 @@ export default function ProcessPage() {
   return (
     <>
       <SiteHeader active="process-protocol" />
-      <main style={{ position: "relative", background: T.surface, paddingTop: "78px" }}>
+      <main style={{ position: "relative", background: T.surface, paddingTop: "var(--site-header-offset, 78px)" }}>
         <HeroSection />
         <PhasesSection />
         <CTASection />
@@ -29,6 +30,52 @@ export default function ProcessPage() {
         .process-hero-head-wrap h1 {
           filter: drop-shadow(0 0 40px rgba(255, 87, 8, 0.15));
         }
+        .process-phase-card {
+          display: flex;
+          flex-direction: column;
+        }
+        .process-phase-head {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          gap: 20px;
+          margin-bottom: 36px;
+        }
+        .process-phase-head .material-symbols-outlined {
+          color: ${T.primaryCtn};
+          opacity: 0.78;
+          font-variation-settings: 'FILL' 1;
+        }
+        .process-phase-title {
+          max-width: min(16ch, 100%);
+          margin-bottom: 14px !important;
+          line-height: 1.08 !important;
+        }
+        .process-phase-body {
+          color: rgba(161, 161, 170, 0.9) !important;
+          line-height: 1.75 !important;
+        }
+        .process-phase-artifact {
+          margin-top: auto;
+          background: rgba(9, 9, 9, 0.72);
+          border: 1px solid rgba(92, 64, 55, 0.18);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+        .process-phase-artifact-muted {
+          opacity: 0.42 !important;
+        }
+        .process-phase-list {
+          gap: 14px !important;
+          margin: 0;
+          padding: 0;
+          list-style: none;
+        }
+        .process-phase-list li span:last-child {
+          color: rgba(250,250,250,0.9) !important;
+        }
+        .process-phase-code-pair {
+          margin-top: auto;
+        }
         @keyframes process-phase-fade {
           from { opacity: 0; transform: translateY(10px); }
           to { opacity: 1; transform: translateY(0); }
@@ -37,11 +84,12 @@ export default function ProcessPage() {
           animation: process-phase-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .process-phase-code-pair > div {
-          transition: border-color 0.3s ease, transform 0.3s ease;
+          transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
         }
         .process-phase-code-pair > div:hover {
           border-color: ${T.primaryCtn} !important;
-          transform: translateY(-2px);
+          transform: translateY(-1px);
+          background: rgba(12,12,12,0.92) !important;
         }
         .process-cta-btn:hover {
           background: #ffffff !important;
@@ -53,8 +101,32 @@ export default function ProcessPage() {
           .process-phases-grid > div { grid-column: span 1 !important; }
         }
         @media (max-width: 768px) {
+          .process-phase-card {
+            padding: 36px 26px !important;
+          }
+          .process-phase-head {
+            margin-bottom: 28px !important;
+          }
+          .process-phase-title {
+            font-size: 28px !important;
+            max-width: 100%;
+          }
+          .process-phase-body {
+            margin-bottom: 24px !important;
+          }
           .process-phase5-row { flex-direction: column !important; align-items: flex-start !important; gap: 32px !important; }
           .process-phase-code-pair { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 430px) {
+          .process-phase-card {
+            padding: 30px 20px !important;
+          }
+          .process-phase-title {
+            font-size: 24px !important;
+          }
+          .process-phase-body {
+            font-size: 15px !important;
+          }
         }
       `}</style>
     </>
@@ -72,10 +144,15 @@ function HeroSection() {
       }}
     >
       <div style={{ position: "absolute", top: "10%", right: "-5%", opacity: 0.15, pointerEvents: "none", width: "60%" }}>
-        <img 
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuAnI1y70S-9P0F6jAosJ4-6BOfQO7-59qC3V-6z2L7Xq99EwA49hZ9eY5vV9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5v9Y-5W5" 
-          alt="Technical blueprint"
-          style={{ width: "100%", height: "auto" }}
+        <div
+          aria-hidden
+          style={{
+            width: "100%",
+            aspectRatio: "16 / 10",
+            background:
+              "radial-gradient(circle at 20% 30%, rgba(255,87,8,0.45), rgba(255,87,8,0.08) 42%, transparent 70%), linear-gradient(140deg, #111113 0%, #0a0a0a 100%)",
+            border: "1px solid rgba(255,87,8,0.12)",
+          }}
         />
       </div>
       <div style={{ position: "relative", zIndex: 2, width: "100%" }}>
@@ -141,7 +218,7 @@ function HeroSection() {
                   color: "#fff" 
                 }}
               >
-                142.5ms
+                2 / week
               </span>
               <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase" }}>{t("process.hero.latency")}</span>
             </div>
@@ -162,8 +239,9 @@ function PhaseLabel({ children }: { children: React.ReactNode }) {
           fontWeight: 700, 
           letterSpacing: "0.3em", 
           color: T.primaryCtn,
-          background: "rgba(255, 87, 8, 0.1)",
-          padding: "4px 10px"
+          background: "rgba(255, 87, 8, 0.08)",
+          border: "1px solid rgba(255,87,8,0.18)",
+          padding: "5px 10px"
         }}
       >
         {children}
@@ -188,6 +266,7 @@ function PhasesSection() {
       >
         {/* Phase 01 */}
         <div 
+          className="process-phase-card"
           style={{ 
             gridColumn: "span 4", 
             padding: "48px", 
@@ -196,13 +275,14 @@ function PhasesSection() {
             borderBottom: "1px solid rgba(92,64,55,0.15)"
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "64px" }}>
-            <PhaseLabel>PHASE_01</PhaseLabel>
-            <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontVariationSettings: "'FILL' 1" }}>
+          <div className="process-phase-head">
+            <PhaseLabel>{t("services.protocol.0.phase")}</PhaseLabel>
+            <span className="material-symbols-outlined">
               analytics
             </span>
           </div>
           <h3 
+            className="process-phase-title"
             style={{ 
               fontSize: "34px", 
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
@@ -215,10 +295,11 @@ function PhasesSection() {
           >
             {t("process.phase.0.title")}
           </h3>
-          <p style={{ color: "#71717a", marginBottom: "32px", lineHeight: 1.7 }}>
+          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
             {t("process.phase.0.desc")}
           </p>
           <div 
+            className="process-phase-artifact"
             style={{ 
               background: "#090909", 
               padding: "24px", 
@@ -237,6 +318,7 @@ function PhasesSection() {
 
         {/* Phase 02 */}
         <div 
+          className="process-phase-card"
           style={{ 
             gridColumn: "span 8", 
             padding: "48px", 
@@ -247,20 +329,26 @@ function PhasesSection() {
           }}
         >
           <div style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none", width: "50%" }}>
-            <img 
-              alt="Schematic" 
+            <RemoteImageWithFallback
+              alt={t("media.alt.process_schematic")}
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwDqaWtK7x_AA48tLo-rcDOg5ypWd4RqrcyuOdbbHaxImISP6Ejodo9uj-oQ2Qz48JiFJSMSTUQRA2LCEQUxhwQRnj3o4QdHy1ooQxxVgbPE3OHm4-QUZ1npvu8cU-2eInEUiUbZfuTnbDpGMNWQtW53VZ-uKrzrminmq1wOF6Fq289aPK-p1YxsMKVfDA5lsdTDp9tjWnHCqPaqn2bcpH56dzDF0VL_FhJ4qfhtSaJEJIiWKSk7tx3wqiJaOsAB6tTSqvbe7SjGQ" 
-              style={{ width: "100%", height: "auto" }}
+              wrapperStyle={{ width: "100%", aspectRatio: "16 / 10" }}
+              imgStyle={{ objectFit: "cover" }}
+              fallbackStyle={{
+                background:
+                  "radial-gradient(circle at 22% 28%, rgba(255,87,8,0.2), transparent 28%), linear-gradient(140deg, rgba(24,24,27,0.96) 0%, rgba(10,10,10,0.98) 100%)",
+              }}
             />
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "64px", position: "relative", zIndex: 1 }}>
-            <PhaseLabel>PHASE_02</PhaseLabel>
-            <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontVariationSettings: "'FILL' 1" }}>
+          <div className="process-phase-head" style={{ position: "relative", zIndex: 1 }}>
+            <PhaseLabel>{t("services.protocol.1.phase")}</PhaseLabel>
+            <span className="material-symbols-outlined">
               architecture
             </span>
           </div>
           <div style={{ maxWidth: "min(680px, 100%)", position: "relative", zIndex: 1 }}>
             <h3 
+              className="process-phase-title"
               style={{ 
                 fontSize: "34px", 
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
@@ -273,10 +361,10 @@ function PhasesSection() {
             >
               {t("process.phase.1.title")}
             </h3>
-            <p style={{ color: "#71717a", marginBottom: "32px", lineHeight: 1.7 }}>
+            <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
               {t("process.phase.1.desc")}
             </p>
-            <ul style={{ display: "flex", flexDirection: "column", gap: "16px", fontFamily: "monospace", fontSize: "14px" }}>
+            <ul className="process-phase-list" style={{ display: "flex", flexDirection: "column", gap: "16px", fontFamily: "monospace", fontSize: "14px" }}>
               {[t("process.phase.1.list.0"), t("process.phase.1.list.1"), t("process.phase.1.list.2")].map((item) => (
                 <li key={item} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                   <span style={{ width: "6px", height: "6px", background: T.primaryCtn }} />
@@ -289,6 +377,7 @@ function PhasesSection() {
 
         {/* Phase 03 */}
         <div 
+          className="process-phase-card"
           style={{ 
             gridColumn: "span 7", 
             padding: "48px", 
@@ -299,13 +388,14 @@ function PhasesSection() {
             overflow: "hidden"
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "64px" }}>
-            <PhaseLabel>PHASE_03</PhaseLabel>
-            <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontVariationSettings: "'FILL' 1" }}>
+          <div className="process-phase-head">
+            <PhaseLabel>{t("services.protocol.2.phase")}</PhaseLabel>
+            <span className="material-symbols-outlined">
               terminal
             </span>
           </div>
           <h3 
+            className="process-phase-title"
             style={{ 
               fontSize: "34px", 
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
@@ -315,14 +405,15 @@ function PhasesSection() {
               letterSpacing: "-0.03em",
               color: T.onSurface
             }}
-          >
-            {t("process.phase.2.title")}
+            >
+              {t("process.phase.2.title")}
           </h3>
-          <p style={{ color: "#71717a", marginBottom: "48px", lineHeight: 1.7 }}>
+          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "30px", lineHeight: 1.7 }}>
             {t("process.phase.2.desc")}
           </p>
           <div className="process-phase-code-pair" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
             <div 
+              className="process-phase-artifact"
               style={{ 
                 background: "rgba(9,9,9,0.8)", 
                 padding: "24px", 
@@ -335,13 +426,14 @@ function PhasesSection() {
                 <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.a.name")}</span>
                 <span style={{ color: T.primaryCtn }}>{t("process.phase.2.stream.a.status")}</span>
               </div>
-              <p style={{ color: "#a1a1aa" }}>const kernel = new QuantumNode();</p>
-              <p style={{ color: "#a1a1aa" }}>kernel.initialize({"{"}</p>
-              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>mode: &apos;OVERCLOCK&apos;,</p>
-              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>safety: false</p>
+              <p style={{ color: "#a1a1aa" }}>const releasePlan = createReleasePlan();</p>
+              <p style={{ color: "#a1a1aa" }}>releasePlan.configure({"{"}</p>
+              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>scope: &quot;client-portal&quot;,</p>
+              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>qa: true</p>
               <p style={{ color: "#a1a1aa" }}>{"});"}</p>
             </div>
             <div 
+              className="process-phase-artifact process-phase-artifact-muted"
               style={{ 
                 background: "rgba(9,9,9,0.8)", 
                 padding: "24px", 
@@ -355,14 +447,15 @@ function PhasesSection() {
                 <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.b.name")}</span>
                 <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.b.status")}</span>
               </div>
-              <p style={{ color: "#71717a" }}>await stream.sync(kernel);</p>
-              <p style={{ color: "#71717a" }}>deploy.now();</p>
+              <p style={{ color: "#71717a" }}>await runIntegrationChecks();</p>
+              <p style={{ color: "#71717a" }}>await deployProduction();</p>
             </div>
           </div>
         </div>
 
         {/* Phase 04 */}
         <div 
+          className="process-phase-card"
           style={{ 
             gridColumn: "span 5", 
             padding: "48px", 
@@ -370,13 +463,14 @@ function PhasesSection() {
             borderBottom: "1px solid rgba(92,64,55,0.15)"
           }}
         >
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "64px" }}>
-            <PhaseLabel>PHASE_04</PhaseLabel>
-            <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontVariationSettings: "'FILL' 1" }}>
+          <div className="process-phase-head">
+            <PhaseLabel>{t("services.protocol.3.phase")}</PhaseLabel>
+            <span className="material-symbols-outlined">
               monitoring
             </span>
           </div>
           <h3 
+            className="process-phase-title"
             style={{ 
               fontSize: "34px", 
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
@@ -386,13 +480,14 @@ function PhasesSection() {
               letterSpacing: "-0.03em",
               color: T.onSurface
             }}
-          >
-            {t("process.phase.3.title")}
+            >
+              {t("process.phase.3.title")}
           </h3>
-          <p style={{ color: "#71717a", marginBottom: "32px", lineHeight: 1.7 }}>
+          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
             {t("process.phase.3.desc")}
           </p>
           <div 
+            className="process-phase-artifact"
             style={{ 
               height: "160px", 
               display: "flex", 
@@ -419,7 +514,7 @@ function PhasesSection() {
               />
             ))}
           </div>
-          <div style={{ marginTop: "16px", display: "flex", justifyContent: "space-between", fontFamily: "monospace", fontSize: "10px", color: "#71717a" }}>
+          <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between", fontFamily: "monospace", fontSize: "10px", color: "#71717a", opacity: 0.86 }}>
             <span>{t("process.phase.3.monitor.0")}</span>
             <span>{t("process.phase.3.monitor.1")}</span>
             <span>{t("process.phase.3.monitor.2")}</span>
@@ -428,6 +523,7 @@ function PhasesSection() {
 
         {/* Phase 05 */}
         <div 
+          className="process-phase-card"
           style={{ 
             gridColumn: "span 12", 
             padding: "48px", 
@@ -437,18 +533,24 @@ function PhasesSection() {
           }}
         >
           <div style={{ position: "absolute", inset: 0, opacity: 0.2, pointerEvents: "none" }}>
-            <img 
-              alt="Global network" 
+            <RemoteImageWithFallback
+              alt={t("media.alt.process_global_network")}
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBDwdtymjG6llRGJo_C6l07pc3Z2GFdo3fx72bC397eyoWWphwKsbckntEEMh9Xdjuo0TKfZtMX5ISnvPTk5HIwGty4YNBWclqHUnaSDpybQkA7PXcZERgGqqU13_Rw0yXb3ZfTe5PiusJ7lPuYOptagu57XfhlIjUC-6vPzi34aGRBrNeMp6EViJzTolNQ_Oa9z2SeS80DoFhdXnH4Wj6dnk-BGxmGutKtd3di_e-6JRyc2L9djuAAk_Hx5AfEDr1u_urmVQ3_c4" 
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+              wrapperStyle={{ width: "100%", height: "100%" }}
+              imgStyle={{ objectFit: "cover" }}
+              fallbackStyle={{
+                background:
+                  "radial-gradient(circle at 50% 22%, rgba(255,87,8,0.16), transparent 32%), linear-gradient(145deg, rgba(16,16,18,0.96) 0%, rgba(9,9,11,0.98) 100%)",
+              }}
             />
           </div>
           <div className="process-phase5-row" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: "48px" }}>
             <div style={{ maxWidth: "min(960px, 100%)" }}>
-              <span style={{ display: "block", marginBottom: "48px" }}>
-                <PhaseLabel>{t("services.protocol.4.phase") || "PHASE_05"}</PhaseLabel>
+              <span style={{ display: "block", marginBottom: "28px" }}>
+                <PhaseLabel>{t("services.protocol.4.phase")}</PhaseLabel>
               </span>
               <h3 
+                className="process-phase-title"
                 style={{ 
                   fontSize: "clamp(40px, 5vw, 56px)", 
                   fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
@@ -461,7 +563,7 @@ function PhasesSection() {
               >
                 {t("process.phase.4.title")}
               </h3>
-              <p style={{ color: "#a1a1aa", fontSize: "18px", lineHeight: 1.7 }}>
+              <p className="process-phase-body" style={{ color: "#a1a1aa", fontSize: "18px", lineHeight: 1.7 }}>
                 {t("process.phase.4.desc")}
               </p>
             </div>
@@ -589,20 +691,18 @@ function Footer() {
           
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "40px" }}>
             {[t("process.footer.privacy"), t("process.footer.terms"), t("process.footer.network")].map(l => (
-              <a 
+              <span
                 key={l} 
-                href="#" 
                 style={{ 
                   fontSize: "11px", 
                   letterSpacing: "0.15em", 
-                  color: "#a1a1aa", 
-                  textDecoration: "none", 
+                  color: "rgba(161,161,170,0.78)", 
                   textTransform: "uppercase", 
-                  fontWeight: 600 
+                  fontWeight: 600,
                 }}
               >
                 {l}
-              </a>
+              </span>
             ))}
           </div>
         </div>

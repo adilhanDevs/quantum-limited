@@ -32,8 +32,10 @@
   --error:                  #ffb4ab;
 
   /* Typography */
-  --font-display:     "Space Grotesk", sans-serif;
-  --font-body:        "Inter", sans-serif;
+  --font-space-grotesk: "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-inter:       "Inter", "Aptos", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --font-display:     var(--font-space-grotesk);
+  --font-body:        var(--font-inter);
 }
 
 /* ─── Base reset ────────────────────────────────────────────────── */

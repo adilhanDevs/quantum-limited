@@ -1,7 +1,10 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
+import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
+import type { ContactApiResponse } from "../lib/contact";
 import { useLanguage } from "../i18n/LanguageContext";
 
 const T = {
@@ -36,7 +39,7 @@ export default function ServicesPage() {
   return (
     <>
       <SiteHeader active="services" />
-      <main style={{ background: T.surface, minHeight: "100vh", paddingTop: "78px" }}>
+      <main style={{ background: T.surface, minHeight: "100vh", paddingTop: "var(--site-header-offset, 78px)" }}>
         <HeroSection />
         <ModulesSection />
         <ProtocolSection />
@@ -50,15 +53,28 @@ export default function ServicesPage() {
           background-size: 40px 40px;
         }
         .services-card {
-          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease;
+          transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
           border: 1px solid rgba(92,64,55,0.1);
         }
         .services-card:hover {
-          transform: translateY(-4px);
+          transform: translateY(-3px);
           background: #231d1b !important;
-          border-color: rgba(255,85,0,0.25);
+          border-color: rgba(255,85,0,0.28);
+          box-shadow: 0 16px 34px rgba(0,0,0,0.18);
         }
-        .service-link:hover { gap: 12px !important; }
+        .services-card:hover .service-link,
+        .services-card:focus-within .service-link {
+          gap: 12px !important;
+          color: #ffffff !important;
+        }
+        .services-card:hover .service-link > span,
+        .services-card:focus-within .service-link > span {
+          transform: translateX(2px);
+        }
+        .service-link:focus-visible {
+          outline: 2px solid rgba(255,181,156,0.9);
+          outline-offset: 4px;
+        }
         .protocol-row-image img {
           transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
         }
@@ -77,6 +93,9 @@ export default function ServicesPage() {
         }
         @media (max-width: 900px) {
           .services-modules-grid { grid-template-columns: 1fr !important; }
+          .services-card {
+            min-height: 0 !important;
+          }
         }
         @media (max-width: 768px) {
           .protocol-row { flex-direction: column !important; gap: 40px !important; }
@@ -89,6 +108,37 @@ export default function ServicesPage() {
           .protocol-row-image { 
             padding: 0 !important;
             order: 1;
+          }
+          .services-card {
+            padding: 36px 28px 32px !important;
+          }
+          .services-card-metrics {
+            gap: 12px !important;
+          }
+          .services-card-title {
+            font-size: 24px !important;
+          }
+          .services-card-desc {
+            font-size: 14px !important;
+            line-height: 1.65 !important;
+          }
+        }
+        @media (max-width: 430px) {
+          .services-card {
+            padding: 30px 20px 24px !important;
+          }
+          .services-card-top {
+            margin-bottom: 28px !important;
+          }
+          .services-card-title {
+            font-size: 22px !important;
+          }
+          .services-card-metrics {
+            grid-template-columns: 1fr !important;
+          }
+          .service-link {
+            width: 100%;
+            justify-content: space-between;
           }
         }
       `}</style>
@@ -153,8 +203,8 @@ function HeroSection() {
           </p>
 
           <div style={{ display: "flex", flexWrap: "wrap", gap: "48px" }}>
-            <Metric label={t("services.hero.metric1")} value="99.99%" />
-            <Metric label={t("services.hero.metric2")} value="<2MS" />
+            <Metric label={t("services.hero.metric1")} value={t("services.hero.metric1.value")} />
+            <Metric label={t("services.hero.metric2")} value={t("services.hero.metric2.value")} />
           </div>
         </div>
 
@@ -165,16 +215,17 @@ function HeroSection() {
               background: `linear-gradient(135deg, rgba(255,85,0,0.3) 0%, transparent 100%)`,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
+            <RemoteImageWithFallback
               src="https://lh3.googleusercontent.com/aida-public/AB6AXuCttXQVEV3FwQ7cfpG2bHXL2J0OQ1MJqtlH_9rebYkFRa8b7bX64HD2KHYwCm4FYFghmRyTsT3YHwLmAUPWBxxQ0jGr_KEPyNN3c1TJMbDzMJK9LnkMSGlyrqFuCFrVVp0h_yohY7cmu34TOL9CAk1KRht9Q2kK_uix1Iv99SZria3XPRMSLT6ozgA3IrnOLn0oNW0o5XscfldShYC-szRhh2-d2GeVEbjBIVZOtskcZqkyvsJ8XeJHLMb_BcBIq2I4NxYdA-QhKpE"
-              alt="Technical render"
-              style={{
-                display: "block",
-                width: "100%",
-                aspectRatio: "1 / 1",
+              alt={t("media.alt.technical_render")}
+              wrapperStyle={{ width: "100%", aspectRatio: "1 / 1" }}
+              imgStyle={{
                 objectFit: "cover",
                 filter: "grayscale(1) brightness(0.72) contrast(1.15)",
+              }}
+              fallbackStyle={{
+                background:
+                  "radial-gradient(circle at 18% 18%, rgba(255,85,0,0.2), transparent 30%), linear-gradient(145deg, rgba(28,20,18,0.98) 0%, rgba(10,10,10,0.98) 100%)",
               }}
             />
             <div
@@ -258,8 +309,17 @@ function ServiceCard({
 }) {
   const { t } = useLanguage();
   return (
-    <article className="services-card" style={{ background: "#1b1715", padding: "52px 40px 48px", minHeight: "430px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "44px" }}>
+    <article
+      className="services-card"
+      style={{
+        background: "#1b1715",
+        padding: "42px 36px 36px",
+        minHeight: "400px",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div className="services-card-top" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "32px" }}>
         <div
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -284,13 +344,14 @@ function ServiceCard({
       </div>
 
       <h3
+        className="services-card-title"
         style={{
           fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
           fontSize: "26px",
           fontWeight: 700,
           color: T.onSurface,
-          lineHeight: 1.2,
-          marginBottom: "18px",
+          lineHeight: 1.14,
+          marginBottom: "14px",
           maxWidth: "360px",
         }}
       >
@@ -298,44 +359,57 @@ function ServiceCard({
       </h3>
 
       <p
+        className="services-card-desc"
         style={{
           fontFamily: "var(--font-inter, Inter, sans-serif)",
           fontSize: "15px",
           color: T.onSurfaceVar,
-          lineHeight: 1.7,
-          marginBottom: "28px",
+          lineHeight: 1.68,
+          marginBottom: "24px",
           maxWidth: "420px",
         }}
       >
         {t(`services.card.${index}.desc`)}
       </p>
 
-      <div className="services-card-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px", marginBottom: "34px" }}>
-        <MetricBox label={t(`services.card.${index}.statA.label`)} value={t(`services.card.${index}.statA.value`)} />
-        <MetricBox label={t(`services.card.${index}.statB.label`)} value={t(`services.card.${index}.statB.value`)} />
-      </div>
+      <div style={{ marginTop: "auto", display: "flex", flexDirection: "column", gap: "24px" }}>
+        <div className="services-card-metrics" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px" }}>
+          <MetricBox label={t(`services.card.${index}.statA.label`)} value={t(`services.card.${index}.statA.value`)} />
+          <MetricBox label={t(`services.card.${index}.statB.label`)} value={t(`services.card.${index}.statB.value`)} />
+        </div>
 
-      <a
-        href="/process-protocol"
-        className="service-link"
-        style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "8px",
-          color: T.primary,
-          fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-          fontSize: "11px",
-          letterSpacing: "0.12em",
-          textTransform: "uppercase",
-          textDecoration: "none",
-          transition: "gap 0.3s ease",
-        }}
-      >
-        {t("services.card.view_protocol")}
-        <span className="material-symbols-outlined" style={{ color: T.primaryCtn, fontSize: "16px" }}>
-          arrow_forward
-        </span>
-      </a>
+        <div
+          style={{
+            paddingTop: "18px",
+            borderTop: "1px solid rgba(92,64,55,0.16)",
+          }}
+        >
+          <Link
+            href="/process-protocol"
+            className="service-link"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              color: T.primary,
+              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+              fontSize: "11px",
+              letterSpacing: "0.12em",
+              textTransform: "uppercase",
+              textDecoration: "none",
+              transition: "gap 0.3s ease, color 0.25s ease",
+            }}
+          >
+            {t("services.card.view_protocol")}
+            <span
+              className="material-symbols-outlined"
+              style={{ color: T.primaryCtn, fontSize: "16px", transition: "transform 0.25s ease" }}
+            >
+              arrow_forward
+            </span>
+          </Link>
+        </div>
+      </div>
     </article>
   );
 }
@@ -454,17 +528,18 @@ function ProtocolRow({
         }}
       >
         <div style={{ position: "relative", padding: "1px", background: `rgba(92,64,55,0.15)` }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <RemoteImageWithFallback
+            className="protocol-row-image-asset"
             src={image}
             alt={title}
-            style={{
-              display: "block",
-              width: "100%",
-              height: "auto",
-              aspectRatio: "16 / 10",
+            wrapperStyle={{ width: "100%", aspectRatio: "16 / 10" }}
+            imgStyle={{
               objectFit: "cover",
               filter: "grayscale(1) brightness(0.85)",
+            }}
+            fallbackStyle={{
+              background:
+                "radial-gradient(circle at 24% 24%, rgba(255,85,0,0.16), transparent 26%), linear-gradient(150deg, rgba(22,18,16,0.98) 0%, rgba(10,10,10,0.98) 100%)",
             }}
           />
         </div>
@@ -475,6 +550,55 @@ function ProtocolRow({
 
 function ContactSection() {
   const { t } = useLanguage();
+  const [email, setEmail] = React.useState("");
+  const [submitting, setSubmitting] = React.useState(false);
+  const [submitted, setSubmitted] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    if (!emailIsValid) {
+      setError(t("services.contact.error.invalid_email"));
+      return;
+    }
+
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          source: "services",
+          email: email.trim(),
+        }),
+      });
+
+      const result = (await response.json()) as ContactApiResponse;
+      if (!response.ok || !result.ok) {
+        if (!result.ok && result.errorCode === "NOT_CONFIGURED") {
+          setError(t("common.form_error_not_configured"));
+        } else if (!result.ok && result.errorCode === "INVALID_REQUEST") {
+          setError(t("services.contact.error.invalid_email"));
+        } else {
+          setError(t("common.form_error_submit"));
+        }
+        return;
+      }
+
+      setSubmitted(true);
+      setEmail("");
+    } catch {
+      setError(t("common.form_error_submit"));
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
   return (
     <section
       data-reveal
@@ -517,6 +641,7 @@ function ContactSection() {
         </p>
 
         <form
+          onSubmit={handleSubmit}
           style={{
             display: "flex",
             flexDirection: "column",
@@ -525,41 +650,60 @@ function ContactSection() {
             margin: "0 auto",
           }}
         >
-          <input
-            className="services-contact-input"
-            type="email"
-            placeholder={t("services.contact.placeholder")}
-            style={{
-              background: "transparent",
-              border: "none",
-              borderBottom: `1px solid rgba(92,64,55,0.4)`,
-              padding: "16px 0",
-              color: "#ffffff",
-              fontFamily: "ui-monospace, monospace",
-              fontSize: "14px",
-              outline: "none",
-              textAlign: "center",
-              transition: "border-color 0.3s ease",
-            }}
-          />
-          <button
-            className="services-contact-btn"
-            style={{
-              background: T.primaryCtn,
-              color: T.onPrimary,
-              padding: "18px",
-              border: "none",
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontWeight: 700,
-              fontSize: "14px",
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              cursor: "pointer",
-              transition: "filter 0.3s ease",
-            }}
-          >
-            {t("services.contact.execute")}
-          </button>
+          {submitted ? (
+            <p style={{ color: T.onSurfaceVar, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
+              {t("common.transmission_received")}
+            </p>
+          ) : (
+            <>
+              <input
+                className="services-contact-input"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder={t("services.contact.placeholder")}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  borderBottom: `1px solid rgba(92,64,55,0.4)`,
+                  padding: "16px 0",
+                  color: "#ffffff",
+                  fontFamily: "ui-monospace, monospace",
+                  fontSize: "14px",
+                  outline: "none",
+                  textAlign: "center",
+                  transition: "border-color 0.3s ease",
+                }}
+              />
+              <button
+                type="submit"
+                disabled={submitting}
+                className="services-contact-btn"
+                style={{
+                  background: T.primaryCtn,
+                  color: T.onPrimary,
+                  padding: "18px",
+                  border: "none",
+                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                  fontWeight: 700,
+                  fontSize: "14px",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  cursor: "pointer",
+                  transition: "filter 0.3s ease",
+                  opacity: submitting ? 0.75 : 1,
+                }}
+              >
+                {submitting ? t("common.submitting") : t("services.contact.execute")}
+              </button>
+              {error ? (
+                <p style={{ color: "#ffb4ab", margin: 0, fontSize: "12px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
+                  {error}
+                </p>
+              ) : null}
+            </>
+          )}
           <p
             style={{
               fontSize: "10px",
@@ -625,20 +769,18 @@ function Footer() {
 
         <div style={{ display: "flex", flexWrap: "wrap", gap: "32px" }}>
           {[t("services.footer.privacy"), t("services.footer.sla"), t("services.footer.network")].map((link) => (
-            <a
+            <span
               key={link}
-              href="#"
               style={{
                 fontSize: "11px",
                 textTransform: "uppercase",
                 letterSpacing: "0.14em",
-                color: "rgba(161, 161, 170, 0.7)",
-                textDecoration: "none",
+                color: "rgba(161, 161, 170, 0.72)",
                 fontFamily: "var(--font-inter, Inter, sans-serif)",
               }}
             >
               {link}
-            </a>
+            </span>
           ))}
         </div>
       </div>

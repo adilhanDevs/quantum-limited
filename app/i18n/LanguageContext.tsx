@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { DEFAULT_LANGUAGE, LANGUAGE_STORAGE_KEY, type Language, translations } from "./translations";
 
-export const SUPPORTED_LANGUAGES: Language[] = ["en", "ru", "kg", "zh", "fr", "es"];
+export const SUPPORTED_LANGUAGES: Language[] = ["en", "ru", "kg"];
 
 type LanguageContextValue = {
   language: Language;

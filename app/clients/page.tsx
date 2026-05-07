@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
 import { SiteHeader } from "../components/SiteHeader";
 import { useLanguage } from "../i18n/LanguageContext";
 
@@ -23,7 +24,7 @@ export default function ClientsPage() {
   return (
     <>
       <SiteHeader active="clients" />
-      <main style={{ position: "relative", background: T.surface, paddingTop: "78px" }}>
+      <main style={{ position: "relative", background: T.surface, paddingTop: "var(--site-header-offset, 78px)" }}>
         <HeroSection />
         <MarqueeSection />
         <MetricsSection />
@@ -74,8 +75,75 @@ export default function ClientsPage() {
         .clients-case-study:hover .clients-case-study-image img {
           filter: grayscale(0%) !important;
         }
+        .clients-transmission-status {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 14px;
+          border: 1px solid rgba(92,64,55,0.24);
+          background: rgba(255,255,255,0.02);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+        }
+        .clients-transmission-status::before {
+          content: "";
+          width: 7px;
+          height: 7px;
+          border-radius: 999px;
+          background: #34d399;
+          box-shadow: 0 0 10px rgba(52,211,153,0.42);
+          flex-shrink: 0;
+        }
+        .clients-tm-grid {
+          background: rgba(92,64,55,0.18);
+        }
         .clients-tm-cell:first-child {
           border-right: 1px solid rgba(92,64,55,0.22);
+        }
+        .clients-tm-cell {
+          position: relative;
+          transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .clients-tm-cell:hover {
+          background: #1f1a18 !important;
+          transform: translateY(-1px);
+        }
+        .clients-tm-cell::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(90deg, rgba(255,85,0,0.42), rgba(255,85,0,0));
+          opacity: 0.65;
+        }
+        .clients-tm-trace {
+          padding-bottom: 14px;
+          border-bottom: 1px solid rgba(92,64,55,0.18);
+        }
+        .clients-tm-quote {
+          position: relative;
+          padding-left: 22px;
+        }
+        .clients-tm-quote::before {
+          content: "“";
+          position: absolute;
+          left: 0;
+          top: -8px;
+          font-family: Georgia, "Times New Roman", ui-serif, serif;
+          font-size: 36px;
+          color: rgba(179,123,93,0.5);
+          line-height: 1;
+        }
+        .clients-tm-meta {
+          padding-top: 18px;
+          border-top: 1px solid rgba(92,64,55,0.18);
+        }
+        .clients-tm-quote::before {
+          content: "\\201C";
+        }
+        .clients-tm-avatar {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
         }
         .clients-case-study-cta:hover {
           opacity: 0.85;
@@ -120,10 +188,25 @@ export default function ClientsPage() {
             width: 100% !important;
             min-width: 0 !important;
           }
+          .clients-transmission-status {
+            align-self: flex-start !important;
+          }
         }
         @media (max-width: 600px) {
           .clients-tm-cell {
             padding: 32px 22px !important;
+          }
+        }
+        @media (max-width: 430px) {
+          .clients-tm-quote {
+            padding-left: 18px !important;
+          }
+          .clients-tm-quote::before {
+            font-size: 30px !important;
+            top: -6px !important;
+          }
+          .clients-tm-meta {
+            gap: 12px !important;
           }
         }
       `}</style>
@@ -309,14 +392,14 @@ function HeroSection() {
 }
 
 const marqueeItems = [
-  "APEX_SYSTEMS",
-  "VOID.LOGIC",
-  "TECH_CORP",
-  "CYBER-DYNAMICS",
-  "APEX_SYSTEMS",
-  "VOID.LOGIC",
-  "TECH_CORP",
-  "CYBER-DYNAMICS",
+  "INTERNAL DASHBOARDS",
+  "BOOKING SYSTEMS",
+  "CRM INTEGRATIONS",
+  "CUSTOMER PORTALS",
+  "INTERNAL DASHBOARDS",
+  "BOOKING SYSTEMS",
+  "CRM INTEGRATIONS",
+  "CUSTOMER PORTALS",
 ];
 
 function MarqueeSection() {
@@ -664,18 +747,19 @@ function CaseStudySection() {
             background: "#0a0a0a",
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <RemoteImageWithFallback
             src={CASE_STUDY_IMAGE}
-            alt="Data center corridor — case study"
-            style={{
-              width: "100%",
-              height: "100%",
+            alt={t("media.alt.case_study_corridor")}
+            wrapperStyle={{ width: "100%", height: "100%" }}
+            imgStyle={{
               objectFit: "cover",
               objectPosition: "center",
-              display: "block",
               filter: "grayscale(100%)",
               transition: "filter 0.55s ease",
+            }}
+            fallbackStyle={{
+              background:
+                "radial-gradient(circle at 24% 18%, rgba(255,85,0,0.18), transparent 30%), linear-gradient(145deg, rgba(22,22,22,0.98) 0%, rgba(10,10,10,0.98) 100%)",
             }}
           />
         </div>
@@ -734,7 +818,7 @@ function CaseStudySection() {
             {t("clients.case_study.desc")}
           </p>
           <Link
-            href="#"
+            href="/contact"
             className="clients-case-study-cta"
             style={{
               fontFamily: "var(--font-inter, Inter, sans-serif)",
@@ -752,7 +836,7 @@ function CaseStudySection() {
           >
             {t("clients.case_study.cta")}
             <span aria-hidden style={{ fontSize: "16px" }}>
-              →
+              &rarr;
             </span>
           </Link>
         </div>
@@ -806,12 +890,14 @@ function TransmissionSection() {
             </p>
           </div>
           <div
+            className="clients-transmission-status"
             style={{
               fontFamily: "ui-monospace, monospace",
               fontSize: "11px",
               color: "rgba(161,161,170,0.65)",
               letterSpacing: "0.1em",
               alignSelf: "flex-end",
+              textTransform: "uppercase",
             }}
           >
             {t("clients.transmission.status")}
@@ -832,13 +918,13 @@ function TransmissionSection() {
               className="clients-tm-cell"
               style={{
                 background: T.surfaceLow,
-                padding: "44px 40px",
+                padding: "40px 36px",
                 display: "flex",
                 flexDirection: "column",
-                gap: "28px",
+                gap: "24px",
               }}
             >
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <div className="clients-tm-trace" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <span
                   style={{
                     width: "7px",
@@ -861,20 +947,22 @@ function TransmissionSection() {
                 </span>
               </div>
               <blockquote
+                className="clients-tm-quote"
                 style={{
                   fontFamily: 'Georgia, "Times New Roman", ui-serif, serif',
-                  fontSize: "clamp(17px, 2vw, 19px)",
+                  fontSize: "clamp(18px, 2vw, 20px)",
                   fontStyle: "italic",
-                  color: "rgba(232,232,232,0.92)",
-                  lineHeight: 1.65,
+                  color: "rgba(232,232,232,0.96)",
+                  lineHeight: 1.75,
                   fontWeight: 400,
                   margin: 0,
                 }}
               >
                 &ldquo;{t(`clients.testimonial.${i}.quote`)}&rdquo;
               </blockquote>
-              <div style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: "auto" }}>
+              <div className="clients-tm-meta" style={{ display: "flex", gap: "16px", alignItems: "center", marginTop: "auto" }}>
                 <div
+                  className="clients-tm-avatar"
                   style={{
                     width: "44px",
                     height: "44px",
@@ -894,10 +982,11 @@ function TransmissionSection() {
                     style={{
                       fontFamily: "var(--font-inter, Inter, sans-serif)",
                       fontSize: "11px",
-                      fontWeight: 600,
-                      letterSpacing: "0.12em",
+                      fontWeight: 700,
+                      letterSpacing: "0.16em",
                       color: "#ffffff",
                       textTransform: "uppercase",
+                      marginBottom: "4px",
                     }}
                   >
                     {t(`clients.testimonial.${i}.role`)}
@@ -907,7 +996,7 @@ function TransmissionSection() {
                       fontFamily: "var(--font-inter, Inter, sans-serif)",
                       fontSize: "11px",
                       fontWeight: 600,
-                      letterSpacing: "0.1em",
+                      letterSpacing: "0.14em",
                       color: COPPER,
                       textTransform: "uppercase",
                     }}
@@ -976,28 +1065,25 @@ function Footer() {
             }}
           >
             {[t("clients.footer.privacy"), t("clients.footer.terms"), t("clients.footer.offices")].map((l) => (
-              <Link
+              <span
                 key={l}
-                href="#"
-                className="clients-footer-link"
                 style={{
                   fontFamily: "var(--font-inter, Inter, sans-serif)",
                   fontSize: "11px",
                   fontWeight: 500,
                   letterSpacing: "0.2em",
                   textTransform: "uppercase",
-                  color: FOOTER_MUTED,
-                  textDecoration: "none",
+                  color: "rgba(102,102,102,0.88)",
                 }}
               >
                 {l}
-              </Link>
+              </span>
             ))}
           </div>
 
           <div style={{ marginBottom: "36px" }}>
             <Link
-              href="#"
+              href="/services"
               className="clients-footer-link"
               style={{
                 fontFamily: "var(--font-inter, Inter, sans-serif)",

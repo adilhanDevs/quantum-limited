@@ -3,6 +3,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
+import { RemoteImageWithFallback } from "./components/RemoteImageWithFallback";
+import type { ContactApiResponse } from "./lib/contact";
 import { useLanguage } from "./i18n/LanguageContext";
 
 const T = {
@@ -25,13 +27,13 @@ const METHODOLOGY_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBWzHSFIp4T9U3KZXG4D44r6WOzXQFA4oGUfAU0KkO5BGnOwhyYq99a6iXtYoEL6Psv2TyMUNk1tKbuNdCkzCnDDUDak1UfrytE13OTu4ZqiBI-PRyMtdq4_HgODq7wgD5m5EwQtoDpFeCuRjtsMekQ_mt8K_EXh6VjPUd2AnWmqyNvR8LbdaB02TQp4LqeOMpT-mifJtgghFyHrg0YEVGcytVGv1Yue1d94m4kCNSZGYM8xrVdSbsFpTAtBGAHA6PKTBQUvKzR8D8";
 
 const TRUST_LOGOS = [
-  "TECH_CORP",
-  "CYBER-DYNAMICS",
-  "APEX_SYSTEMS",
-  "VOID.LOGIC",
-  "NEURAL_SYNC",
-  "OMNI-CLOUD",
-  "VERTEX_SOLUTIONS",
+  "B2B PLATFORMS",
+  "OPS TEAMS",
+  "CLIENT PORTALS",
+  "ADMIN SYSTEMS",
+  "BOOKING FLOWS",
+  "API PROGRAMS",
+  "CLOUD DELIVERY",
 ];
 
 const SECTION_TINT = "rgba(10,10,10,0.16)";
@@ -39,17 +41,18 @@ const SECTION_TINT = "rgba(10,10,10,0.16)";
 function HeroSection() {
   const { t } = useLanguage();
   const [isVideoFinished, setIsVideoFinished] = useState(false);
+  const [videoAvailable, setVideoAvailable] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current) {
+    if (videoRef.current && videoAvailable) {
       videoRef.current.play().catch(() => {
         setIsVideoFinished(true);
       });
     }
-    const fallback = setTimeout(() => setIsVideoFinished(true), 5000);
+    const fallback = setTimeout(() => setIsVideoFinished(true), 1200);
     return () => clearTimeout(fallback);
-  }, []);
+  }, [videoAvailable]);
 
   return (
     <section
@@ -65,23 +68,39 @@ function HeroSection() {
       }}
     >
       <div style={{ position: "absolute", inset: 0, zIndex: 0, overflow: "hidden" }}>
-        <video
-          ref={videoRef}
-          muted
-          playsInline
-          preload="auto"
-          src="/Hero.mp4"
-          onEnded={() => setIsVideoFinished(true)}
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            opacity: isVideoFinished ? 0.35 : 0.7,
-            filter: isVideoFinished ? "blur(3px)" : "none",
-            transition: "opacity 1.2s ease, filter 1.2s ease",
-            backgroundColor: "#060606",
-          }}
-        />
+        {videoAvailable ? (
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            preload="auto"
+            src="/Hero.mp4"
+            onEnded={() => setIsVideoFinished(true)}
+            onError={() => {
+              setVideoAvailable(false);
+              setIsVideoFinished(true);
+            }}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              opacity: isVideoFinished ? 0.35 : 0.7,
+              filter: isVideoFinished ? "blur(3px)" : "none",
+              transition: "opacity 1.2s ease, filter 1.2s ease",
+              backgroundColor: "#060606",
+            }}
+          />
+        ) : (
+          <div
+            aria-hidden
+            style={{
+              width: "100%",
+              height: "100%",
+              background:
+                "radial-gradient(circle at 25% 20%, rgba(255,85,0,0.18), rgba(6,6,6,0.1) 38%), linear-gradient(160deg, #060606 0%, #0e0e0e 100%)",
+            }}
+          />
+        )}
         <div
           style={{
             position: "absolute",
@@ -95,6 +114,25 @@ function HeroSection() {
         />
       </div>
 
+      <div
+        aria-hidden
+        className="home-hero-energy"
+        style={{
+          position: "absolute",
+          inset: 0,
+          zIndex: 1,
+          pointerEvents: "none",
+          overflow: "hidden",
+        }}
+      >
+        <div className="home-hero-orb home-hero-orb-primary" />
+        <div className="home-hero-orb home-hero-orb-secondary" />
+        <div className="home-hero-orb home-hero-orb-tertiary" />
+        <div className="home-hero-beam" />
+        <div className="home-hero-grid" />
+        <div className="home-hero-scanband" />
+      </div>
+
       <div 
         className="home-hero-inner" 
         style={{ 
@@ -102,13 +140,13 @@ function HeroSection() {
           zIndex: 2, 
           maxWidth: "1280px", 
           margin: "0 auto", 
-          padding: "0 clamp(16px, 4vw, 32px) clamp(48px, 8vw, 80px)", 
+          padding: "clamp(16px, 4vw, 36px) clamp(16px, 4vw, 32px) clamp(40px, 7vw, 72px)", 
           width: "100%"
         }}
       >
         <div 
           className={isVideoFinished ? "animate-fade-up" : ""}
-          style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "24px", opacity: isVideoFinished ? 1 : 0, transition: "opacity 0.1s" }}
+          style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "18px", opacity: isVideoFinished ? 1 : 0, transition: "opacity 0.1s" }}
         >
           <span style={{ width: "48px", height: "1px", background: "#ff6a00" }} />
           <span
@@ -135,10 +173,11 @@ function HeroSection() {
             letterSpacing: "-0.02em",
             color: "#ffffff",
             textTransform: "uppercase",
-            marginBottom: "32px",
+            marginBottom: "22px",
             opacity: isVideoFinished ? 1 : 0,
             transition: "opacity 0.1s",
             textShadow: "0 4px 30px rgba(0,0,0,0.8)",
+            maxWidth: "min(980px, 100%)",
           }}
         >
           {t("home.hero.title1")}
@@ -151,19 +190,20 @@ function HeroSection() {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-            alignItems: "flex-end",
-            gap: "48px",
+            alignItems: "flex-start",
+            gap: "28px 36px",
+            maxWidth: "1020px",
           }}
           className="home-hero-cta-row"
         >
           <p
             className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-2" : ""}
             style={{
-              flex: "1 1 280px",
-              maxWidth: "420px",
+              flex: "1 1 320px",
+              maxWidth: "460px",
               color: T.onSurfaceVar,
               fontWeight: 300,
-              lineHeight: 1.65,
+              lineHeight: 1.72,
               fontSize: "18px",
               fontStyle: "italic",
               fontFamily: "var(--font-inter, Inter, sans-serif)",
@@ -175,43 +215,78 @@ function HeroSection() {
             {t("home.hero.description")}
           </p>
           <div 
-            className={isVideoFinished ? "animate-fade-up animate-fade-up-delay-3" : ""}
-            style={{ display: "flex", flexDirection: "column", gap: "16px", opacity: isVideoFinished ? 1 : 0, transition: "opacity 0.1s" }}
+            className={`home-hero-cta-cluster ${isVideoFinished ? "animate-fade-up animate-fade-up-delay-3" : ""}`.trim()}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "14px",
+              opacity: isVideoFinished ? 1 : 0,
+              transition: "opacity 0.1s",
+              padding: "18px 18px 16px",
+              background: "linear-gradient(160deg, rgba(10,10,10,0.4), rgba(10,10,10,0.18))",
+              border: "1px solid rgba(255,85,0,0.14)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
+              alignSelf: "flex-end",
+              minWidth: "min(100%, 320px)",
+            }}
           >
             <Link
               href="#contact"
               style={{
                 background: T.primary,
                 color: "#ffffff",
-                padding: "20px 40px",
+                padding: "18px 30px",
                 fontWeight: 700,
                 textTransform: "uppercase",
-                letterSpacing: "0.14em",
+                letterSpacing: "0.16em",
                 fontSize: "15px",
                 textDecoration: "none",
-                display: "inline-block",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                transition: "filter 0.2s, transform 0.15s",
+                transition: "filter 0.2s, transform 0.15s, box-shadow 0.2s ease, border-color 0.2s ease",
+                boxShadow: "0 16px 36px rgba(255,85,0,0.2)",
+                border: "1px solid rgba(255,181,156,0.18)",
               }}
               className="home-start-dev"
             >
               {t("home.hero.cta")}
             </Link>
             <div
+              className="home-hero-protocol"
               style={{
+                position: "relative",
                 display: "flex",
                 alignItems: "center",
                 gap: "10px",
                 fontSize: "10px",
-                letterSpacing: "0.2em",
-                color: T.secondary,
+                letterSpacing: "0.18em",
+                color: "rgba(198,198,199,0.72)",
                 textTransform: "uppercase",
                 fontWeight: 700,
-                opacity: 0.5,
+                opacity: 1,
                 fontFamily: "var(--font-inter, Inter, sans-serif)",
+                padding: "10px 12px",
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.03)",
+                overflow: "hidden",
               }}
             >
-              <span className="material-symbols-outlined" style={{ fontSize: "16px" }}>
+              <span aria-hidden className="home-hero-protocol-sheen" />
+              <span
+                aria-hidden
+                className="home-hero-protocol-dot"
+                style={{
+                  width: "7px",
+                  height: "7px",
+                  background: T.primary,
+                  boxShadow: "0 0 16px rgba(255,85,0,0.45)",
+                  flexShrink: 0,
+                }}
+              />
+              <span className="material-symbols-outlined" style={{ fontSize: "15px", color: "rgba(255,181,156,0.78)" }}>
                 terminal
               </span>
               {t("home.hero.protocol")}
@@ -227,6 +302,7 @@ function CompetenciesSection() {
   const { t } = useLanguage();
   return (
     <section
+      data-reveal
       id="services"
       className="home-blueprint home-micro-radial home-competencies"
       style={{
@@ -314,7 +390,7 @@ function CompetenciesSection() {
           }}
           className="home-comp-grid"
         >
-          <div className="home-feature-card home-glass" style={{ gridColumn: "span 12", position: "relative", overflow: "hidden", padding: "1px" }}>
+          <div data-reveal data-reveal-delay="1" className="home-feature-card home-glass home-depth-reveal" style={{ gridColumn: "span 12", position: "relative", overflow: "hidden", padding: "1px" }}>
             <div className="home-scan-line" aria-hidden />
             <div style={{ position: "relative", zIndex: 2, padding: "clamp(32px, 4vw, 48px)", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "420px" }}>
               <div style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "32px", justifyContent: "space-between" }}>
@@ -422,7 +498,7 @@ function CompetenciesSection() {
                 scanDelay: "3s",
               },
             ].map((card) => (
-              <div key={card.tag} className="home-glass home-side-card" style={{ position: "relative", overflow: "hidden", padding: "1px", flex: 1 }}>
+              <div key={card.tag} data-reveal data-reveal-delay="2" className="home-glass home-side-card home-depth-reveal" style={{ position: "relative", overflow: "hidden", padding: "1px", flex: 1 }}>
                 <div className="home-scan-line" style={{ animationDelay: card.scanDelay }} aria-hidden />
                 <div style={{ padding: "32px", display: "flex", flexDirection: "column", justifyContent: "space-between", minHeight: "200px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "16px" }}>
@@ -463,6 +539,7 @@ function MethodologySection() {
   const { t } = useLanguage();
   return (
     <section
+      data-reveal
       id="process"
       style={{
         position: "relative",
@@ -503,7 +580,7 @@ function MethodologySection() {
         }}
         className="home-method-grid"
       >
-        <div>
+        <div data-reveal data-reveal-delay="1" className="home-depth-reveal">
           <p
             style={{
               color: T.primary,
@@ -549,10 +626,18 @@ function MethodologySection() {
           </div>
         </div>
 
-        <div style={{ position: "relative" }}>
+        <div data-reveal data-reveal-delay="2" className="home-depth-reveal" style={{ position: "relative" }}>
           <div style={{ aspectRatio: "1", background: "rgba(10,10,10,0.18)", border: "1px solid rgba(92,64,55,0.2)", padding: "12px", position: "relative" }}>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={METHODOLOGY_IMG} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", filter: "grayscale(1) brightness(0.75)" }} />
+            <RemoteImageWithFallback
+              src={METHODOLOGY_IMG}
+              alt=""
+              wrapperStyle={{ width: "100%", height: "100%" }}
+              imgStyle={{ objectFit: "cover", filter: "grayscale(1) brightness(0.75)" }}
+              fallbackStyle={{
+                background:
+                  "radial-gradient(circle at 24% 24%, rgba(255,85,0,0.18), transparent 28%), linear-gradient(150deg, rgba(24,18,16,0.98) 0%, rgba(9,9,9,0.98) 100%)",
+              }}
+            />
             <div
               style={{
                 position: "absolute",
@@ -580,7 +665,7 @@ function TrustLogosSection() {
   const { t } = useLanguage();
   const loop = [...TRUST_LOGOS, ...TRUST_LOGOS];
   return (
-    <section style={{ padding: "72px 0", background: SECTION_TINT }}>
+    <section data-reveal style={{ padding: "72px 0", background: SECTION_TINT }}>
       <div style={{ padding: "0 32px 28px", maxWidth: "1440px", margin: "0 auto", textAlign: "center" }}>
         <p style={{ fontSize: "11px", letterSpacing: "0.28em", textTransform: "uppercase", color: T.secondary, fontWeight: 700, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.trusted.title")}</p>
       </div>
@@ -613,18 +698,67 @@ function ContactSection() {
   const [form, setForm] = useState({ name: "", email: "", service: "", requirements: "" });
   const [focused, setFocused] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const border = (f: string) => `2px solid ${focused === f ? T.primary : "rgba(92,64,55,0.35)"}`;
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    const emailIsValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email);
+    const isValid =
+      form.name.trim().length > 1 &&
+      emailIsValid &&
+      form.service.trim().length > 0 &&
+      form.requirements.trim().length > 8;
+    if (!isValid) {
+      setError(t("common.form_error_required"));
+      return;
+    }
+    setError(null);
+    setSubmitting(true);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          source: "home",
+          name: form.name.trim(),
+          email: form.email.trim(),
+          service: form.service.trim(),
+          requirements: form.requirements.trim(),
+        }),
+      });
+      const result = (await response.json()) as ContactApiResponse;
+
+      if (!response.ok || !result.ok) {
+        setError(
+          result.ok
+            ? t("common.form_error_submit")
+            : result.errorCode === "NOT_CONFIGURED"
+              ? t("common.form_error_not_configured")
+              : result.errorCode === "INVALID_REQUEST"
+                ? t("common.form_error_required")
+                : t("common.form_error_submit")
+        );
+        return;
+      }
+
+      setSubmitted(true);
+      setForm({ name: "", email: "", service: "", requirements: "" });
+    } catch {
+      setError(t("common.form_error_submit"));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <section id="contact" style={{ padding: "clamp(64px, 10vw, 96px) clamp(16px, 4vw, 32px)", background: SECTION_TINT }}>
+    <section data-reveal id="contact" style={{ padding: "clamp(64px, 10vw, 96px) clamp(16px, 4vw, 32px)", background: SECTION_TINT }}>
       <div style={{ maxWidth: "1152px", margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "56px" }} className="home-contact-grid">
-        <div>
+        <div data-reveal data-reveal-delay="1" className="home-depth-reveal">
           <h2
             style={{
               fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -663,7 +797,7 @@ function ContactSection() {
           </div>
         </div>
 
-        <div style={{ background: "rgba(10,10,10,0.2)", padding: "40px", border: "1px solid rgba(92,64,55,0.12)", position: "relative", overflow: "hidden" }}>
+        <div data-reveal data-reveal-delay="2" className="home-depth-reveal home-contact-panel" style={{ background: "rgba(10,10,10,0.2)", padding: "40px", border: "1px solid rgba(92,64,55,0.12)", position: "relative", overflow: "hidden" }}>
           <div style={{ position: "absolute", top: 0, left: 0, width: "4px", height: "100%", background: "rgba(255,85,0,0.45)" }} />
           {submitted ? (
             <p style={{ color: T.onSurfaceVar, textAlign: "center", padding: "40px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.success")}</p>
@@ -673,6 +807,7 @@ function ContactSection() {
                 <div>
                   <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "name" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.clientName")}</label>
                   <input
+                    required
                     value={form.name}
                     onChange={(e) => setForm({ ...form, name: e.target.value })}
                     onFocus={() => setFocused("name")}
@@ -685,6 +820,7 @@ function ContactSection() {
                   <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "email" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.emailAddress")}</label>
                   <input
                     type="email"
+                    required
                     value={form.email}
                     onChange={(e) => setForm({ ...form, email: e.target.value })}
                     onFocus={() => setFocused("email")}
@@ -697,6 +833,7 @@ function ContactSection() {
               <div>
                 <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "service" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.serviceInterest")}</label>
                 <select
+                  required
                   value={form.service}
                   onChange={(e) => setForm({ ...form, service: e.target.value })}
                   onFocus={() => setFocused("service")}
@@ -724,6 +861,7 @@ function ContactSection() {
                 <label style={{ display: "block", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.2em", color: focused === "requirements" ? T.primary : T.secondary, fontWeight: 700, marginBottom: "8px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.requirements")}</label>
                 <textarea
                   rows={4}
+                  required
                   value={form.requirements}
                   onChange={(e) => setForm({ ...form, requirements: e.target.value })}
                   onFocus={() => setFocused("requirements")}
@@ -734,6 +872,7 @@ function ContactSection() {
               </div>
               <button
                 type="submit"
+                disabled={submitting}
                 style={{
                   width: "100%",
                   background: T.primary,
@@ -746,11 +885,17 @@ function ContactSection() {
                   cursor: "pointer",
                   fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
                   boxShadow: "0 8px 32px rgba(255,85,0,0.15)",
+                  opacity: submitting ? 0.75 : 1,
                 }}
                 className="home-init-project"
               >
-                {t("home.contact.submit")}
+                {submitting ? t("common.submitting") : t("home.contact.submit")}
               </button>
+              {error && (
+                <p style={{ color: "#ffb4ab", fontSize: "12px", margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
+                  {error}
+                </p>
+              )}
             </form>
           )}
         </div>
@@ -784,9 +929,12 @@ function Footer() {
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "24px 40px", justifyContent: "center" }}>
           {[t("home.footer.privacy"), t("home.footer.terms"), t("home.footer.architecture"), t("home.footer.github")].map((l) => (
-            <Link key={l} href="#" style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#71717a", textDecoration: "none", fontFamily: "var(--font-inter, Inter, sans-serif)" }} className="home-footer-link">
+            <span
+              key={l}
+              style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(113,113,122,0.78)", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
+            >
               {l}
-            </Link>
+            </span>
           ))}
         </div>
       </div>
@@ -798,7 +946,7 @@ export default function QuantumLimitedHome() {
   return (
     <>
       <SiteHeader active={null} />
-      <main style={{ position: "relative", zIndex: 2, background: "transparent", paddingTop: "78px" }}>
+      <main style={{ position: "relative", zIndex: 2, background: "transparent", paddingTop: "var(--site-header-offset, 78px)" }}>
         <HeroSection />
         <CompetenciesSection />
         <MethodologySection />
@@ -818,17 +966,52 @@ export default function QuantumLimitedHome() {
             linear-gradient(90deg, rgba(255, 85, 0, 0.05) 1px, transparent 1px);
           background-size: 20px 20px;
         }
+        html.reveal-enabled .home-depth-reveal[data-reveal]:not([data-reveal-visible="true"]) {
+          opacity: 0;
+          transform: translateY(32px) scale(0.975);
+          filter: blur(10px);
+        }
+        html.reveal-enabled .home-depth-reveal[data-reveal] {
+          transition:
+            opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+            filter 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+            box-shadow 0.35s ease,
+            border-color 0.35s ease,
+            background 0.35s ease;
+          will-change: opacity, transform, filter;
+        }
+        html.reveal-enabled .home-depth-reveal[data-reveal][data-reveal-visible="true"] {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+          filter: blur(0);
+        }
         .home-tech-svg {
           mask-image: linear-gradient(to bottom, black, transparent);
         }
         .home-glass {
-          background: linear-gradient(160deg, rgba(16, 16, 16, 0.18), rgba(16, 16, 16, 0.12));
-          backdrop-filter: blur(1px);
-          border: 1px solid rgba(255, 85, 0, 0.2);
+          background:
+            linear-gradient(160deg, rgba(20, 16, 16, 0.68), rgba(12, 12, 12, 0.5)),
+            radial-gradient(circle at top right, rgba(255,85,0,0.08), transparent 40%);
+          backdrop-filter: blur(6px);
+          border: 1px solid rgba(255, 85, 0, 0.16);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+          transition:
+            transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.35s ease,
+            box-shadow 0.35s ease,
+            background 0.35s ease;
         }
         .home-glass:hover {
-          border-color: rgba(255, 85, 0, 0.35);
-          box-shadow: 0 0 30px rgba(255, 85, 0, 0.06);
+          transform: translateY(-4px);
+          border-color: rgba(255, 85, 0, 0.38);
+          background:
+            linear-gradient(160deg, rgba(26, 20, 19, 0.78), rgba(15, 15, 15, 0.62)),
+            radial-gradient(circle at top right, rgba(255,85,0,0.14), transparent 42%);
+          box-shadow:
+            0 18px 44px rgba(0,0,0,0.26),
+            0 0 0 1px rgba(255,85,0,0.08),
+            0 0 36px rgba(255,85,0,0.08);
         }
         @keyframes home-scan {
           0% { top: 0%; opacity: 0; }
@@ -891,7 +1074,149 @@ export default function QuantumLimitedHome() {
           color: rgba(226,226,226,0.85);
         }
         .home-start-dev:hover {
-          filter: brightness(1.08);
+          filter: brightness(1.04);
+          transform: translateY(-2px);
+          box-shadow: 0 22px 48px rgba(255,85,0,0.28);
+        }
+        .home-start-dev:focus-visible {
+          outline: 2px solid rgba(255,181,156,0.92);
+          outline-offset: 3px;
+          box-shadow: 0 0 0 4px rgba(255,85,0,0.18);
+        }
+        @keyframes home-hero-orb-primary {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.34; }
+          50% { transform: translate3d(4%, -3%, 0) scale(1.08); opacity: 0.48; }
+        }
+        @keyframes home-hero-orb-secondary {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.18; }
+          50% { transform: translate3d(-4%, 4%, 0) scale(1.06); opacity: 0.28; }
+        }
+        @keyframes home-hero-orb-tertiary {
+          0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.16; }
+          50% { transform: translate3d(3%, -5%, 0) scale(1.12); opacity: 0.32; }
+        }
+        @keyframes home-hero-beam {
+          0%, 100% { opacity: 0.16; transform: translateX(0) skewX(-10deg); }
+          50% { opacity: 0.34; transform: translateX(-4%) skewX(-10deg); }
+        }
+        @keyframes home-hero-grid-drift {
+          0% { transform: translate3d(0, 0, 0); opacity: 0.22; }
+          50% { transform: translate3d(-10px, 8px, 0); opacity: 0.34; }
+          100% { transform: translate3d(0, 0, 0); opacity: 0.22; }
+        }
+        @keyframes home-hero-scanband {
+          0% { transform: translateY(-35%); opacity: 0; }
+          18% { opacity: 0.18; }
+          50% { opacity: 0.34; }
+          82% { opacity: 0.18; }
+          100% { transform: translateY(80%); opacity: 0; }
+        }
+        @keyframes home-hero-protocol-pulse {
+          0%, 100% { opacity: 0.82; transform: scale(1); }
+          50% { opacity: 1; transform: scale(1.12); }
+        }
+        @keyframes home-hero-protocol-sheen {
+          0% { transform: translateX(-130%); opacity: 0; }
+          16% { opacity: 0.22; }
+          28% { opacity: 0.35; }
+          50%, 100% { transform: translateX(150%); opacity: 0; }
+        }
+        .home-hero-orb {
+          position: absolute;
+          border-radius: 999px !important;
+          filter: blur(58px);
+          will-change: transform, opacity;
+        }
+        .home-hero-orb-primary {
+          width: min(52vw, 680px);
+          height: min(52vw, 680px);
+          left: -10%;
+          top: 4%;
+          background: radial-gradient(circle, rgba(255,85,0,0.46) 0%, rgba(255,85,0,0.22) 36%, rgba(255,85,0,0) 74%);
+          animation: home-hero-orb-primary 12s ease-in-out infinite;
+        }
+        .home-hero-orb-secondary {
+          width: min(40vw, 520px);
+          height: min(40vw, 520px);
+          right: 2%;
+          bottom: 4%;
+          background: radial-gradient(circle, rgba(255,181,156,0.3) 0%, rgba(255,181,156,0.12) 42%, rgba(255,181,156,0) 76%);
+          animation: home-hero-orb-secondary 15s ease-in-out infinite;
+        }
+        .home-hero-orb-tertiary {
+          width: min(34vw, 420px);
+          height: min(34vw, 420px);
+          left: 42%;
+          top: 20%;
+          background: radial-gradient(circle, rgba(255,85,0,0.22) 0%, rgba(255,85,0,0.09) 38%, rgba(255,85,0,0) 72%);
+          animation: home-hero-orb-tertiary 13s ease-in-out infinite;
+        }
+        .home-hero-beam {
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(116deg, rgba(255,85,0,0) 18%, rgba(255,85,0,0.14) 44%, rgba(255,181,156,0.14) 52%, rgba(255,85,0,0) 72%);
+          mix-blend-mode: screen;
+          animation: home-hero-beam 14s ease-in-out infinite;
+        }
+        .home-hero-grid {
+          position: absolute;
+          inset: -10%;
+          background-image:
+            linear-gradient(rgba(255,85,0,0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,85,0,0.1) 1px, transparent 1px);
+          background-size: 72px 72px;
+          mask-image: radial-gradient(circle at center, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 58%, transparent 86%);
+          opacity: 0.22;
+          animation: home-hero-grid-drift 14s ease-in-out infinite;
+        }
+        .home-hero-scanband {
+          position: absolute;
+          left: -8%;
+          right: -8%;
+          top: 0;
+          height: 42%;
+          background: linear-gradient(180deg, rgba(255,85,0,0), rgba(255,85,0,0.1), rgba(255,181,156,0.16), rgba(255,85,0,0));
+          filter: blur(16px);
+          mix-blend-mode: screen;
+          animation: home-hero-scanband 8.5s linear infinite;
+        }
+        .home-hero-cta-cluster {
+          box-shadow:
+            0 18px 38px rgba(0,0,0,0.24),
+            inset 0 1px 0 rgba(255,255,255,0.04);
+          transition:
+            transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.3s ease,
+            box-shadow 0.3s ease,
+            background 0.3s ease;
+        }
+        .home-hero-cta-cluster:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255,85,0,0.26) !important;
+          background: linear-gradient(160deg, rgba(16,16,16,0.56), rgba(12,12,12,0.28)) !important;
+          box-shadow:
+            0 22px 44px rgba(0,0,0,0.28),
+            0 0 30px rgba(255,85,0,0.08),
+            inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+        .home-hero-protocol-dot {
+          animation: home-hero-protocol-pulse 2.2s ease-in-out infinite;
+        }
+        .home-hero-protocol-sheen {
+          position: absolute;
+          inset: -20% auto -20% -30%;
+          width: 34%;
+          background: linear-gradient(90deg, rgba(255,255,255,0), rgba(255,181,156,0.26), rgba(255,255,255,0));
+          transform: skewX(-18deg);
+          animation: home-hero-protocol-sheen 5.6s ease-in-out infinite;
+          pointer-events: none;
+        }
+        .home-feature-card:hover .home-schema-btn {
+          background: rgba(255,85,0,0.22) !important;
+          color: #fff !important;
+          border-color: rgba(255,181,156,0.34) !important;
+          box-shadow: 0 12px 28px rgba(255,85,0,0.12);
         }
         .home-schema-btn:hover {
           background: rgba(255,85,0,0.25) !important;
@@ -899,6 +1224,16 @@ export default function QuantumLimitedHome() {
         }
         .home-init-project:hover {
           filter: brightness(1.08);
+          box-shadow: 0 18px 36px rgba(255,85,0,0.18);
+        }
+        .home-contact-panel {
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+          transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .home-contact-panel:hover {
+          transform: translateY(-3px);
+          border-color: rgba(255,85,0,0.22) !important;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.18), 0 0 34px rgba(255,85,0,0.06);
         }
         .home-footer-link:hover {
           color: #ff5500 !important;
@@ -908,6 +1243,13 @@ export default function QuantumLimitedHome() {
           .home-side-stack { grid-column: span 5 !important; }
         }
         @media (max-width: 900px) {
+          .home-hero-inner {
+            padding-top: 24px !important;
+            padding-bottom: 40px !important;
+          }
+          .home-hero-cta-row {
+            gap: 24px !important;
+          }
           .home-comp-grid {
             gap: 20px !important;
           }
@@ -924,14 +1266,95 @@ export default function QuantumLimitedHome() {
           }
         }
         @media (max-width: 600px) {
+          .home-hero-orb {
+            filter: blur(38px);
+          }
+          .home-hero-orb-primary {
+            width: 76vw;
+            height: 76vw;
+            left: -12%;
+            top: 14%;
+          }
+          .home-hero-orb-secondary {
+            width: 60vw;
+            height: 60vw;
+            right: -10%;
+            bottom: 12%;
+          }
+          .home-hero-orb-tertiary {
+            width: 48vw;
+            height: 48vw;
+            left: 34%;
+            top: 26%;
+          }
+          .home-hero-grid {
+            background-size: 52px 52px;
+            opacity: 0.18;
+          }
+          .home-hero-scanband {
+            height: 34%;
+          }
           .home-hero-cta-row {
             flex-direction: column !important;
             align-items: stretch !important;
+            gap: 20px !important;
+          }
+          .home-hero-cta-cluster {
+            align-self: stretch !important;
+            min-width: 0 !important;
+            padding: 14px !important;
+          }
+          .home-start-dev {
+            width: 100% !important;
+            padding: 17px 20px !important;
+          }
+          .home-hero-protocol {
+            justify-content: center !important;
           }
           .home-footer-flex {
             flex-direction: column !important;
             align-items: flex-start !important;
             text-align: left !important;
+          }
+        }
+        @media (max-width: 430px) {
+          .home-hero-inner {
+            padding-top: 18px !important;
+            padding-bottom: 32px !important;
+          }
+          .home-hero-cta-cluster {
+            gap: 12px !important;
+          }
+          .home-hero-protocol {
+            font-size: 9px !important;
+            letter-spacing: 0.16em !important;
+            padding: 9px 10px !important;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .home-hero-orb-primary,
+          .home-hero-orb-secondary,
+          .home-hero-orb-tertiary,
+          .home-hero-beam,
+          .home-hero-grid,
+          .home-hero-scanband,
+          .home-hero-protocol-sheen,
+          .home-hero-protocol-dot {
+            animation: none !important;
+          }
+          html.reveal-enabled .home-depth-reveal[data-reveal],
+          html.reveal-enabled .home-depth-reveal[data-reveal][data-reveal-visible="true"] {
+            opacity: 1 !important;
+            transform: none !important;
+            filter: none !important;
+          }
+          .home-glass:hover,
+          .home-contact-panel:hover,
+          .home-hero-cta-cluster:hover {
+            transform: none !important;
+          }
+          .home-start-dev:hover {
+            transform: none !important;
           }
         }
       `}</style>
