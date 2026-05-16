@@ -26,14 +26,14 @@ const T = {
 const METHODOLOGY_IMG =
   "https://lh3.googleusercontent.com/aida-public/AB6AXuBWzHSFIp4T9U3KZXG4D44r6WOzXQFA4oGUfAU0KkO5BGnOwhyYq99a6iXtYoEL6Psv2TyMUNk1tKbuNdCkzCnDDUDak1UfrytE13OTu4ZqiBI-PRyMtdq4_HgODq7wgD5m5EwQtoDpFeCuRjtsMekQ_mt8K_EXh6VjPUd2AnWmqyNvR8LbdaB02TQp4LqeOMpT-mifJtgghFyHrg0YEVGcytVGv1Yue1d94m4kCNSZGYM8xrVdSbsFpTAtBGAHA6PKTBQUvKzR8D8";
 
-const TRUST_LOGOS = [
-  "B2B PLATFORMS",
-  "OPS TEAMS",
-  "CLIENT PORTALS",
-  "ADMIN SYSTEMS",
-  "BOOKING FLOWS",
-  "API PROGRAMS",
-  "CLOUD DELIVERY",
+const TRUST_LOGO_KEYS = [
+  "home.trusted.logo.0",
+  "home.trusted.logo.1",
+  "home.trusted.logo.2",
+  "home.trusted.logo.3",
+  "home.trusted.logo.4",
+  "home.trusted.logo.5",
+  "home.trusted.logo.6",
 ];
 
 const SECTION_TINT = "rgba(10,10,10,0.16)";
@@ -663,7 +663,7 @@ function MethodologySection() {
 
 function TrustLogosSection() {
   const { t } = useLanguage();
-  const loop = [...TRUST_LOGOS, ...TRUST_LOGOS];
+  const loop = [...TRUST_LOGO_KEYS, ...TRUST_LOGO_KEYS];
   return (
     <section data-reveal style={{ padding: "72px 0", background: SECTION_TINT }}>
       <div style={{ padding: "0 32px 28px", maxWidth: "1440px", margin: "0 auto", textAlign: "center" }}>
@@ -671,9 +671,9 @@ function TrustLogosSection() {
       </div>
       <div className="home-trust-marquee-track">
         <div className="home-trust-marquee-inner">
-          {loop.map((name, i) => (
+          {loop.map((key, i) => (
             <span
-              key={`${name}-${i}`}
+              key={`${key}-${i}`}
               className="home-trust-marquee-item"
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -684,7 +684,7 @@ function TrustLogosSection() {
                 flexShrink: 0,
               }}
             >
-              {name}
+              {t(key)}
             </span>
           ))}
         </div>
