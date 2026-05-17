@@ -374,7 +374,7 @@ const ru: Dictionary = {
 
   "home.hero.badge": "Инженерия программного обеспечения",
   "home.hero.title1": "Надежные",
-  "home.hero.title2": "Программные системы",
+  "home.hero.title2": "Программные обеспечения",
   "home.hero.description": "Мы проектируем, разрабатываем, модернизируем и поддерживаем программные системы для команд, которым нужны надежные веб-платформы, backend-сервисы, мобильные приложения и облачная поставка.",
   "home.hero.cta": "Обсудить проект",
   "home.hero.protocol": "CUSTOM SOFTWARE / WEB / API / SUPPORT",
