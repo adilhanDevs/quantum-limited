@@ -81,6 +81,14 @@ export default function ServicesPage() {
         .protocol-row:hover .protocol-row-image img {
           transform: scale(1.04);
         }
+        .protocol-row-image-shell {
+          width: min(100%, 520px);
+          margin-left: auto;
+          margin-right: auto;
+        }
+        .protocol-row-image-left .protocol-row-image-shell {
+          margin-left: 0;
+        }
         .services-contact-input:focus {
           border-bottom-color: ${T.primaryCtn} !important;
         }
@@ -108,6 +116,9 @@ export default function ServicesPage() {
           .protocol-row-image { 
             padding: 0 !important;
             order: 1;
+          }
+          .protocol-row-image-shell {
+            width: 100% !important;
           }
           .services-card {
             padding: 36px 28px 32px !important;
@@ -480,14 +491,14 @@ function ProtocolRow({
         flexDirection: imageLeft ? "row-reverse" : "row",
         alignItems: "center",
         justifyContent: "space-between",
-        gap: "64px",
+        gap: "clamp(32px, 4vw, 56px)",
       }}
     >
       <div
         className="protocol-row-content"
         style={{
-          flex: "1 1 50%",
-          maxWidth: "520px",
+          flex: "1 1 58%",
+          maxWidth: "640px",
           textAlign: "left",
         }}
       >
@@ -497,12 +508,13 @@ function ProtocolRow({
         <h3
           style={{
             fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-            fontSize: "clamp(28px, 3.5vw, 44px)",
+            fontSize: "clamp(34px, 4vw, 52px)",
             fontWeight: 700,
             color: "#ffffff",
             textTransform: "uppercase",
             letterSpacing: "-0.02em",
-            margin: "24px 0 28px",
+            margin: "24px 0 24px",
+            maxWidth: "14ch",
           }}
         >
           {title}
@@ -510,10 +522,11 @@ function ProtocolRow({
         <p
           style={{
             fontFamily: "var(--font-inter, Inter, sans-serif)",
-            fontSize: "17px",
-            lineHeight: 1.7,
+            fontSize: "clamp(18px, 1.55vw, 21px)",
+            lineHeight: 1.78,
             color: T.onSurfaceVar,
             margin: 0,
+            maxWidth: "44ch",
           }}
         >
           {desc}
@@ -521,18 +534,21 @@ function ProtocolRow({
       </div>
 
       <div
-        className="protocol-row-image"
+        className={`protocol-row-image ${imageLeft ? "protocol-row-image-left" : ""}`.trim()}
         style={{
-          flex: "1 1 50%",
-          padding: imageLeft ? "0 48px 0 0" : "0 0 0 48px",
+          flex: "0 1 42%",
+          padding: imageLeft ? "0 20px 0 0" : "0 0 0 20px",
         }}
       >
-        <div style={{ position: "relative", padding: "1px", background: `rgba(92,64,55,0.15)` }}>
+        <div
+          className="protocol-row-image-shell"
+          style={{ position: "relative", padding: "1px", background: `rgba(92,64,55,0.15)` }}
+        >
           <RemoteImageWithFallback
             className="protocol-row-image-asset"
             src={image}
             alt={title}
-            wrapperStyle={{ width: "100%", aspectRatio: "16 / 10" }}
+            wrapperStyle={{ width: "100%", aspectRatio: "16 / 9" }}
             imgStyle={{
               objectFit: "cover",
               filter: "grayscale(1) brightness(0.85)",

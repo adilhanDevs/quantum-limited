@@ -17,18 +17,24 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>(DEFAULT_LANGUAGE);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  // Load initial language from localStorage on mount
   useEffect(() => {
+  const timerId = window.setTimeout(() => {
     const saved = window.localStorage.getItem(LANGUAGE_STORAGE_KEY) as Language | null;
+
     if (saved && SUPPORTED_LANGUAGES.includes(saved)) {
       setLanguageState(saved);
     }
+
     setIsLoaded(true);
-  }, []);
+  }, 0);
+
+  return () => {
+    window.clearTimeout(timerId);
+  };
+}, []);
 
   const setLanguage = React.useCallback((lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
   }, []);
 
   useEffect(() => {
@@ -37,11 +43,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     window.localStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     document.documentElement.lang = language;
 
-    // Update document title
     const dict = translations[language];
     const path = window.location.pathname === "/" ? "home" : window.location.pathname.replace("/", "");
     const titleKey = `metadata.${path}.title`;
     const pageTitle = dict[titleKey] ?? translations.en[titleKey];
+
     if (pageTitle) {
       document.title = pageTitle;
     }
@@ -49,6 +55,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const value = useMemo<LanguageContextValue>(() => {
     const dict = translations[language];
+
     return {
       language,
       setLanguage,
@@ -61,8 +68,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext);
+
   if (!context) {
     throw new Error("useLanguage must be used inside LanguageProvider");
   }
+
   return context;
 }

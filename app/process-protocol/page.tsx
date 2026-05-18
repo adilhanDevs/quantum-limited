@@ -64,6 +64,18 @@ export default function ProcessPage() {
         .process-phase-artifact-muted {
           opacity: 0.42 !important;
         }
+        .process-phase-summary {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          margin-top: auto;
+        }
+        .process-phase-summary-chip {
+          border: 1px solid rgba(92,64,55,0.18);
+          background: rgba(9, 9, 9, 0.72);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+          color: rgba(250,250,250,0.88);
+        }
         .process-phase-list {
           gap: 14px !important;
           margin: 0;
@@ -83,10 +95,10 @@ export default function ProcessPage() {
         [data-reveal] {
           animation: process-phase-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .process-phase-code-pair > div {
+        .process-phase-summary-chip {
           transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
         }
-        .process-phase-code-pair > div:hover {
+        .process-phase-summary-chip:hover {
           border-color: ${T.primaryCtn} !important;
           transform: translateY(-1px);
           background: rgba(12,12,12,0.92) !important;
@@ -115,7 +127,6 @@ export default function ProcessPage() {
             margin-bottom: 24px !important;
           }
           .process-phase5-row { flex-direction: column !important; align-items: flex-start !important; gap: 32px !important; }
-          .process-phase-code-pair { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 430px) {
           .process-phase-card {
@@ -143,15 +154,15 @@ function HeroSection() {
         overflow: "hidden"
       }}
     >
-      <div style={{ position: "absolute", top: "10%", right: "-5%", opacity: 0.15, pointerEvents: "none", width: "60%" }}>
-        <div
-          aria-hidden
-          style={{
-            width: "100%",
-            aspectRatio: "16 / 10",
+      <div style={{ position: "absolute", top: "8%", right: "-2%", opacity: 0.18, pointerEvents: "none", width: "58%" }}>
+        <RemoteImageWithFallback
+          alt={t("media.alt.process_schematic")}
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwDqaWtK7x_AA48tLo-rcDOg5ypWd4RqrcyuOdbbHaxImISP6Ejodo9uj-oQ2Qz48JiFJSMSTUQRA2LCEQUxhwQRnj3o4QdHy1ooQxxVgbPE3OHm4-QUZ1npvu8cU-2eInEUiUbZfuTnbDpGMNWQtW53VZ-uKrzrminmq1wOF6Fq289aPK-p1YxsMKVfDA5lsdTDp9tjWnHCqPaqn2bcpH56dzDF0VL_FhJ4qfhtSaJEJIiWKSk7tx3wqiJaOsAB6tTSqvbe7SjGQ"
+          wrapperStyle={{ width: "100%", aspectRatio: "16 / 10" }}
+          imgStyle={{ objectFit: "cover" }}
+          fallbackStyle={{
             background:
-              "radial-gradient(circle at 20% 30%, rgba(255,87,8,0.45), rgba(255,87,8,0.08) 42%, transparent 70%), linear-gradient(140deg, #111113 0%, #0a0a0a 100%)",
-            border: "1px solid rgba(255,87,8,0.12)",
+              "radial-gradient(circle at 22% 28%, rgba(255,87,8,0.2), transparent 28%), linear-gradient(140deg, rgba(24,24,27,0.96) 0%, rgba(10,10,10,0.98) 100%)",
           }}
         />
       </div>
@@ -218,7 +229,7 @@ function HeroSection() {
                   color: "#fff" 
                 }}
               >
-                2 / week
+                {t("process.hero.metric_value")}
               </span>
               <span style={{ fontSize: "10px", color: "#71717a", textTransform: "uppercase" }}>{t("process.hero.latency")}</span>
             </div>
@@ -298,21 +309,23 @@ function PhasesSection() {
           <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
             {t("process.phase.0.desc")}
           </p>
-          <div 
-            className="process-phase-artifact"
-            style={{ 
-              background: "#090909", 
-              padding: "24px", 
-              fontFamily: "monospace", 
-              fontSize: "12px", 
-              color: "rgba(255,181,156,0.7)", 
-              lineHeight: 1.6 
-            }}
-          >
-            <p style={{ marginBottom: "4px", color: T.primary }}>{t("process.phase.0.log.0")}</p>
-            <p style={{ marginBottom: "4px" }}>{t("process.phase.0.log.1")}</p>
-            <p style={{ marginBottom: "4px" }}>{t("process.phase.0.log.2")}</p>
-            <p style={{ color: T.primaryCtn }}>{t("process.phase.0.log.3")}</p>
+          <div className="process-phase-summary">
+            {[t("common.status"), t("common.node"), t("process.hero.status")].map((item) => (
+              <div
+                key={item}
+                className="process-phase-summary-chip"
+                style={{
+                  padding: "12px 14px",
+                  fontFamily: "var(--font-inter, Inter, sans-serif)",
+                  fontSize: "12px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                }}
+              >
+                {item}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -328,18 +341,6 @@ function PhasesSection() {
             overflow: "hidden"
           }}
         >
-          <div style={{ position: "absolute", right: 0, bottom: 0, opacity: 0.1, pointerEvents: "none", width: "50%" }}>
-            <RemoteImageWithFallback
-              alt={t("media.alt.process_schematic")}
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwDqaWtK7x_AA48tLo-rcDOg5ypWd4RqrcyuOdbbHaxImISP6Ejodo9uj-oQ2Qz48JiFJSMSTUQRA2LCEQUxhwQRnj3o4QdHy1ooQxxVgbPE3OHm4-QUZ1npvu8cU-2eInEUiUbZfuTnbDpGMNWQtW53VZ-uKrzrminmq1wOF6Fq289aPK-p1YxsMKVfDA5lsdTDp9tjWnHCqPaqn2bcpH56dzDF0VL_FhJ4qfhtSaJEJIiWKSk7tx3wqiJaOsAB6tTSqvbe7SjGQ" 
-              wrapperStyle={{ width: "100%", aspectRatio: "16 / 10" }}
-              imgStyle={{ objectFit: "cover" }}
-              fallbackStyle={{
-                background:
-                  "radial-gradient(circle at 22% 28%, rgba(255,87,8,0.2), transparent 28%), linear-gradient(140deg, rgba(24,24,27,0.96) 0%, rgba(10,10,10,0.98) 100%)",
-              }}
-            />
-          </div>
           <div className="process-phase-head" style={{ position: "relative", zIndex: 1 }}>
             <PhaseLabel>{t("services.protocol.1.phase")}</PhaseLabel>
             <span className="material-symbols-outlined">
@@ -364,14 +365,24 @@ function PhasesSection() {
             <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
               {t("process.phase.1.desc")}
             </p>
-            <ul className="process-phase-list" style={{ display: "flex", flexDirection: "column", gap: "16px", fontFamily: "monospace", fontSize: "14px" }}>
-              {[t("process.phase.1.list.0"), t("process.phase.1.list.1"), t("process.phase.1.list.2")].map((item) => (
-                <li key={item} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                  <span style={{ width: "6px", height: "6px", background: T.primaryCtn }} />
-                  <span style={{ color: T.onSurface }}>{item}</span>
-                </li>
+            <div className="process-phase-summary">
+              {[t("services.protocol.1.title"), t("services.protocol.2.title")].map((item) => (
+                <div
+                  key={item}
+                  className="process-phase-summary-chip"
+                  style={{
+                    padding: "12px 14px",
+                    fontFamily: "var(--font-inter, Inter, sans-serif)",
+                    fontSize: "12px",
+                    letterSpacing: "0.08em",
+                    textTransform: "uppercase",
+                    fontWeight: 600,
+                  }}
+                >
+                  {item}
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </div>
 
@@ -411,45 +422,23 @@ function PhasesSection() {
           <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "30px", lineHeight: 1.7 }}>
             {t("process.phase.2.desc")}
           </p>
-          <div className="process-phase-code-pair" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-            <div 
-              className="process-phase-artifact"
-              style={{ 
-                background: "rgba(9,9,9,0.8)", 
-                padding: "24px", 
-                fontFamily: "monospace", 
-                fontSize: "12px", 
-                border: "1px solid rgba(92,64,55,0.2)" 
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px", borderBottom: "1px solid rgba(92,64,55,0.1)", paddingBottom: "8px" }}>
-                <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.a.name")}</span>
-                <span style={{ color: T.primaryCtn }}>{t("process.phase.2.stream.a.status")}</span>
+          <div className="process-phase-summary">
+            {[t("process.phase.2.title"), t("process.phase.3.title"), t("process.phase.4.title")].map((item) => (
+              <div
+                key={item}
+                className="process-phase-summary-chip"
+                style={{
+                  padding: "12px 14px",
+                  fontFamily: "var(--font-inter, Inter, sans-serif)",
+                  fontSize: "12px",
+                  letterSpacing: "0.08em",
+                  textTransform: "uppercase",
+                  fontWeight: 600,
+                }}
+              >
+                {item}
               </div>
-              <p style={{ color: "#a1a1aa" }}>const releasePlan = createReleasePlan();</p>
-              <p style={{ color: "#a1a1aa" }}>releasePlan.configure({"{"}</p>
-              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>scope: &quot;client-portal&quot;,</p>
-              <p style={{ color: "rgba(255,181,156,0.6)", paddingLeft: "16px" }}>qa: true</p>
-              <p style={{ color: "#a1a1aa" }}>{"});"}</p>
-            </div>
-            <div 
-              className="process-phase-artifact process-phase-artifact-muted"
-              style={{ 
-                background: "rgba(9,9,9,0.8)", 
-                padding: "24px", 
-                fontFamily: "monospace", 
-                fontSize: "12px", 
-                border: "1px solid rgba(92,64,55,0.2)",
-                opacity: 0.5 
-              }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "16px", borderBottom: "1px solid rgba(92,64,55,0.1)", paddingBottom: "8px" }}>
-                <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.b.name")}</span>
-                <span style={{ color: "#71717a" }}>{t("process.phase.2.stream.b.status")}</span>
-              </div>
-              <p style={{ color: "#71717a" }}>await runIntegrationChecks();</p>
-              <p style={{ color: "#71717a" }}>await deployProduction();</p>
-            </div>
+            ))}
           </div>
         </div>
 

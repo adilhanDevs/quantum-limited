@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { RequestModal } from "./RequestModal";
 import { useLanguage } from "../i18n/LanguageContext";
 
 /** Matches `Services` page nav: grid layout, Inter links, Space Grotesk logo & CTA. */
@@ -10,6 +13,10 @@ const T = {
   primaryCtn: "#ff5500",
   onPrimary: "#390c00",
 };
+
+const REQUEST_MODAL_AUTO_SHOWN_KEY = "requestModalAutoShown";
+const REQUEST_MODAL_DISMISSED_KEY = "requestModalDismissed";
+const REQUEST_MODAL_SUBMITTED_KEY = "requestModalSubmitted";
 
 export type SiteNavActive = "services" | "process-protocol" | "clients" | "contact" | null;
 
@@ -28,6 +35,69 @@ function ctaLabel(active: SiteNavActive, t: (key: string) => string): string {
 
 export function SiteHeader({ active }: { active: SiteNavActive }) {
   const { t } = useLanguage();
+  const pathname = usePathname();
+  const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
+  const requestButtonRef = useRef<HTMLButtonElement>(null);
+  const isRequestModalOpenRef = useRef(false);
+
+  useEffect(() => {
+    isRequestModalOpenRef.current = isRequestModalOpen;
+  }, [isRequestModalOpen]);
+
+  useEffect(() => {
+    if (pathname === "/contact") {
+      return;
+    }
+
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const alreadyShown = sessionStorage.getItem(REQUEST_MODAL_AUTO_SHOWN_KEY) === "true";
+    const dismissed = sessionStorage.getItem(REQUEST_MODAL_DISMISSED_KEY) === "true";
+    const submitted = sessionStorage.getItem(REQUEST_MODAL_SUBMITTED_KEY) === "true";
+
+    if (alreadyShown || dismissed || submitted) {
+      return;
+    }
+
+    const timerId = window.setTimeout(() => {
+      const autoShownNow = sessionStorage.getItem(REQUEST_MODAL_AUTO_SHOWN_KEY) === "true";
+      const dismissedNow = sessionStorage.getItem(REQUEST_MODAL_DISMISSED_KEY) === "true";
+      const submittedNow = sessionStorage.getItem(REQUEST_MODAL_SUBMITTED_KEY) === "true";
+
+      if (isRequestModalOpenRef.current || autoShownNow || dismissedNow || submittedNow) {
+        return;
+      }
+
+      sessionStorage.setItem(REQUEST_MODAL_AUTO_SHOWN_KEY, "true");
+      setIsRequestModalOpen(true);
+    }, 30_000);
+
+    return () => {
+      window.clearTimeout(timerId);
+    };
+  }, [pathname]);
+
+  const openRequestModal = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(REQUEST_MODAL_AUTO_SHOWN_KEY, "true");
+    }
+    setIsRequestModalOpen(true);
+  };
+
+  const closeRequestModal = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(REQUEST_MODAL_DISMISSED_KEY, "true");
+    }
+    setIsRequestModalOpen(false);
+  };
+
+  const handleRequestSubmitted = () => {
+    if (typeof window !== "undefined") {
+      sessionStorage.setItem(REQUEST_MODAL_SUBMITTED_KEY, "true");
+    }
+  };
 
   return (
     <>
@@ -132,8 +202,10 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
             }}
           >
             <LanguageSwitcher />
-            <Link
-              href="/contact"
+            <button
+              ref={requestButtonRef}
+              type="button"
+              onClick={openRequestModal}
               className="site-nav-cta"
               style={{
                 fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
@@ -147,14 +219,24 @@ export function SiteHeader({ active }: { active: SiteNavActive }) {
                 textTransform: "uppercase",
                 display: "inline-flex",
                 alignItems: "center",
+                justifyContent: "center",
                 minHeight: "44px",
+                border: "none",
+                cursor: "pointer",
               }}
             >
               {ctaLabel(active, t)}
-            </Link>
+            </button>
           </div>
         </div>
       </nav>
+
+      <RequestModal
+        isOpen={isRequestModalOpen}
+        onClose={closeRequestModal}
+        onSubmitted={handleRequestSubmitted}
+        returnFocusRef={requestButtonRef}
+      />
 
       <style>{`
         .site-nav-link:hover {

@@ -1,4 +1,8 @@
-export type ContactSource = "home" | "services" | "contact";
+export type ContactSource =
+  | "home"
+  | "services"
+  | "contact"
+  | "quick_request";
 
 export type HomeContactSubmission = {
   source: "home";
@@ -25,10 +29,20 @@ export type PageContactSubmission = {
   repo?: string;
 };
 
+export type QuickRequestSubmission = {
+  source: "quick_request";
+  name: string;
+  phone: string;
+  projectName: string;
+  scope: string;
+  entryPoint?: "header" | "contact";
+};
+
 export type ContactSubmissionRequest =
   | HomeContactSubmission
   | ServicesContactSubmission
-  | PageContactSubmission;
+  | PageContactSubmission
+  | QuickRequestSubmission;
 
 export type ContactApiSuccess = {
   ok: true;

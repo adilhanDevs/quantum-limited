@@ -159,6 +159,35 @@ function validateSubmission(body: unknown): ValidationResult {
     };
   }
 
+  if (source === "quick_request") {
+    const name = getString(body, "name");
+    const phone = getString(body, "phone");
+    const projectName = getString(body, "projectName");
+    const scope = getString(body, "scope");
+    const entryPoint = getString(body, "entryPoint");
+
+    if (
+      name.length < 2 ||
+      phone.length < 2 ||
+      projectName.length < 3 ||
+      scope.length < 9
+    ) {
+      return { ok: false, errorCode: "INVALID_REQUEST" };
+    }
+
+    return {
+      ok: true,
+      data: {
+        source,
+        name,
+        phone,
+        projectName,
+        scope,
+        entryPoint: entryPoint === "contact" ? "contact" : "header",
+      },
+    };
+  }
+
   return { ok: false, errorCode: "INVALID_REQUEST" };
 }
 
@@ -194,6 +223,32 @@ function buildEmail(submission: ContactSubmissionRequest) {
     return {
       subject: "New services inquiry",
       replyTo: submission.email,
+      text: lines.join("\n"),
+      html: toHtml(lines),
+    };
+  }
+
+  if (submission.source === "quick_request") {
+    const sourceLabel =
+      submission.entryPoint === "contact"
+        ? "Contact page simplified request"
+        : "Header quick request";
+    const lines = [
+      `Source: ${sourceLabel}`,
+      `Name: ${submission.name}`,
+      `Phone / Telegram: ${submission.phone}`,
+      `Project name: ${submission.projectName}`,
+      "",
+      "Goals and current problem:",
+      submission.scope,
+    ];
+
+    return {
+      subject:
+        submission.entryPoint === "contact"
+          ? `New contact request: ${submission.projectName}`
+          : `New quick request: ${submission.projectName}`,
+      replyTo: undefined,
       text: lines.join("\n"),
       html: toHtml(lines),
     };
