@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
+import { Footer as GlobalFooter } from "../components/Footer";
 import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
 import { useLanguage } from "../i18n/LanguageContext";
 
@@ -23,70 +24,114 @@ export default function ProcessPage() {
         <HeroSection />
         <PhasesSection />
         <CTASection />
-        <Footer />
+        <GlobalFooter />
       </main>
 
       <style>{`
         .process-hero-head-wrap h1 {
           filter: drop-shadow(0 0 40px rgba(255, 87, 8, 0.15));
         }
-        .process-phase-card {
+        .process-roadmap {
+          position: relative;
+          min-height: 1580px;
+          padding: 20px 0;
+          isolation: isolate;
+        }
+        .process-roadmap::before {
+          content: "";
+          position: absolute;
+          inset: -28px 0;
+          background:
+            linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+          background-size: 80px 80px;
+          mask-image: radial-gradient(ellipse at center, black 0%, transparent 72%);
+          opacity: 0.44;
+          pointer-events: none;
+          z-index: 0;
+        }
+        .process-roadmap-route {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 1;
+          overflow: visible;
+        }
+        .process-roadmap-route path {
+          fill: none;
+          vector-effect: non-scaling-stroke;
+          stroke-linecap: round;
+          stroke-linejoin: round;
+        }
+        .process-roadmap-card {
+          position: absolute;
+          left: var(--card-x);
+          top: var(--card-y);
+          width: var(--card-w);
           display: flex;
           flex-direction: column;
+          gap: 18px;
+          padding: clamp(28px, 3vw, 40px);
+          min-height: 220px;
+          background:
+            radial-gradient(circle at top left, rgba(255, 87, 8, 0.08), transparent 34%),
+            linear-gradient(180deg, rgba(20, 20, 22, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.03);
+          overflow: hidden;
+          z-index: 2;
         }
-        .process-phase-head {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-start;
-          gap: 20px;
-          margin-bottom: 36px;
+        .process-roadmap-card > * {
+          position: relative;
+          z-index: 2;
         }
-        .process-phase-head .material-symbols-outlined {
-          color: ${T.primaryCtn};
-          opacity: 0.78;
-          font-variation-settings: 'FILL' 1;
+        .process-roadmap-card-map {
+          position: absolute;
+          inset: 0;
+          opacity: 0.24;
+          pointer-events: none;
+          z-index: 0;
         }
-        .process-phase-title {
+        .process-roadmap-card-map::after {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background:
+            linear-gradient(90deg, rgba(9, 9, 11, 0.9) 0%, rgba(9, 9, 11, 0.54) 45%, rgba(9, 9, 11, 0.88) 100%),
+            radial-gradient(circle at 70% 28%, rgba(255, 87, 8, 0.18), transparent 34%);
+        }
+        .process-roadmap-card[data-map="true"] {
+          min-height: 300px;
+          justify-content: center;
+          background: #09090b !important;
+          border-color: rgba(255, 87, 8, 0.16);
+        }
+        .process-roadmap-title {
           max-width: min(16ch, 100%);
-          margin-bottom: 14px !important;
-          line-height: 1.08 !important;
-        }
-        .process-phase-body {
-          color: rgba(161, 161, 170, 0.9) !important;
-          line-height: 1.75 !important;
-        }
-        .process-phase-artifact {
-          margin-top: auto;
-          background: rgba(9, 9, 9, 0.72);
-          border: 1px solid rgba(92, 64, 55, 0.18);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-        }
-        .process-phase-artifact-muted {
-          opacity: 0.42 !important;
-        }
-        .process-phase-summary {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 12px;
-          margin-top: auto;
-        }
-        .process-phase-summary-chip {
-          border: 1px solid rgba(92,64,55,0.18);
-          background: rgba(9, 9, 9, 0.72);
-          box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
-          color: rgba(250,250,250,0.88);
-        }
-        .process-phase-list {
-          gap: 14px !important;
           margin: 0;
-          padding: 0;
-          list-style: none;
+          line-height: 1.08;
         }
-        .process-phase-list li span:last-child {
-          color: rgba(250,250,250,0.9) !important;
+        .process-roadmap-body {
+          margin: 0;
+          max-width: 42ch;
+          color: rgba(161, 161, 170, 0.9);
+          line-height: 1.72;
         }
-        .process-phase-code-pair {
-          margin-top: auto;
+        .process-roadmap-checkpoint {
+          fill: rgba(10, 10, 10, 0.9);
+          stroke: ${T.primaryCtn};
+          stroke-width: 0.72;
+          filter: drop-shadow(0 0 7px rgba(255, 87, 8, 0.3));
+        }
+        .process-roadmap-checkpoint-text {
+          fill: ${T.primary};
+          font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+          font-size: 4px;
+          font-weight: 700;
+          text-anchor: middle;
+          dominant-baseline: central;
         }
         @keyframes process-phase-fade {
           from { opacity: 0; transform: translateY(10px); }
@@ -95,47 +140,59 @@ export default function ProcessPage() {
         [data-reveal] {
           animation: process-phase-fade 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .process-phase-summary-chip {
-          transition: border-color 0.3s ease, transform 0.3s ease, background 0.3s ease;
-        }
-        .process-phase-summary-chip:hover {
-          border-color: ${T.primaryCtn} !important;
-          transform: translateY(-1px);
-          background: rgba(12,12,12,0.92) !important;
-        }
         .process-cta-btn:hover {
           background: #ffffff !important;
           color: #000000 !important;
           box-shadow: 0 0 30px rgba(255,255,255,0.2);
         }
         @media (max-width: 1024px) {
-          .process-phases-grid { grid-template-columns: 1fr !important; }
-          .process-phases-grid > div { grid-column: span 1 !important; }
+          .process-roadmap {
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            min-height: 0;
+            padding: 18px 0 18px 72px;
+          }
+          .process-roadmap-route {
+            left: 0;
+            width: 54px;
+          }
+          .process-roadmap-card {
+            position: relative;
+            left: auto;
+            top: auto;
+            width: 100%;
+          }
         }
         @media (max-width: 768px) {
-          .process-phase-card {
-            padding: 36px 26px !important;
+          .process-roadmap {
+            gap: 24px;
+            padding-left: 58px;
           }
-          .process-phase-head {
-            margin-bottom: 28px !important;
+          .process-roadmap-card {
+            min-height: 0;
+            padding: 28px 22px;
+            gap: 16px;
           }
-          .process-phase-title {
+          .process-roadmap-card[data-map="true"] {
+            min-height: 260px;
+          }
+          .process-roadmap-title {
             font-size: 28px !important;
             max-width: 100%;
           }
-          .process-phase-body {
-            margin-bottom: 24px !important;
-          }
-          .process-phase5-row { flex-direction: column !important; align-items: flex-start !important; gap: 32px !important; }
         }
         @media (max-width: 430px) {
-          .process-phase-card {
-            padding: 30px 20px !important;
+          .process-roadmap-route {
+            width: 44px;
           }
-          .process-phase-title {
+          .process-roadmap-card {
+            padding: 24px 18px;
+          }
+          .process-roadmap-title {
             font-size: 24px !important;
           }
-          .process-phase-body {
+          .process-roadmap-body {
             font-size: 15px !important;
           }
         }
@@ -240,347 +297,130 @@ function HeroSection() {
   );
 }
 
-function PhaseLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-      <span 
-        style={{ 
-          fontSize: "11px", 
-          fontFamily: "monospace", 
-          fontWeight: 700, 
-          letterSpacing: "0.3em", 
-          color: T.primaryCtn,
-          background: "rgba(255, 87, 8, 0.08)",
-          border: "1px solid rgba(255,87,8,0.18)",
-          padding: "5px 10px"
-        }}
-      >
-        {children}
-      </span>
-    </div>
-  );
-}
-
 function PhasesSection() {
   const { t } = useLanguage();
+  const routePath =
+    "M 38 12 C 55 13, 73 18, 66 27 C 58 38, 43 37, 36 45 C 29 53, 39 61, 54 58 C 66 56, 68 51, 61 49 C 55 49, 54 60, 61 67 C 66 73, 58 79, 50 83";
+  const checkpoints = [
+    { number: 1, x: 38, y: 12 },
+    { number: 2, x: 66, y: 27 },
+    { number: 3, x: 36, y: 45 },
+    { number: 4, x: 61, y: 49 },
+    { number: 5, x: 50, y: 83 },
+  ];
+  const cardLayout = [
+    { x: "0%", y: "0%", w: "32%" },
+    { x: "70%", y: "16%", w: "30%" },
+    { x: "0%", y: "34%", w: "32%" },
+    { x: "66%", y: "49%", w: "31%" },
+    { x: "14%", y: "88%", w: "58%" },
+  ];
+  const phases = [0, 1, 2, 3, 4].map((index) => ({
+    index,
+    title: t(`process.phase.${index}.title`),
+    desc: t(`process.phase.${index}.desc`),
+    layout: cardLayout[index],
+  }));
+
   return (
     <section style={{ padding: "0 clamp(24px, 5vw, 48px) 120px" }}>
-      <div 
-        className="process-phases-grid"
-        style={{ 
-          display: "grid", 
-          gridTemplateColumns: "repeat(12, minmax(0, 1fr))", 
-          gap: "1px", 
-          background: "rgba(92,64,55,0.15)",
-          border: "1px solid rgba(92,64,55,0.15)"
+      <div
+        className="process-roadmap"
+        style={{
+          maxWidth: "min(1480px, 100%)",
+          margin: "0 auto",
+          width: "100%",
         }}
       >
-        {/* Phase 01 */}
-        <div 
-          className="process-phase-card"
-          style={{ 
-            gridColumn: "span 4", 
-            padding: "48px", 
-            background: T.surface, 
-            borderRight: "1px solid rgba(92,64,55,0.15)",
-            borderBottom: "1px solid rgba(92,64,55,0.15)"
-          }}
-        >
-          <div className="process-phase-head">
-            <PhaseLabel>{t("services.protocol.0.phase")}</PhaseLabel>
-            <span className="material-symbols-outlined">
-              analytics
-            </span>
-          </div>
-          <h3 
-            className="process-phase-title"
-            style={{ 
-              fontSize: "34px", 
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-              fontWeight: 700, 
-              textTransform: "uppercase", 
-              marginBottom: "16px",
-              letterSpacing: "-0.03em",
-              color: T.onSurface
-            }}
-          >
-            {t("process.phase.0.title")}
-          </h3>
-          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
-            {t("process.phase.0.desc")}
-          </p>
-          <div className="process-phase-summary">
-            {[t("common.status"), t("common.node"), t("process.hero.status")].map((item) => (
-              <div
-                key={item}
-                className="process-phase-summary-chip"
-                style={{
-                  padding: "12px 14px",
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  fontSize: "12px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
-                }}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Phase 02 */}
-        <div 
-          className="process-phase-card"
-          style={{ 
-            gridColumn: "span 8", 
-            padding: "48px", 
-            background: T.surfaceLow, 
-            borderBottom: "1px solid rgba(92,64,55,0.15)",
-            position: "relative",
-            overflow: "hidden"
-          }}
-        >
-          <div className="process-phase-head" style={{ position: "relative", zIndex: 1 }}>
-            <PhaseLabel>{t("services.protocol.1.phase")}</PhaseLabel>
-            <span className="material-symbols-outlined">
-              architecture
-            </span>
-          </div>
-          <div style={{ maxWidth: "min(680px, 100%)", position: "relative", zIndex: 1 }}>
-            <h3 
-              className="process-phase-title"
-              style={{ 
-                fontSize: "34px", 
-                fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-                fontWeight: 700, 
-                textTransform: "uppercase", 
-                marginBottom: "16px",
-                letterSpacing: "-0.03em",
-                color: T.onSurface
-              }}
-            >
-              {t("process.phase.1.title")}
-            </h3>
-            <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
-              {t("process.phase.1.desc")}
-            </p>
-            <div className="process-phase-summary">
-              {[t("services.protocol.1.title"), t("services.protocol.2.title")].map((item) => (
-                <div
-                  key={item}
-                  className="process-phase-summary-chip"
-                  style={{
-                    padding: "12px 14px",
-                    fontFamily: "var(--font-inter, Inter, sans-serif)",
-                    fontSize: "12px",
-                    letterSpacing: "0.08em",
-                    textTransform: "uppercase",
-                    fontWeight: 600,
-                  }}
-                >
-                  {item}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Phase 03 */}
-        <div 
-          className="process-phase-card"
-          style={{ 
-            gridColumn: "span 7", 
-            padding: "48px", 
-            background: T.surface, 
-            borderRight: "1px solid rgba(92,64,55,0.15)",
-            borderBottom: "1px solid rgba(92,64,55,0.15)",
-            position: "relative",
-            overflow: "hidden"
-          }}
-        >
-          <div className="process-phase-head">
-            <PhaseLabel>{t("services.protocol.2.phase")}</PhaseLabel>
-            <span className="material-symbols-outlined">
-              terminal
-            </span>
-          </div>
-          <h3 
-            className="process-phase-title"
-            style={{ 
-              fontSize: "34px", 
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-              fontWeight: 700, 
-              textTransform: "uppercase", 
-              marginBottom: "16px",
-              letterSpacing: "-0.03em",
-              color: T.onSurface
-            }}
-            >
-              {t("process.phase.2.title")}
-          </h3>
-          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "30px", lineHeight: 1.7 }}>
-            {t("process.phase.2.desc")}
-          </p>
-          <div className="process-phase-summary">
-            {[t("process.phase.2.title"), t("process.phase.3.title"), t("process.phase.4.title")].map((item) => (
-              <div
-                key={item}
-                className="process-phase-summary-chip"
-                style={{
-                  padding: "12px 14px",
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  fontSize: "12px",
-                  letterSpacing: "0.08em",
-                  textTransform: "uppercase",
-                  fontWeight: 600,
-                }}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Phase 04 */}
-        <div 
-          className="process-phase-card"
-          style={{ 
-            gridColumn: "span 5", 
-            padding: "48px", 
-            background: T.surfaceHigh, 
-            borderBottom: "1px solid rgba(92,64,55,0.15)"
-          }}
-        >
-          <div className="process-phase-head">
-            <PhaseLabel>{t("services.protocol.3.phase")}</PhaseLabel>
-            <span className="material-symbols-outlined">
-              monitoring
-            </span>
-          </div>
-          <h3 
-            className="process-phase-title"
-            style={{ 
-              fontSize: "34px", 
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-              fontWeight: 700, 
-              textTransform: "uppercase", 
-              marginBottom: "16px",
-              letterSpacing: "-0.03em",
-              color: T.onSurface
-            }}
-            >
-              {t("process.phase.3.title")}
-          </h3>
-          <p className="process-phase-body" style={{ color: "#71717a", marginBottom: "28px", lineHeight: 1.7 }}>
-            {t("process.phase.3.desc")}
-          </p>
-          <div 
-            className="process-phase-artifact"
-            style={{ 
-              height: "160px", 
-              display: "flex", 
-              alignItems: "flex-end", 
-              gap: "4px", 
-              padding: "0 8px", 
-              borderBottom: "1px solid rgba(92,64,55,0.3)",
-              borderLeft: "1px solid rgba(92,64,55,0.3)",
-              position: "relative" 
-            }}
-          >
-            <div style={{ position: "absolute", left: "-44px", top: 0, fontSize: "10px", color: "#71717a", fontFamily: "monospace" }}>100%</div>
-            <div style={{ position: "absolute", left: "-36px", bottom: 0, fontSize: "10px", color: "#71717a", fontFamily: "monospace" }}>0%</div>
-            {[20, 35, 85, 45, 95, 65].map((v, i) => (
-              <div 
-                key={v + i} 
-                style={{ 
-                  width: "100%", 
-                  height: `${v}%`, 
-                  background: T.primaryCtn, 
-                  opacity: v === 95 ? 1 : 0.2 + (i * 0.1),
-                  boxShadow: v === 95 ? `0 0 10px ${T.primaryCtn}` : "none"
-                }} 
+        <svg className="process-roadmap-route" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <path
+            d={routePath}
+            stroke="rgba(255, 87, 8, 0.14)"
+            strokeWidth="18"
+          />
+          <path
+            d={routePath}
+            stroke="rgba(255, 87, 8, 0.64)"
+            strokeWidth="2"
+            strokeDasharray="6 7"
+          />
+          <path
+            d={routePath}
+            stroke="rgba(255, 181, 156, 0.22)"
+            strokeWidth="1"
+          />
+          {checkpoints.map((checkpoint) => (
+            <g key={checkpoint.number}>
+              <circle
+                className="process-roadmap-checkpoint"
+                cx={checkpoint.x}
+                cy={checkpoint.y}
+                r="3.35"
               />
-            ))}
-          </div>
-          <div style={{ marginTop: "14px", display: "flex", justifyContent: "space-between", fontFamily: "monospace", fontSize: "10px", color: "#71717a", opacity: 0.86 }}>
-            <span>{t("process.phase.3.monitor.0")}</span>
-            <span>{t("process.phase.3.monitor.1")}</span>
-            <span>{t("process.phase.3.monitor.2")}</span>
-          </div>
-        </div>
-
-        {/* Phase 05 */}
-        <div 
-          className="process-phase-card"
-          style={{ 
-            gridColumn: "span 12", 
-            padding: "48px", 
-            background: "#09090b",
-            position: "relative",
-            overflow: "hidden"
-          }}
-        >
-          <div style={{ position: "absolute", inset: 0, opacity: 0.2, pointerEvents: "none" }}>
-            <RemoteImageWithFallback
-              alt={t("media.alt.process_global_network")}
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBDwdtymjG6llRGJo_C6l07pc3Z2GFdo3fx72bC397eyoWWphwKsbckntEEMh9Xdjuo0TKfZtMX5ISnvPTk5HIwGty4YNBWclqHUnaSDpybQkA7PXcZERgGqqU13_Rw0yXb3ZfTe5PiusJ7lPuYOptagu57XfhlIjUC-6vPzi34aGRBrNeMp6EViJzTolNQ_Oa9z2SeS80DoFhdXnH4Wj6dnk-BGxmGutKtd3di_e-6JRyc2L9djuAAk_Hx5AfEDr1u_urmVQ3_c4" 
-              wrapperStyle={{ width: "100%", height: "100%" }}
-              imgStyle={{ objectFit: "cover" }}
-              fallbackStyle={{
-                background:
-                  "radial-gradient(circle at 50% 22%, rgba(255,87,8,0.16), transparent 32%), linear-gradient(145deg, rgba(16,16,18,0.96) 0%, rgba(9,9,11,0.98) 100%)",
-              }}
-            />
-          </div>
-          <div className="process-phase5-row" style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", gap: "48px" }}>
-            <div style={{ maxWidth: "min(960px, 100%)" }}>
-              <span style={{ display: "block", marginBottom: "28px" }}>
-                <PhaseLabel>{t("services.protocol.4.phase")}</PhaseLabel>
-              </span>
-              <h3 
-                className="process-phase-title"
-                style={{ 
-                  fontSize: "clamp(40px, 5vw, 56px)", 
-                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-                  fontWeight: 700, 
-                  textTransform: "uppercase", 
-                  marginBottom: "24px",
-                  letterSpacing: "-0.04em",
-                  color: T.onSurface
+              <text
+                className="process-roadmap-checkpoint-text"
+                x={checkpoint.x}
+                y={checkpoint.y}
+              >
+                {checkpoint.number}
+              </text>
+            </g>
+          ))}
+        </svg>
+        {phases.map((item) => (
+          <article
+            key={item.title}
+            className="process-roadmap-card"
+            data-reveal
+            data-map={item.index === 4 ? "true" : undefined}
+            style={{
+              "--card-x": item.layout.x,
+              "--card-y": item.layout.y,
+              "--card-w": item.layout.w,
+              background:
+                item.index % 2 === 0
+                  ? "radial-gradient(circle at top left, rgba(255, 87, 8, 0.08), transparent 34%), linear-gradient(180deg, rgba(17, 17, 19, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%)"
+                  : "radial-gradient(circle at top right, rgba(255, 87, 8, 0.08), transparent 34%), linear-gradient(180deg, rgba(24, 24, 27, 0.98) 0%, rgba(10, 10, 10, 0.98) 100%)",
+            } as React.CSSProperties}
+          >
+              {item.index === 4 ? (
+                <div className="process-roadmap-card-map" aria-hidden="true">
+                  <RemoteImageWithFallback
+                    alt={t("media.alt.process_global_network")}
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBBDwdtymjG6llRGJo_C6l07pc3Z2GFdo3fx72bC397eyoWWphwKsbckntEEMh9Xdjuo0TKfZtMX5ISnvPTk5HIwGty4YNBWclqHUnaSDpybQkA7PXcZERgGqqU13_Rw0yXb3ZfTe5PiusJ7lPuYOptagu57XfhlIjUC-6vPzi34aGRBrNeMp6EViJzTolNQ_Oa9z2SeS80DoFhdXnH4Wj6dnk-BGxmGutKtd3di_e-6JRyc2L9djuAAk_Hx5AfEDr1u_urmVQ3_c4"
+                    wrapperStyle={{ width: "100%", height: "100%" }}
+                    imgStyle={{ objectFit: "cover" }}
+                    fallbackStyle={{
+                      background:
+                        "radial-gradient(circle at 50% 22%, rgba(255,87,8,0.16), transparent 32%), linear-gradient(145deg, rgba(16,16,18,0.96) 0%, rgba(9,9,11,0.98) 100%)",
+                    }}
+                  />
+                </div>
+              ) : null}
+              <h3
+                className="process-roadmap-title"
+                style={{
+                  fontSize: "clamp(32px, 3.3vw, 46px)",
+                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
+                  fontWeight: 700,
+                  textTransform: "uppercase",
+                  letterSpacing: "-0.03em",
+                  color: T.onSurface,
                 }}
               >
-                {t("process.phase.4.title")}
+                {item.title}
               </h3>
-              <p className="process-phase-body" style={{ color: "#a1a1aa", fontSize: "18px", lineHeight: 1.7 }}>
-                {t("process.phase.4.desc")}
+              <p
+                className="process-roadmap-body"
+                style={{
+                  fontSize: "clamp(16px, 1.35vw, 19px)",
+                  fontFamily: "var(--font-inter, Inter, sans-serif)",
+                }}
+              >
+                {item.desc}
               </p>
-            </div>
-            <div className="process-phase5-stats" style={{ display: "flex", gap: "48px", flexShrink: 0 }}>
-              {[
-                [t("process.phase.4.stat.0.value"), t("process.phase.4.stat.0.label")],
-                [t("process.phase.4.stat.1.value"), t("process.phase.4.stat.1.label")],
-              ].map(([value, label]) => (
-                <div key={label} style={{ textAlign: "center" }}>
-                  <span 
-                    style={{ 
-                      display: "block", 
-                      fontSize: "40px", 
-                      fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)", 
-                      fontWeight: 700, 
-                      color: T.onSurface 
-                    }}
-                  >
-                    {value}
-                  </span>
-                  <span style={{ fontSize: "11px", fontFamily: "monospace", color: T.primary, textTransform: "uppercase" }}>
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+          </article>
+        ))}
       </div>
     </section>
   );
@@ -638,64 +478,3 @@ function CTASection() {
   );
 }
 
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer 
-      style={{ 
-        padding: "80px clamp(24px, 5vw, 48px) 64px", 
-        background: "#080809", 
-        borderTop: "1px solid rgba(39,39,42,0.2)" 
-      }}
-    >
-      <div style={{ maxWidth: "min(1920px, 100%)", margin: "0 auto" }}>
-        <div 
-          style={{ 
-            display: "flex", 
-            flexWrap: "wrap", 
-            justifyContent: "space-between", 
-            alignItems: "center", 
-            padding: "64px clamp(24px, 4vw, 48px)", 
-            gap: "48px" 
-          }}
-        >
-          <div>
-            <div 
-              style={{ 
-                fontSize: "18px", 
-                fontWeight: 900, 
-                color: "#fff", 
-                letterSpacing: "0.2em", 
-                marginBottom: "12px",
-                fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                textTransform: "uppercase" 
-              }}
-            >
-              {t("process.footer.brand")}
-            </div>
-            <p style={{ fontSize: "11px", letterSpacing: "0.15em", color: "#52525b", textTransform: "uppercase", fontWeight: 700, margin: 0 }}>
-              {t("process.footer.copy")}
-            </p>
-          </div>
-          
-          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "40px" }}>
-            {[t("process.footer.privacy"), t("process.footer.terms"), t("process.footer.network")].map(l => (
-              <span
-                key={l} 
-                style={{ 
-                  fontSize: "11px", 
-                  letterSpacing: "0.15em", 
-                  color: "rgba(161,161,170,0.78)", 
-                  textTransform: "uppercase", 
-                  fontWeight: 600,
-                }}
-              >
-                {l}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}

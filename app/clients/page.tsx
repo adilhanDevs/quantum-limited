@@ -1,8 +1,11 @@
 "use client";
 
+import React from "react";
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
+import { Footer as GlobalFooter } from "../components/Footer";
 import { useLanguage } from "../i18n/LanguageContext";
+import { getProjects, type ApiPortfolioProject } from "../lib/website-api";
 
 const T = {
   surface: "#131313",
@@ -25,8 +28,6 @@ const marqueeItemKeys = [
   "clients.marquee.4",
   "clients.marquee.5",
 ];
-
-const projectIndexes = Array.from({ length: 10 }, (_, i) => i);
 
 const projectIcons = [
   "calendar_month",
@@ -54,6 +55,36 @@ const projectPreviewStyles = [
   "radial-gradient(circle at 75% 74%, rgba(255,85,0,0.24), transparent 32%), linear-gradient(145deg, rgba(22,18,16,0.98), rgba(8,8,8,0.98))",
 ];
 
+type DisplayProject = {
+  id: number | string;
+  title: string;
+  category: string;
+  description: string;
+  fullDescription?: string;
+  imageUrl?: string;
+  projectUrl?: string;
+  githubUrl?: string;
+  tags: string[];
+  outcome: string;
+  status: string;
+};
+
+function apiProjectToDisplay(project: ApiPortfolioProject, index: number, t: (key: string) => string): DisplayProject {
+  return {
+    id: project.id,
+    title: project.title,
+    category: project.category,
+    description: project.short_description,
+    fullDescription: project.full_description,
+    imageUrl: project.image_url,
+    projectUrl: project.project_url,
+    githubUrl: project.github_url,
+    tags: [project.category],
+    outcome: project.full_description || project.short_description,
+    status: `${t("clients.project.api_status")} ${String(index + 1).padStart(2, "0")}`,
+  };
+}
+
 export default function ClientsPage() {
   return (
     <>
@@ -63,7 +94,7 @@ export default function ClientsPage() {
         <MarqueeSection />
         <PortfolioSection />
       </main>
-      <Footer />
+      <GlobalFooter />
 
       <style>{`
         .clients-hero-grid {
@@ -417,6 +448,36 @@ function MarqueeSection() {
 
 function PortfolioSection() {
   const { t } = useLanguage();
+  const [projects, setProjects] = React.useState<DisplayProject[]>([]);
+  const [isLoading, setIsLoading] = React.useState(true);
+  const [hasApiError, setHasApiError] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+
+    getProjects()
+      .then((apiProjects) => {
+        if (!isMounted) return;
+
+        setProjects(apiProjects.map((project, index) => apiProjectToDisplay(project, index, t)));
+        setHasApiError(false);
+      })
+      .catch(() => {
+        if (!isMounted) return;
+        setProjects([]);
+        setHasApiError(true);
+      })
+      .finally(() => {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [t]);
+
   return (
     <section data-reveal style={{ padding: "96px clamp(20px, 3.5vw, 40px) 112px", background: T.surface }}>
       <div style={{ maxWidth: "min(1320px, 100%)", margin: "0 auto" }}>
@@ -471,26 +532,64 @@ function PortfolioSection() {
           </p>
         </div>
 
-        <div
-          className="clients-portfolio-grid"
+        <p
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-            gap: "20px",
+            color: hasApiError ? "rgba(255,181,156,0.78)" : "rgba(161,161,170,0.62)",
+            fontFamily: "ui-monospace, monospace",
+            fontSize: "11px",
+            letterSpacing: "0.14em",
+            textTransform: "uppercase",
+            margin: "0 0 24px",
           }}
         >
-          {projectIndexes.map((index) => (
-            <ProjectCard key={index} index={index} />
-          ))}
-        </div>
+          {isLoading
+            ? t("clients.portfolio.loading")
+            : hasApiError
+              ? t("clients.portfolio.error")
+              : projects.length === 0
+                ? t("clients.portfolio.empty")
+                : t("clients.portfolio.live")}
+        </p>
+
+        {projects.length > 0 ? (
+          <div
+            className="clients-portfolio-grid"
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
+              gap: "20px",
+            }}
+          >
+            {projects.map((project, index) => (
+              <ProjectCard key={project.id} index={index} project={project} />
+            ))}
+          </div>
+        ) : (
+          <div
+            style={{
+              border: "1px solid rgba(255,181,156,0.16)",
+              background: "rgba(255,255,255,0.025)",
+              padding: "36px",
+              color: "rgba(226,226,226,0.78)",
+              fontFamily: "var(--font-inter, Inter, sans-serif)",
+              lineHeight: 1.7,
+            }}
+          >
+            {isLoading ? t("clients.portfolio.loading") : hasApiError ? t("clients.portfolio.error_detail") : t("clients.portfolio.empty_detail")}
+          </div>
+        )}
       </div>
     </section>
   );
 }
 
-function ProjectCard({ index }: { index: number }) {
+function ProjectCard({ index, project }: { index: number; project: DisplayProject }) {
   const { t } = useLanguage();
-  const tags = t(`clients.project.${index}.tags`).split("|");
+  const previewStyle = project.imageUrl
+    ? `linear-gradient(180deg, rgba(10,10,10,0.18), rgba(10,10,10,0.62)), url("${project.imageUrl}")`
+    : projectPreviewStyles[index % projectPreviewStyles.length];
+  const projectHref = project.projectUrl || project.githubUrl || "/contact";
+
   return (
     <article
       className="clients-project-card"
@@ -509,7 +608,9 @@ function ProjectCard({ index }: { index: number }) {
           position: "relative",
           minHeight: "240px",
           overflow: "hidden",
-          background: projectPreviewStyles[index],
+          background: previewStyle,
+          backgroundPosition: "center",
+          backgroundSize: "cover",
           marginBottom: "26px",
           border: "1px solid rgba(255,255,255,0.05)",
         }}
@@ -534,9 +635,9 @@ function ProjectCard({ index }: { index: number }) {
           }}
         >
           <span className="material-symbols-outlined" style={{ fontSize: "16px", color: T.primaryCtn }}>
-            {projectIcons[index]}
+            {projectIcons[index % projectIcons.length]}
           </span>
-          {t(`clients.project.${index}.status`)}
+          {project.status}
         </div>
         <div
           aria-hidden
@@ -566,7 +667,7 @@ function ProjectCard({ index }: { index: number }) {
               margin: "0 0 10px",
             }}
           >
-            {t(`clients.project.${index}.category`)}
+            {project.category}
           </p>
           <h3
             className="clients-project-title"
@@ -581,7 +682,7 @@ function ProjectCard({ index }: { index: number }) {
               margin: 0,
             }}
           >
-            {t(`clients.project.${index}.title`)}
+            {project.title}
           </h3>
         </div>
         <span
@@ -605,11 +706,11 @@ function ProjectCard({ index }: { index: number }) {
           margin: "0 0 24px",
         }}
       >
-        {t(`clients.project.${index}.description`)}
+        {project.description}
       </p>
 
       <div className="clients-project-tags" style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginBottom: "24px" }}>
-        {tags.map((tag) => (
+        {project.tags.map((tag) => (
           <span
             key={tag}
             style={{
@@ -660,12 +761,14 @@ function ProjectCard({ index }: { index: number }) {
               margin: 0,
             }}
           >
-            {t(`clients.project.${index}.outcome`)}
+            {project.outcome}
           </p>
         </div>
         <Link
-          href="/contact"
+          href={projectHref}
           className="clients-project-link"
+          target={projectHref.startsWith("http") ? "_blank" : undefined}
+          rel={projectHref.startsWith("http") ? "noopener noreferrer" : undefined}
           style={{
             color: T.primary,
             display: "inline-flex",
@@ -688,190 +791,5 @@ function ProjectCard({ index }: { index: number }) {
         </Link>
       </div>
     </article>
-  );
-}
-
-const FOOTER_BG = "#0a0a0a";
-const FOOTER_MUTED = "#666666";
-const FOOTER_STATUS_BG = "#1e1e1e";
-const FOOTER_LABEL_PEACH = "#e9c4b1";
-
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer
-      data-reveal
-      style={{
-        background: FOOTER_BG,
-        borderTop: "1px solid rgba(255,255,255,0.06)",
-        padding: "72px clamp(24px, 3.5vw, 40px) 56px",
-      }}
-    >
-      <div
-        className="clients-footer-grid"
-        style={{
-          maxWidth: "min(1320px, 100%)",
-          margin: "0 auto",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-start",
-          gap: "64px",
-          flexWrap: "wrap",
-        }}
-      >
-        <div style={{ flex: "1 1 280px", minWidth: "min(100%, 280px)" }}>
-          <div
-            style={{
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "18px",
-              fontWeight: 700,
-              color: "#ffffff",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              marginBottom: "32px",
-            }}
-          >
-            {t("clients.footer.brand")}
-          </div>
-
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "20px 48px", marginBottom: "18px" }}>
-            {[t("clients.footer.privacy"), t("clients.footer.terms"), t("clients.footer.offices")].map((label) => (
-              <span
-                key={label}
-                style={{
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  fontSize: "11px",
-                  fontWeight: 500,
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase",
-                  color: "rgba(102,102,102,0.88)",
-                }}
-              >
-                {label}
-              </span>
-            ))}
-          </div>
-
-          <div style={{ marginBottom: "36px" }}>
-            <Link
-              href="/services"
-              className="clients-footer-link"
-              style={{
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-                fontSize: "11px",
-                fontWeight: 500,
-                letterSpacing: "0.2em",
-                textTransform: "uppercase",
-                color: FOOTER_MUTED,
-                textDecoration: "none",
-              }}
-            >
-              {t("clients.footer.specs")}
-            </Link>
-          </div>
-
-          <p
-            style={{
-              fontFamily: "var(--font-inter, Inter, sans-serif)",
-              fontSize: "10px",
-              color: FOOTER_MUTED,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              lineHeight: 1.6,
-            }}
-          >
-            {t("clients.footer.copy")}
-          </p>
-        </div>
-
-        <div
-          className="clients-footer-status"
-          style={{
-            background: FOOTER_STATUS_BG,
-            padding: "36px 40px",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "40px 48px",
-            alignContent: "center",
-            minWidth: "min(100%, 380px)",
-            flex: "0 1 auto",
-          }}
-        >
-          <FooterStatusBlock label={t("clients.footer.hq_label")} value={t("clients.footer.hq_value")} />
-          <div>
-            <div
-              style={{
-                fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-                fontSize: "10px",
-                fontWeight: 500,
-                letterSpacing: "0.22em",
-                color: FOOTER_LABEL_PEACH,
-                textTransform: "uppercase",
-                marginBottom: "14px",
-              }}
-            >
-              {t("clients.footer.status_label")}
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-              <span
-                style={{
-                  width: "8px",
-                  height: "8px",
-                  borderRadius: "50%",
-                  background: "#34d399",
-                  flexShrink: 0,
-                  boxShadow: "0 0 8px rgba(52,211,153,0.5)",
-                }}
-              />
-              <span
-                style={{
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "#ffffff",
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("clients.footer.status_value")}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterStatusBlock({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <div
-        style={{
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace",
-          fontSize: "10px",
-          fontWeight: 500,
-          letterSpacing: "0.22em",
-          color: FOOTER_LABEL_PEACH,
-          textTransform: "uppercase",
-          marginBottom: "14px",
-        }}
-      >
-        {label}
-      </div>
-      <div
-        style={{
-          fontFamily: "var(--font-inter, Inter, sans-serif)",
-          fontSize: "15px",
-          fontWeight: 500,
-          color: "#ffffff",
-          lineHeight: 1.55,
-          letterSpacing: "0.02em",
-          whiteSpace: "pre-line",
-        }}
-      >
-        {value}
-      </div>
-    </div>
   );
 }

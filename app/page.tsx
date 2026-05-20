@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SiteHeader } from "./components/SiteHeader";
+import { Footer as GlobalFooter } from "./components/Footer";
 import { RemoteImageWithFallback } from "./components/RemoteImageWithFallback";
 import type { ContactApiResponse } from "./lib/contact";
+import { getContactInfo, type ApiContactInfo } from "./lib/website-api";
 import { useLanguage } from "./i18n/LanguageContext";
 
 const T = {
@@ -458,6 +460,8 @@ function TrustLogosSection() {
 
 function ContactSection() {
   const { t } = useLanguage();
+  const [contactInfo, setContactInfo] = useState<ApiContactInfo | null>(null);
+  const [contactInfoStatus, setContactInfoStatus] = useState<"loading" | "ready" | "error">("loading");
   const [form, setForm] = useState({ name: "", email: "", service: "", requirements: "" });
   const [focused, setFocused] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
@@ -465,6 +469,28 @@ function ContactSection() {
   const [error, setError] = useState<string | null>(null);
 
   const border = (f: string) => `2px solid ${focused === f ? T.primary : "rgba(92,64,55,0.35)"}`;
+
+  useEffect(() => {
+    let isMounted = true;
+
+    getContactInfo()
+      .then((data) => {
+        if (isMounted) {
+          setContactInfo(data);
+          setContactInfoStatus("ready");
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setContactInfo(null);
+          setContactInfoStatus("error");
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -545,7 +571,13 @@ function ContactSection() {
               </span>
               <div>
                 <p style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.18em", color: T.secondary, fontWeight: 700, margin: "0 0 4px 0", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.contact.inquiries")}</p>
-                <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>engineering@quantumlimited.io</p>
+                <p style={{ color: "#fff", fontWeight: 500, margin: 0, fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
+                  {contactInfoStatus === "loading"
+                    ? t("global.footer.contact.loading")
+                    : contactInfoStatus === "error"
+                      ? t("global.footer.contact.error")
+                      : contactInfo?.email || (contactInfo?.telegram ? `@${contactInfo.telegram}` : t("global.footer.contact.empty"))}
+                </p>
               </div>
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
@@ -667,44 +699,6 @@ function ContactSection() {
   );
 }
 
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer style={{ background: SECTION_TINT, padding: "clamp(32px, 6vw, 48px) clamp(16px, 4vw, 32px)" }}>
-      <div
-        style={{
-          maxWidth: "1440px",
-          margin: "0 auto",
-          display: "flex",
-          flexDirection: "row",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "32px",
-        }}
-        className="home-footer-flex"
-      >
-        <div>
-          <div style={{ fontSize: "16px", fontWeight: 900, color: "#fff", textTransform: "uppercase", marginBottom: "12px", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>{t("home.footer.brand")}</div>
-          <div style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "#71717a", fontFamily: "var(--font-inter, Inter, sans-serif)" }}>
-            {t("home.footer.copy")}
-          </div>
-        </div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "24px 40px", justifyContent: "center" }}>
-          {[t("home.footer.privacy"), t("home.footer.terms"), t("home.footer.architecture"), t("home.footer.github")].map((l) => (
-            <span
-              key={l}
-              style={{ fontSize: "12px", letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(113,113,122,0.78)", fontFamily: "var(--font-inter, Inter, sans-serif)" }}
-            >
-              {l}
-            </span>
-          ))}
-        </div>
-      </div>
-    </footer>
-  );
-}
-
 export default function QuantumLimitedHome() {
   return (
     <>
@@ -714,7 +708,7 @@ export default function QuantumLimitedHome() {
         <MethodologySection />
         <TrustLogosSection />
         <ContactSection />
-        <Footer />
+        <GlobalFooter />
       </main>
 
       <style>{`

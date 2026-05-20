@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { SiteHeader } from "../components/SiteHeader";
+import { Footer as GlobalFooter } from "../components/Footer";
 import type { ContactApiResponse } from "../lib/contact";
 import { useLanguage } from "../i18n/LanguageContext";
 
@@ -677,113 +678,7 @@ export default function ContactPage() {
           </div>
         </section>
 
-        <footer data-reveal style={{ background: "#1b1b1b", width: "100%", borderTop: "1px solid rgba(255,255,255,0.05)" }}>
-          <div
-            className="contact-footer-grid"
-            style={{
-              maxWidth: "1920px",
-              margin: "0 auto",
-              padding: "clamp(40px, 6vw, 64px) clamp(20px, 4vw, 48px) 48px",
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "48px",
-            }}
-          >
-            <div>
-              <div
-                style={{
-                  fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-                  fontSize: "20px",
-                  fontWeight: 700,
-                  color: "#ffffff",
-                  marginBottom: "20px",
-                  textTransform: "uppercase",
-                }}
-              >
-                {t("contact.footer.brand")}
-              </div>
-              <p
-                style={{
-                  color: T.primaryCtn,
-                  fontSize: "13px",
-                  textTransform: "uppercase",
-                  letterSpacing: "0.2em",
-                  fontWeight: 700,
-                  marginBottom: "16px",
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                }}
-              >
-                {t("contact.footer.tagline")}
-              </p>
-              <p
-                style={{
-                  color: "rgba(156,163,175,0.9)",
-                  fontSize: "14px",
-                  lineHeight: 1.65,
-                  maxWidth: "400px",
-                  margin: 0,
-                  fontFamily: "var(--font-inter, Inter, sans-serif)",
-                }}
-              >
-                {t("contact.footer.description")}
-              </p>
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap: "32px",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {[t("contact.footer.privacy"), t("contact.footer.terms")].map((label) => (
-                  <span
-                    key={label}
-                    style={{
-                      color: "rgba(156,163,175,0.82)",
-                      fontSize: "12px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.16em",
-                      fontFamily: "var(--font-inter, Inter, sans-serif)",
-                    }}
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                {[t("contact.footer.offices"), t("contact.footer.specs")].map((label) => (
-                  <span
-                    key={label}
-                    style={{
-                      color: "rgba(156,163,175,0.82)",
-                      fontSize: "12px",
-                      textTransform: "uppercase",
-                      letterSpacing: "0.16em",
-                      fontFamily: "var(--font-inter, Inter, sans-serif)",
-                    }}
-                  >
-                    {label}
-                  </span>
-                ))}
-              </div>
-            </div>
-            <div
-              style={{
-                gridColumn: "1 / -1",
-                paddingTop: "40px",
-                borderTop: "1px solid rgba(255,255,255,0.05)",
-                color: "rgba(156,163,175,0.85)",
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.14em",
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-              }}
-            >
-              {t("contact.footer.copy")}
-            </div>
-          </div>
-        </footer>
+        <GlobalFooter />
       </main>
 
       <style>{`

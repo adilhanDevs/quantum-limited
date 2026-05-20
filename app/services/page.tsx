@@ -3,6 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { SiteHeader } from "../components/SiteHeader";
+import { Footer as GlobalFooter } from "../components/Footer";
 import { RemoteImageWithFallback } from "../components/RemoteImageWithFallback";
 import type { ContactApiResponse } from "../lib/contact";
 import { useLanguage } from "../i18n/LanguageContext";
@@ -44,7 +45,7 @@ export default function ServicesPage() {
         <ModulesSection />
         <ProtocolSection />
         <ContactSection />
-        <Footer />
+        <GlobalFooter />
       </main>
 
       <style>{`
@@ -734,73 +735,6 @@ function ContactSection() {
         </form>
       </div>
     </section>
-  );
-}
-
-function Footer() {
-  const { t } = useLanguage();
-  return (
-    <footer
-      style={{
-        padding: "64px clamp(24px, 4vw, 48px) 48px",
-        background: T.surface,
-        borderTop: `1px solid rgba(92,64,55,0.08)`,
-      }}
-    >
-      <div
-        style={{
-          maxWidth: "min(1920px, 100%)",
-          margin: "0 auto",
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "40px",
-        }}
-      >
-        <div>
-          <div
-            style={{
-              fontFamily: "var(--font-space-grotesk, Space Grotesk, sans-serif)",
-              fontSize: "16px",
-              fontWeight: 700,
-              color: "#ffffff",
-              letterSpacing: "0.1em",
-              marginBottom: "12px",
-            }}
-          >
-            {t("services.footer.brand")}
-          </div>
-          <p
-            style={{
-              fontFamily: "var(--font-inter, Inter, sans-serif)",
-              fontSize: "12px",
-              color: "rgba(161, 161, 170, 0.6)",
-              margin: 0,
-            }}
-          >
-            {t("services.footer.copy")}
-          </p>
-        </div>
-
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "32px" }}>
-          {[t("services.footer.privacy"), t("services.footer.sla"), t("services.footer.network")].map((link) => (
-            <span
-              key={link}
-              style={{
-                fontSize: "11px",
-                textTransform: "uppercase",
-                letterSpacing: "0.14em",
-                color: "rgba(161, 161, 170, 0.72)",
-                fontFamily: "var(--font-inter, Inter, sans-serif)",
-              }}
-            >
-              {link}
-            </span>
-          ))}
-        </div>
-      </div>
-    </footer>
   );
 }
 
